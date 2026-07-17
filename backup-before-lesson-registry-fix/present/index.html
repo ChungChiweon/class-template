@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>강사용 수업 진행 화면 | LoreAX Class ERP</title>
+    <meta
+      name="description"
+      content="AI 실습 수업 진행과 학생 현황을 함께 확인하는 강사용 화면"
+    />
+    <link rel="manifest" href="../manifest.json" />
+    <meta name="theme-color" content="#6BCBC4" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="LoreAX ERP" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="present-header">
+      <a class="present-brand" href="../index.html" aria-label="ERP 메인으로 이동">
+        <span>LC</span>
+        <strong>LoreAX Class ERP</strong>
+      </a>
+      <nav aria-label="강사용 화면 이동">
+        <a href="../index.html">ERP 메인</a>
+        <a href="../sessions/ai-practice/">수업 실행 모듈</a>
+      </nav>
+    </header>
+
+    <main class="present-shell">
+      <section class="lesson-stage" aria-label="수업 진행 영역">
+        <div class="stage-topline">
+          <div>
+            <p class="eyebrow">Teacher Live View</p>
+            <h1>AI 호텔 홍보영상 제작 수업</h1>
+          </div>
+          <span id="currentPeriodBadge" class="status-badge">1교시</span>
+        </div>
+
+        <article class="stage-card current-lesson-card">
+          <div class="stage-card-head">
+            <span>현재 차시</span>
+            <strong id="currentLessonTitle">AI 영상 제작 도구 체험</strong>
+          </div>
+          <p id="lessonGoal">HeyGen 캐릭터 생성과 전체 제작 흐름을 이해합니다.</p>
+        </article>
+
+        <section class="stage-card" aria-label="활동 순서">
+          <div class="stage-card-head">
+            <span>활동 순서</span>
+            <strong id="stepCounter">1 / 4</strong>
+          </div>
+          <ol id="activityList" class="activity-list"></ol>
+        </section>
+
+        <section class="stage-card guide-card" aria-label="학생 안내 문구">
+          <div class="stage-card-head">
+            <span>학생 안내</span>
+            <strong>화면에 띄울 문구</strong>
+          </div>
+          <p id="studentGuide">
+            강사의 설명을 듣고 단계별로 프롬프트를 복사하세요. Generate 버튼은 강사 확인 후 누릅니다.
+          </p>
+        </section>
+
+        <section class="stage-card prompt-card" aria-label="프롬프트">
+          <div class="stage-card-head">
+            <span>프롬프트</span>
+            <button id="copyPromptButton" type="button">복사</button>
+          </div>
+          <pre id="currentPrompt"></pre>
+        </section>
+
+        <section class="stage-card sample-card" aria-label="예시 결과물">
+          <div>
+            <div class="stage-card-head">
+              <span>예시 결과물</span>
+              <strong id="sampleTitle">호텔 안내 캐릭터 예시</strong>
+            </div>
+            <p id="sampleDescription">캐릭터 이미지와 짧은 나레이션 결과를 확인합니다.</p>
+          </div>
+          <div class="sample-media" aria-hidden="true">
+            <img id="sampleImage" src="../assets/hotel-ai-video-class-hero.png" alt="" />
+          </div>
+        </section>
+
+        <section class="stage-controls" aria-label="수업 진행 조작">
+          <div class="timer-card">
+            <span>타이머</span>
+            <strong id="timerDisplay">10:00</strong>
+            <div class="timer-buttons">
+              <button id="timerStartButton" type="button">시작</button>
+              <button id="timerPauseButton" type="button">일시정지</button>
+              <button id="timerResetButton" type="button">초기화</button>
+            </div>
+          </div>
+          <div class="nav-buttons">
+            <button id="prevStepButton" type="button">이전</button>
+            <button id="nextStepButton" type="button">다음</button>
+            <button id="fullscreenButton" type="button">전체화면</button>
+          </div>
+        </section>
+      </section>
+
+      <aside id="presencePanel" class="presence-panel" aria-label="실시간 학생 현황">
+        <div class="presence-head">
+          <div>
+            <p class="eyebrow">Live Student Status</p>
+            <h2>실시간 학생 현황</h2>
+            <small id="presenceUpdatedAt">갱신 대기 중</small>
+            <small id="presenceConnectionStatus" class="connection-status">mock 모드</small>
+          </div>
+          <button id="togglePresenceButton" type="button">현황판 숨기기</button>
+        </div>
+
+        <div class="metric-grid" aria-label="학생 수 요약">
+          <article><span>전체</span><strong id="totalStudents">0</strong></article>
+          <article><span>온라인</span><strong id="onlineStudents">0</strong></article>
+          <article><span>오프라인</span><strong id="offlineStudents">0</strong></article>
+          <article><span>PDF 생성</span><strong id="pdfStudents">0</strong></article>
+        </div>
+
+        <div class="presence-note">
+          <strong>Presence 기준</strong>
+          <p>학생 화면은 180초 간격 heartbeat 구조를 사용합니다. 최근 360초 이내 활동은 online, 360초 초과는 offline으로 표시합니다.</p>
+        </div>
+
+        <div class="presence-filters" aria-label="학생 현황 필터">
+          <button class="is-active" type="button" data-presence-filter="all">전체</button>
+          <button type="button" data-presence-filter="online">온라인</button>
+          <button type="button" data-presence-filter="offline">오프라인</button>
+          <button type="button" data-presence-filter="pdf">PDF 완료</button>
+        </div>
+
+        <div class="student-table-wrap">
+          <table class="student-table">
+            <thead>
+              <tr>
+                <th>학생 이름</th>
+                <th>반/번호</th>
+                <th>현재 단계</th>
+                <th>진행률</th>
+                <th>마지막 저장</th>
+                <th>PDF</th>
+              </tr>
+            </thead>
+            <tbody id="studentStatusRows"></tbody>
+          </table>
+        </div>
+      </aside>
+
+      <button id="showPresenceButton" class="show-presence-button" type="button" hidden>현황판 열기</button>
+    </main>
+
+    <script src="../lib/supabase-config.js?v=7"></script>
+    <script src="../vendor/supabase.min.js?v=7"></script>
+    <script src="../lib/loreax-supabase.js?v=7"></script>
+    <script src="../data-lessons.js?v=8"></script>
+    <script src="./script.js"></script>
+  </body>
+</html>

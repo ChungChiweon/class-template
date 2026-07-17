@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LoreAX Class | AI 수업 포털</title>
+    <meta name="description" content="AI 실습 수업을 찾고 이어서 진행하는 LoreAX Class 학생용 수업 포털" />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="icon" href="./assets/icons/icon-192.png" />
+    <meta name="theme-color" content="#0f2b5f" />
+    <link rel="stylesheet" href="./styles.css?v=course-portal-13" />
+  </head>
+  <body>
+    <header class="portal-header">
+      <a class="brand" href="#home" aria-label="LoreAX Class 홈">
+        <img src="./assets/brand/logo-symbol.svg" alt="" />
+        <span><strong>LoreAX Class</strong><small>AI 수업 포털</small></span>
+      </a>
+      <button id="menuButton" class="menu-button" type="button" aria-label="메뉴 열기" aria-expanded="false"><span></span><span></span><span></span></button>
+      <nav id="mainNav" class="main-nav" aria-label="주요 메뉴">
+        <a href="#home">홈</a>
+        <a href="#courseFinder">수업 찾기</a>
+        <a href="#continueSection">최근 수업</a>
+        <a id="navReportLink" href="./sessions/topic-research-report/report/">내 보고서</a>
+        <a id="navStartButton" class="start-pill" href="./sessions/topic-research-report/">오늘의 수업 시작</a>
+      </nav>
+    </header>
+    <main id="home">
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="hero-copy-content">
+            <p class="eyebrow">AI Class Portal</p>
+            <h1 class="hero-title">필요한 AI 수업을 찾고<br />바로 시작하세요.</h1>
+            <p class="hero-description">LoreAX Class는 AI 실습 수업을 찾고, 이어서 진행하고, 결과물까지 완성하도록 돕는 학생용 수업 포털입니다.</p>
+            <div class="hero-actions">
+              <a id="todayStartButton" class="primary-button" href="./sessions/topic-research-report/">오늘의 수업 시작</a>
+              <a class="secondary-button" href="#courseFinder">수업 찾기</a>
+            </div>
+          </div>
+          <div class="hero-learning-art" aria-hidden="true"><img src="./assets/hero/portal-learning.webp" alt="" onerror="this.closest('.hero-learning-art').classList.add('is-missing');" /></div>
+        </div>
+        <aside id="heroSlider" class="hero-slider" aria-label="대표 수업 이미지" tabindex="0">
+          <div id="sliderStage" class="slider-stage"></div>
+          <button id="sliderPrev" class="slider-nav is-prev" type="button" aria-label="이전 수업 보기">‹</button>
+          <button id="sliderNext" class="slider-nav is-next" type="button" aria-label="다음 수업 보기">›</button>
+          <div id="sliderDots" class="slider-dots" aria-label="수업 슬라이드 선택"></div>
+        </aside>
+      </section>
+      <section id="courseFinder" class="finder-panel" aria-label="수업 검색">
+        <div class="finder-main">
+          <label class="search-box"><span>수업 검색</span><input id="courseSearch" type="search" placeholder="수업명, 주제, 도구, 결과물로 검색하세요." autocomplete="off" /></label>
+          <div class="quick-links" aria-label="바로가기">
+            <a id="quickToday" href="./sessions/topic-research-report/">오늘의 수업</a>
+            <a id="quickContinue" class="is-disabled" href="#">이어서 하기</a>
+            <a href="#allCourses">전체 수업</a>
+            <a id="quickReport" href="./sessions/topic-research-report/report/">내 보고서</a>
+          </div>
+        </div>
+        <div id="categoryChips" class="category-chips" aria-label="카테고리 필터"></div>
+      </section>
+      <section class="dashboard-grid" aria-label="수업 추천 영역">
+        <article class="panel today-panel">
+          <div class="panel-head"><p class="eyebrow">Today</p><h2>오늘의 수업</h2></div>
+          <div id="todayCourse" class="today-course"></div>
+        </article>
+        <article id="continueSection" class="panel continue-panel">
+          <div class="panel-head"><p class="eyebrow">Continue</p><h2>이어서 하는 수업</h2></div>
+          <div id="continueList" class="continue-list"></div>
+        </article>
+      </section>
+      <section class="panel compact-section" aria-label="추천 수업">
+        <div class="panel-head is-row"><div><p class="eyebrow">Featured</p><h2>추천 수업</h2></div><a href="#allCourses">전체 보기</a></div>
+        <div id="featuredCourses" class="compact-grid"></div>
+      </section>
+      <section class="panel compact-section" aria-label="최근 추가된 수업">
+        <div class="panel-head is-row"><div><p class="eyebrow">New</p><h2>최근 추가된 수업</h2></div><span id="courseCountLabel"></span></div>
+        <div id="recentCourses" class="mini-grid"></div>
+      </section>
+      <section id="allCourses" class="panel all-courses" aria-label="전체 수업 목록">
+        <div class="panel-head is-row">
+          <div><p class="eyebrow">All Classes</p><h2>전체 수업 목록</h2></div>
+          <label class="sort-box"><span>정렬</span><select id="courseSort"><option value="recommended">추천순</option><option value="newest">최신순</option><option value="name">이름순</option><option value="short">차시 적은 순</option></select></label>
+        </div>
+        <div id="allCourseGrid" class="course-grid"></div>
+        <button id="loadMoreButton" class="load-more-button" type="button">더 보기</button>
+        <p id="emptyMessage" class="empty-message" hidden>조건에 맞는 수업이 없습니다.</p>
+      </section>
+    </main>
+    <nav class="bottom-nav" aria-label="모바일 빠른 메뉴"><a href="#home">홈</a><a href="#courseFinder">수업</a><a id="bottomContinueLink" href="./sessions/topic-research-report/">이어서 하기</a><a href="./sessions/topic-research-report/report/">내 보고서</a></nav>
+    <footer class="portal-footer"><div><strong>LoreAX Class</strong><p>AI 실습 수업을 찾고 결과물을 완성하는 학생용 수업 포털입니다.</p></div><a href="#allCourses">전체 수업</a><a href="#courseFinder">수업 찾기</a><span>개인정보 안내 준비 중</span></footer>
+    <script src="./data-courses.js?v=course-portal-13"></script>
+    <script src="./script.js?v=course-portal-13"></script>
+  </body>
+</html>

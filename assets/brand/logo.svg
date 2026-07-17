@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 96" role="img" aria-label="LoreAX Class">
+  <defs>
+    <linearGradient id="g" x1="12" x2="84" y1="10" y2="88" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#123B7A"/>
+      <stop offset=".55" stop-color="#7057FF"/>
+      <stop offset="1" stop-color="#39B8B0"/>
+    </linearGradient>
+  </defs>
+  <rect width="96" height="96" rx="26" fill="url(#g)"/>
+  <path d="M27 68V27h9v33h19v8H27Zm34 0V27h9v41h-9Z" fill="#fff"/>
+  <text x="118" y="48" fill="#111827" font-family="Arial, sans-serif" font-size="30" font-weight="800">LoreAX Class</text>
+  <text x="120" y="72" fill="#667085" font-family="Arial, sans-serif" font-size="15" font-weight="700">AI Learning Studio</text>
+</svg>

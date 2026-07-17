@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="LoreAX Class symbol">
+  <defs>
+    <linearGradient id="g" x1="12" x2="84" y1="10" y2="88" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#123B7A"/>
+      <stop offset=".55" stop-color="#7057FF"/>
+      <stop offset="1" stop-color="#39B8B0"/>
+    </linearGradient>
+  </defs>
+  <rect width="96" height="96" rx="26" fill="url(#g)"/>
+  <path d="M27 68V27h9v33h19v8H27Zm34 0V27h9v41h-9Z" fill="#fff"/>
+  <path d="M22 22h52v52" fill="none" stroke="#fff" stroke-opacity=".32" stroke-width="5" stroke-linecap="round"/>
+</svg>

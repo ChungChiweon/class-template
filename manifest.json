@@ -1,0 +1,23 @@
+{
+  "name": "LoreAX Class ERP",
+  "short_name": "LoreAX ERP",
+  "description": "AI 실습형 수업 운영을 위한 강사용 수업 관리 PWA",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F7F5F0",
+  "theme_color": "#6BCBC4",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

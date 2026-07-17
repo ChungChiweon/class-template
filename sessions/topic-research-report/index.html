@@ -1,0 +1,142 @@
+﻿<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>주제탐구보고서 커리큘럼 | LoreAX Class ERP</title>
+    <meta
+      name="description"
+      content="AI를 활용해 탐구 주제를 설정하고 자료를 분석하여 주제탐구보고서 PDF를 완성하는 수업 페이지"
+    />
+    <link rel="manifest" href="../../manifest.json" />
+    <link rel="icon" href="../../assets/icons/icon-192.png" />
+    <meta name="theme-color" content="#6BCBC4" />
+    <link rel="stylesheet" href="./styles.css?v=student-shell-1" />
+  </head>
+  <body>
+    <header class="app-header student-app-header">
+      <a class="brand" href="../../index.html" aria-label="ERP 대시보드로 이동">
+        <img src="../../assets/brand/logo-symbol.svg" alt="" />
+        <strong>LoreAX Class</strong>
+      </a>
+      <nav class="top-actions" aria-label="페이지 이동">
+        <span id="authStatus" class="auth-status">로그인 없이 로컬 저장 중</span>
+        <button id="kakaoLoginButton" class="kakao-login-button" type="button" hidden>카카오 로그인</button>
+        <button id="kakaoLogoutButton" class="secondary-button" type="button" hidden>로그아웃</button>
+        <a class="primary-button compact-report-link" href="./report/">최종 보고서</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">AI Research Report Class</p>
+          <h1>주제탐구보고서 커리큘럼</h1>
+          <p>
+            AI를 활용해 탐구 주제를 설정하고, 자료를 수집·분석·시각화한 뒤
+            서론·방법·분석·결과·결론을 포함한 주제탐구보고서를 완성합니다.
+          </p>
+          <div class="hero-chips" aria-label="수업 정보">
+            <span>4차시</span>
+            <span>AI 활용 탐구</span>
+            <span>보고서 PDF</span>
+            <span>로컬 자동 저장</span>
+          </div>
+        </div>
+        <aside class="status-card student-status-card">
+          <span>현재 수업</span>
+          <strong>AI 활용 주제탐구보고서 작성</strong>
+          <dl>
+            <div><dt>진행률</dt><dd id="progressSummary">0 / 0 완료</dd></div>
+            <div><dt>저장 상태</dt><dd id="saveStatus">로컬 저장 대기</dd></div>
+            <div><dt>서버 상태</dt><dd id="serverStatus">로컬 저장 모드</dd></div>
+          </dl>
+        </aside>
+      </section>
+
+      <section class="notice-card" aria-label="학생 안내">
+        <strong>학생 안내</strong>
+        <p>
+          강사의 설명을 듣고 단계별로 입력하세요. AI는 보고서를 대신 써 주는 도구가 아니라,
+          질문을 다듬고 자료를 점검하며 내 문장을 보완하는 도구입니다.
+        </p>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Class Steps</p>
+          <h2>수업 진행 단계</h2>
+        </div>
+        <div id="stepList" class="step-list"></div>
+      </section>
+
+      <section class="section report-builder advanced-report-builder">
+        <div class="section-heading">
+          <p class="eyebrow">Advanced Edit</p>
+          <h2>고급 편집</h2>
+          <p>필요할 때만 열어 보고서 전체 입력값을 복구하거나 직접 수정합니다.</p>
+        </div>
+        <details class="form-accordion">
+          <summary>고급 편집 열기</summary>
+          <form id="reportForm" class="report-form">
+            <label><span>학생 이름</span><input data-report-path="student.name" type="text" /></label>
+            <label><span>학번</span><input data-report-path="student.studentNumber" type="text" /></label>
+            <label><span>반</span><input data-report-path="student.className" type="text" /></label>
+            <label class="is-wide"><span>탐구 주제</span><textarea data-report-path="report.title" rows="2"></textarea></label>
+            <label class="is-wide"><span>주제 선택 이유</span><textarea data-report-path="report.topicReason" rows="3"></textarea></label>
+            <label class="is-wide"><span>탐구 질문</span><textarea data-report-path="report.researchQuestion" rows="3"></textarea></label>
+            <label><span>독립변수</span><input data-report-path="report.independentVariable" type="text" /></label>
+            <label><span>종속변수</span><input data-report-path="report.dependentVariable" type="text" /></label>
+            <label class="is-wide"><span>연구 범위</span><textarea data-report-path="report.researchScope" rows="3"></textarea></label>
+            <label class="is-wide"><span>자료 출처</span><textarea data-report-path="report.methodology.dataSource" rows="3"></textarea></label>
+            <label class="is-wide"><span>자료 요약</span><textarea data-report-path="report.dataSummary" rows="3"></textarea></label>
+            <label class="is-wide"><span>정리한 데이터 메모</span><textarea data-report-path="report.cleanedDataNotes" rows="3"></textarea></label>
+            <label class="is-wide"><span>연구 배경</span><textarea data-report-path="report.introduction.background" rows="3"></textarea></label>
+            <label class="is-wide"><span>탐구 목적</span><textarea data-report-path="report.introduction.purpose" rows="3"></textarea></label>
+            <label class="is-wide"><span>탐구 필요성</span><textarea data-report-path="report.introduction.necessity" rows="3"></textarea></label>
+            <label class="is-wide"><span>자료 수집 방법</span><textarea data-report-path="report.methodology.collectionMethod" rows="3"></textarea></label>
+            <label class="is-wide"><span>자료 분석 방법</span><textarea data-report-path="report.methodology.analysisMethod" rows="3"></textarea></label>
+            <label class="is-wide"><span>분석 결과</span><textarea data-report-path="report.results.summary" rows="4"></textarea></label>
+            <label><span>그래프 제목</span><input data-report-path="report.results.chartTitle" type="text" /></label>
+            <label><span>X축 설명</span><input data-report-path="report.results.xAxisDescription" type="text" /></label>
+            <label><span>Y축 설명</span><input data-report-path="report.results.yAxisDescription" type="text" /></label>
+            <label class="is-wide"><span>그래프 해석</span><textarea data-report-path="report.results.interpretation" rows="4"></textarea></label>
+            <label class="is-wide"><span>자기 초안</span><textarea data-report-path="report.selfDraft" rows="3"></textarea></label>
+            <label class="is-wide"><span>AI 수정 문장</span><textarea data-report-path="report.aiRevisedSentence" rows="3"></textarea></label>
+            <label class="is-wide"><span>최종 수정 문장</span><textarea data-report-path="report.finalRevisedSentence" rows="3"></textarea></label>
+            <label class="is-wide"><span>결론</span><textarea data-report-path="report.conclusion.answer" rows="4"></textarea></label>
+            <label class="is-wide"><span>학문적 의미</span><textarea data-report-path="report.conclusion.significance" rows="3"></textarea></label>
+            <label class="is-wide"><span>연구 한계</span><textarea data-report-path="report.conclusion.limitations" rows="3"></textarea></label>
+            <label class="is-wide"><span>향후 탐구</span><textarea data-report-path="report.conclusion.futureResearch" rows="3"></textarea></label>
+            <label class="is-wide"><span>참고문헌</span><textarea data-report-path="report.references" rows="3" placeholder="한 줄에 하나씩 입력"></textarea></label>
+            <label class="is-wide"><span>AI 활용 기록</span><textarea data-report-path="report.aiUsageLogs" rows="3" placeholder="한 줄에 하나씩 입력"></textarea></label>
+            <label class="is-wide"><span>AI 최종 교정 기록</span><textarea data-report-path="report.aiFinalRevisionLog" rows="3"></textarea></label>
+            <label class="is-wide"><span>동료 피드백</span><textarea data-report-path="report.peerFeedback" rows="3"></textarea></label>
+            <label class="is-wide"><span>피드백 반영 내용</span><textarea data-report-path="report.feedbackReflection" rows="3"></textarea></label>
+            <label class="is-wide report-chart-input">
+              <span>그래프 이미지</span>
+              <input id="chartImageInput" type="file" accept="image/*" />
+            </label>
+            <div id="chartPreview" class="chart-preview" hidden>
+              <img id="chartPreviewImage" alt="등록한 그래프 미리보기" />
+              <button id="removeChartButton" class="secondary-button" type="button">그래프 이미지 삭제</button>
+            </div>
+          </form>
+        </details>
+      </section>
+
+      <section class="action-bar" aria-label="보고서 이동">
+        <button id="resetProgressButton" class="secondary-button" type="button">현재 수업 진행상태 초기화</button>
+        <span id="bottomSaveStatus" class="bottom-save-status">자동 저장 대기</span>
+        <a class="primary-button" href="./report/">보고서 미리보기 및 PDF 생성</a>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="../../lib/supabase-config.js?v=8"></script>
+    <script src="../../vendor/supabase.min.js?v=7"></script>
+    <script src="../../lib/loreax-supabase.js?v=9"></script>
+    <script src="./script.js?v=20"></script>
+  </body>
+</html>

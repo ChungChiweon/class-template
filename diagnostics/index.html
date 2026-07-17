@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Supabase 진단 | LoreAX Class ERP</title>
+    <meta name="description" content="LoreAX Class ERP Supabase 연결 및 실기기 연동 진단 화면" />
+    <link rel="manifest" href="../manifest.json" />
+    <meta name="theme-color" content="#6BCBC4" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="diagnostics-header">
+      <a href="../index.html">← ERP 대시보드</a>
+      <div>
+        <p class="eyebrow">Diagnostics</p>
+        <h1>Supabase 연결 진단</h1>
+        <p>실제 태블릿과 강사 PC 연동 전 설정, DB, Storage, Realtime 상태를 점검합니다.</p>
+      </div>
+    </header>
+
+    <main class="diagnostics-shell">
+      <section class="status-grid" aria-label="진단 상태">
+        <article><span>Supabase 설정</span><strong id="configStatus">확인 전</strong></article>
+        <article><span>Client 초기화</span><strong id="clientStatus">확인 전</strong></article>
+        <article><span>class_sessions</span><strong id="classSessionStatus">확인 전</strong></article>
+        <article><span>student_sessions</span><strong id="presenceStatus">확인 전</strong></article>
+        <article><span>student_reports</span><strong id="reportStatus">확인 전</strong></article>
+        <article><span>Storage</span><strong id="storageStatus">확인 전</strong></article>
+        <article><span>Realtime</span><strong id="realtimeStatus">확인 전</strong></article>
+        <article><span>localStorage fallback</span><strong id="fallbackStatus">확인 전</strong></article>
+        <article><span>Service Worker</span><strong id="serviceWorkerStatus">확인 전</strong></article>
+      </section>
+
+      <section class="button-panel" aria-label="진단 실행">
+        <button type="button" data-test="connection">연결 다시 확인</button>
+        <button type="button" data-test="classSession">테스트 수업 세션 생성</button>
+        <button type="button" data-test="presence">테스트 presence 전송</button>
+        <button type="button" data-test="report">테스트 보고서 저장</button>
+        <button type="button" data-test="storage">테스트 PDF Blob 업로드</button>
+        <button type="button" data-test="realtime">Realtime 구독 테스트</button>
+        <button class="danger" type="button" data-test="cleanup">테스트 데이터 정리</button>
+      </section>
+
+      <section class="details-panel">
+        <h2>진단 로그</h2>
+        <p>테스트 데이터는 `__LOREAX_TEST__`, `__diagnostic_device__`, `__diagnostic_lesson__` 값만 사용합니다.</p>
+        <pre id="diagnosticLog" aria-live="polite"></pre>
+      </section>
+
+      <section class="details-panel">
+        <h2>실기기 테스트 순서</h2>
+        <ol>
+          <li>Supabase 프로젝트에서 `supabase/schema.sql`을 실행합니다.</li>
+          <li>`student-reports` Storage bucket과 Realtime 설정을 확인합니다.</li>
+          <li>`lib/supabase-config.js`에 URL과 anonKey를 입력하고 `enabled: true`로 바꿉니다.</li>
+          <li>재배포 후 이 진단 화면에서 연결 테스트를 순서대로 실행합니다.</li>
+          <li>태블릿에서 `/sessions/ai-practice/`, 강사 PC에서 `/present/`를 열어 학생 상태가 보이는지 확인합니다.</li>
+        </ol>
+      </section>
+    </main>
+
+    <script src="../lib/supabase-config.js?v=7"></script>
+    <script src="../vendor/supabase.min.js?v=7"></script>
+    <script src="../lib/loreax-supabase.js?v=7"></script>
+    <script src="./script.js"></script>
+  </body>
+</html>

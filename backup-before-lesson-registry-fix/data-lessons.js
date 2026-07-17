@@ -1,0 +1,118 @@
+window.LoreAXLessonRuntimeData = {
+  hotelPromo: {
+    id: "hotelPromo",
+    title: "AI 호텔 홍보영상 제작 수업",
+    periods: [
+      {
+        title: "HeyGen 캐릭터 체험 + 합본 프롬프트 생성",
+        objectives: "HeyGen에서 호텔 안내 캐릭터를 먼저 만들고, 이후 제작에 사용할 고정 캐릭터 기준을 확보합니다.",
+        activities: ["호텔 콘셉트 확인", "HeyGen 캐릭터 생성", "캐릭터 결과 메모", "Claude 합본 프롬프트 준비"],
+        studentGuide: "HeyGen 캐릭터 결과를 먼저 만들고 외형, 복장, 말투, 목소리 톤을 메모하세요. Generate 버튼은 강사 확인 후 누릅니다.",
+        prompt: "호텔 안내 캐릭터의 외형, 복장, 말투, 목소리 톤을 정리하고 이후 GPT 레퍼런스샷과 Google Flow 영상 프롬프트에 같은 기준으로 반영하세요.",
+        example: {
+          title: "호텔 안내 캐릭터 예시",
+          description: "HeyGen 캐릭터 결과와 합본 프롬프트 준비 상태를 확인합니다.",
+          image: "../assets/hotel-ai-video-class-hero.png",
+        },
+        warning: "HeyGen 결과 없이 합본을 먼저 만들면 캐릭터 일관성이 흔들릴 수 있습니다.",
+      },
+      {
+        title: "레퍼런스샷과 Flow 장면 준비",
+        objectives: "GPT로 캐릭터 기준 이미지와 4방향 레퍼런스샷을 만들고 Flow 입력 조건을 정리합니다.",
+        activities: ["캐릭터 기준 이미지 확인", "4방향 레퍼런스샷 생성", "인트로·장소소개·아웃트로 구조 확인", "Flow 입력 조건 복사"],
+        studentGuide: "레퍼런스샷의 얼굴, 유니폼, 체형이 같은 인물처럼 유지되는지 확인하세요.",
+        prompt: "HeyGen 캐릭터 결과를 기준으로 같은 인물의 4방향 전신 레퍼런스샷을 만들고, Flow 4장면 생성 조건을 정리하세요.",
+        example: {
+          title: "4방향 레퍼런스샷 예시",
+          description: "Flow에서 캐릭터를 고정하기 위한 참조 이미지를 확인합니다.",
+          image: "../assets/gpt-reference-turnaround-guide.png",
+        },
+        warning: "레퍼런스샷이 불안정하면 Flow 장면마다 다른 인물처럼 보일 수 있습니다.",
+      },
+      {
+        title: "Flow 4장면 영상 생성",
+        objectives: "인트로 1개, 장소소개 2개, 아웃트로 1개의 Flow 영상 프롬프트를 장면별로 입력합니다.",
+        activities: ["Veo 3.1 Lite 모델 확인", "참조 이미지 업로드", "장면별 프롬프트 입력", "영상 생성 결과 저장"],
+        studentGuide: "장면별 나레이션과 참조 이미지를 확인한 뒤 Generate 버튼을 누르세요.",
+        prompt: "참조 이미지를 기준으로 같은 호텔리어 캐릭터가 등장하는 4개 장면의 영어 영상 프롬프트와 한국어 20자 내외 나레이션을 장면별로 준비하세요.",
+        example: {
+          title: "Flow 영상 장면 예시",
+          description: "생성된 장면을 저장하고 다음 장면으로 이동합니다.",
+          image: "../assets/scene-03-room-reference-v2.png",
+        },
+        warning: "모델 선택 실수와 Generate 조기 클릭은 크레딧 낭비로 이어질 수 있습니다.",
+      },
+      {
+        title: "편집과 최종 PDF 생성",
+        objectives: "생성된 영상과 나레이션을 정리하고 최종 결과물과 보고서 PDF 상태를 확인합니다.",
+        activities: ["CapCut 편집", "자막과 나레이션 확인", "최종 영상 점검", "PWA 내부 PDF 생성 여부 확인"],
+        studentGuide: "최종 제출 전 영상 흐름, 장면 순서, 나레이션, PDF 생성 상태를 확인하세요.",
+        prompt: "완성 영상의 장면 순서, 자막, 나레이션, 캐릭터 일관성, 사용 내역을 최종 점검 기준으로 정리하세요.",
+        example: {
+          title: "최종 결과물 예시",
+          description: "최종 영상과 PDF 생성 상태를 확인합니다.",
+          image: "../assets/hotel-ai-video-class-hero.png",
+        },
+        warning: "영상 생성 후 반드시 다운로드하고, PDF 생성 상태를 강사용 현황에서 확인하세요.",
+      },
+    ],
+  },
+  dataAnalysisReport: {
+    id: "dataAnalysisReport",
+    title: "AI 데이터 분석 기반 주제탐구보고서 작성",
+    periods: [
+      {
+        title: "탐구 주제 설정과 연구 질문 구체화",
+        objectives: "관심 분야를 데이터로 분석 가능한 탐구 질문으로 바꾸고 독립변수, 종속변수, 연구 범위를 정합니다.",
+        activities: ["관심 분야와 키워드 작성", "탐구 주제 후보 비교", "연구 질문 작성", "독립변수·종속변수·연구 범위 설정"],
+        studentGuide: "AI가 제안한 주제를 그대로 쓰지 말고, 실제 데이터를 구할 수 있는지 확인한 뒤 연구 질문을 한 문장으로 정리하세요.",
+        prompt: "관심 분야와 키워드를 바탕으로 공공 데이터로 분석 가능한 탐구 주제 3개를 제안하고, 각 주제의 연구 질문, 독립변수, 종속변수, 데이터 출처 후보를 정리하세요.",
+        example: {
+          title: "탐구 질문 예시",
+          description: "대중교통 이용량과 대기오염도 변화처럼 변수 관계가 보이는 질문을 확인합니다.",
+          image: "../assets/hotel-ai-video-class-hero.png",
+        },
+        warning: "데이터를 구할 수 없는 주제는 2차시에서 진행이 막힐 수 있습니다.",
+      },
+      {
+        title: "자료 수집, 데이터 정제 및 시각화",
+        objectives: "CSV/XLSX 등 데이터 파일을 확인하고 결측치·이상치를 점검한 뒤 그래프를 만듭니다.",
+        activities: ["데이터 출처 확인", "CSV/XLSX 데이터 점검", "결측치·이상치 처리 기준 작성", "그래프 제목과 X축·Y축 설명 작성"],
+        studentGuide: "데이터를 임의로 고치지 말고, 왜 정제했는지 기준을 남기세요. 그래프 제목과 축 설명도 함께 작성합니다.",
+        prompt: "수집한 데이터의 출처, 형식, 주요 변수, 결측치와 이상치 처리 기준을 정리하고 연구 질문에 맞는 그래프 종류와 X축·Y축 설명을 제안하세요.",
+        example: {
+          title: "그래프 점검 예시",
+          description: "축 제목, 단위, 그래프 제목이 변수 관계를 설명하는지 확인합니다.",
+          image: "../assets/hotel-ai-video-class-hero.png",
+        },
+        warning: "결측치와 이상치를 기준 없이 삭제하면 보고서 신뢰도가 떨어집니다.",
+      },
+      {
+        title: "서론 및 연구 방법 초안 작성",
+        objectives: "연구 배경, 탐구 목적, 필요성, 자료 수집 방법, 분석 방법, 참고문헌과 AI 활용 기록을 정리합니다.",
+        activities: ["연구 배경 작성", "탐구 목적과 필요성 작성", "자료 수집·분석 방법 정리", "참고문헌과 AI 활용 기록 작성"],
+        studentGuide: "서론은 주장보다 근거가 중요합니다. 출처와 AI 활용 기록은 빠뜨리지 말고 남기세요.",
+        prompt: "탐구 질문, 데이터 출처, 분석 방법을 바탕으로 연구 배경, 탐구 목적, 연구 필요성, 자료 수집 방법, 분석 방법, 참고문헌, AI 활용 기록 초안을 작성하세요.",
+        example: {
+          title: "서론 구조 예시",
+          description: "배경, 목적, 필요성이 구분되어 있는지 확인합니다.",
+          image: "../assets/hotel-ai-video-class-hero.png",
+        },
+        warning: "AI가 만든 문장을 그대로 제출하지 말고 출처와 사실 여부를 확인하세요.",
+      },
+      {
+        title: "결과 해석, 결론 및 최종 보고서 완성",
+        objectives: "그래프 해석, 결론, 한계점, 향후 탐구, 동료 피드백 반영 내용을 정리하고 PDF를 생성합니다.",
+        activities: ["결과 해석 작성", "결론과 한계점 작성", "향후 탐구와 피드백 반영", "PDF 미리보기·생성"],
+        studentGuide: "결론은 그래프와 데이터 범위 안에서만 작성하세요. PDF 생성 후 강사용 현황에서 완료 여부를 확인합니다.",
+        prompt: "그래프 해석을 근거로 연구 질문에 대한 결론, 한계점, 향후 탐구, 동료 피드백 반영 내용을 작성하고 최종 보고서 PDF 점검 목록을 확인하세요.",
+        example: {
+          title: "최종 보고서 점검 예시",
+          description: "필수 항목 누락 여부와 PDF 생성 상태를 확인합니다.",
+          image: "../assets/hotel-ai-video-class-hero.png",
+        },
+        warning: "필수 항목이 비어 있어도 PDF는 만들 수 있지만, 제출 전 누락 항목을 반드시 점검하세요.",
+      },
+    ],
+  },
+};

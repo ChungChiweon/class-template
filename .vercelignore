@@ -1,0 +1,11 @@
+.deploy-tools
+*.zip
+*.log
+cloudflared-tunnel.*
+CURRENT_PUBLIC_CLASS_LINK.txt
+EASY_CLASS_LINK.txt
+CLASS_URL.txt
+CLASS_LINK_QR.png
+class-link.html
+START_PUBLIC_LINK.bat
+start-public-link.ps1

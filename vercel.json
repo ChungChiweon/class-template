@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/report-ai-help.js": {
+      "maxDuration": 60
+    }
+  }
+}

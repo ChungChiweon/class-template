@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>최종 탐구보고서 PDF 생성 | LoreAX Class ERP</title>
+    <meta name="description" content="AI 실습 수업 최종 탐구보고서 미리보기 및 PDF 생성 화면" />
+    <link rel="manifest" href="../../../manifest.json" />
+    <meta name="theme-color" content="#6BCBC4" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="report-topbar">
+      <a class="back-link" href="../">← 수업 화면으로 돌아가기</a>
+      <div>
+        <p class="eyebrow">Final Research Report</p>
+        <h1>최종 탐구보고서 PDF 생성</h1>
+      </div>
+      <button id="parentViewButton" class="ghost-button" type="button">학부모에게 보여주기</button>
+    </header>
+
+    <main class="report-shell">
+      <section class="report-summary" aria-label="보고서 요약">
+        <article>
+          <span>학생 이름</span>
+          <strong id="summaryStudentName">미입력</strong>
+        </article>
+        <article>
+          <span>보고서 제목</span>
+          <strong id="summaryReportTitle">제목 미입력</strong>
+        </article>
+        <article>
+          <span>작성 진행률</span>
+          <strong id="summaryProgress">0%</strong>
+        </article>
+        <article>
+          <span>마지막 저장</span>
+          <strong id="summaryUpdatedAt">저장 기록 없음</strong>
+        </article>
+      </section>
+
+      <section id="missingPanel" class="missing-panel" aria-label="누락 항목 확인">
+        <div class="section-heading">
+          <p class="eyebrow">Checklist</p>
+          <h2>누락 항목 확인</h2>
+          <p>비어 있는 항목은 PDF 생성을 막지 않지만, 생성 전에 확인창이 표시됩니다.</p>
+        </div>
+        <ul id="missingList" class="missing-list"></ul>
+      </section>
+
+      <section class="action-panel" aria-label="PDF 생성 도구">
+        <button id="refreshPreviewButton" class="secondary-button" type="button">PDF 미리보기 새로고침</button>
+        <button id="generatePdfButton" class="primary-button" type="button">최종 PDF 생성</button>
+        <button id="downloadPdfButton" class="primary-button is-download" type="button">PDF 다운로드</button>
+        <a class="secondary-button" href="../">보고서 다시 수정하기</a>
+        <a id="inquiryButton" class="secondary-button" href="#" target="_blank" rel="noreferrer" hidden>수업지원 채널 문의하기</a>
+      </section>
+
+      <section id="pdfCompletePanel" class="complete-panel" hidden>
+        <strong>보고서 PDF가 생성되었습니다.</strong>
+        <p>PDF 다운로드는 문의나 채널 추가와 관계없이 언제든 다시 실행할 수 있습니다.</p>
+        <div>
+          <button id="completeDownloadButton" class="primary-button is-download" type="button">PDF 다운로드</button>
+          <a class="secondary-button" href="../">보고서 다시 수정하기</a>
+          <button id="completeParentViewButton" class="secondary-button" type="button">학부모에게 보여주기</button>
+        </div>
+      </section>
+
+      <section class="preview-wrap" aria-label="보고서 미리보기">
+        <div class="section-heading">
+          <p class="eyebrow">Preview</p>
+          <h2>보고서 미리보기</h2>
+        </div>
+        <article id="reportPreview" class="report-page" aria-label="A4 보고서 미리보기"></article>
+      </section>
+    </main>
+
+    <script src="../../../lib/supabase-config.js?v=7"></script>
+    <script src="../../../vendor/supabase.min.js?v=7"></script>
+    <script src="../../../lib/loreax-supabase.js?v=7"></script>
+    <script src="../../../vendor/html2pdf.bundle.min.js"></script>
+    <script src="./script.js?v=class-ready-4"></script>
+  </body>
+</html>
