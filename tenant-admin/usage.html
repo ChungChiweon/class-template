@@ -12,21 +12,57 @@
       <header class="usage-hero">
         <p class="eyebrow">Tenant Usage Console</p>
         <h1>업체별 월간 사용량 확인</h1>
-        <p>이 화면은 운영 점검용 숨김 경로입니다. 실제 판매 전에는 로그인과 관리자 권한 보호가 필요합니다.</p>
+        <p>
+          이 화면은 운영 점검용입니다. 실제 판매 전에는 관리자 로그인과 권한 보호가 필요합니다.
+          공개 랜딩에는 이 화면으로 들어오는 링크를 노출하지 않습니다.
+        </p>
         <form id="usageForm" class="usage-form">
-          <label>업체 ID <input id="tenantInput" name="tenant" value="default" /></label>
-          <label>월 <input id="monthInput" name="month" type="month" /></label>
+          <label>
+            업체 선택
+            <select id="tenantSelect" name="tenantSelect">
+              <option value="default">default</option>
+              <option value="academy-a">academy-a</option>
+              <option value="academy-b">academy-b</option>
+            </select>
+          </label>
+          <label>
+            업체 ID
+            <input id="tenantInput" name="tenant" value="default" />
+          </label>
+          <label>
+            월
+            <input id="monthInput" name="month" type="month" />
+          </label>
           <button type="submit">조회</button>
         </form>
       </header>
 
+      <section class="tenant-card" aria-label="업체 정보">
+        <div>
+          <span>업체명</span>
+          <strong id="tenantName">LoreAX Class</strong>
+        </div>
+        <div>
+          <span>요금제</span>
+          <strong id="planName">Starter</strong>
+        </div>
+        <div>
+          <span>조회 상태</span>
+          <strong id="loadStatus">조회 대기</strong>
+        </div>
+      </section>
+
       <section class="summary-grid" aria-label="사용량 요약">
-        <article><span>요금제</span><strong id="planName">Starter</strong></article>
-        <article><span>포함 활성 학습자</span><strong id="includedLearners">50명</strong></article>
-        <article><span>실제 활성 학습자</span><strong id="activeLearners">0명</strong></article>
+        <article><span>포함 학습자</span><strong id="includedLearners">50명</strong></article>
+        <article><span>활성 학습자</span><strong id="activeLearners">0명</strong></article>
         <article><span>초과 인원</span><strong id="overageLearners">0명</strong></article>
-        <article><span>AI 생성</span><strong id="aiGenerateCount">0회</strong></article>
+        <article><span>수업 입장</span><strong id="courseOpens">0회</strong></article>
+        <article><span>활동 저장</span><strong id="activitySaves">0회</strong></article>
+        <article><span>AI 요청</span><strong id="aiGenerateCount">0회</strong></article>
+        <article><span>AI 성공</span><strong id="aiSuccessCount">0회</strong></article>
+        <article><span>AI 실패</span><strong id="aiFailureCount">0회</strong></article>
         <article><span>PDF 생성</span><strong id="pdfGenerateCount">0회</strong></article>
+        <article><span>PDF 다운로드</span><strong id="pdfDownloadCount">0회</strong></article>
         <article><span>보고서 제출</span><strong id="submittedReports">0건</strong></article>
         <article><span>예상 총액</span><strong id="estimatedTotalFee">0원</strong></article>
       </section>
@@ -38,13 +74,16 @@
           <div><dt>예상 초과료</dt><dd id="estimatedOverageFee">0원</dd></div>
           <div><dt>초과 단가</dt><dd id="overagePrice">0원</dd></div>
         </dl>
-        <p>표시 금액은 결제 확정액이 아닌 사용량 기반 예상 이용료입니다. 초기 구축비와 별도 AI 이미지·영상 크레딧은 포함하지 않습니다.</p>
+        <p>
+          표시 금액은 결제 확정액이 아닌 사용량 기반 예상 이용료입니다.
+          초기 구축비와 AI 이미지·영상 크레딧 비용은 별도 정책으로 관리합니다.
+        </p>
       </section>
 
       <section class="events-panel">
         <div class="panel-head">
           <h2>최근 사용 이벤트</h2>
-          <span id="loadStatus">조회 대기</span>
+          <span id="eventStatus">최근 100건</span>
         </div>
         <div class="table-wrap">
           <table>
@@ -62,7 +101,7 @@
         </div>
       </section>
     </main>
-    <script src="../lib/tenant-config.js?v=tenant-usage-1"></script>
-    <script src="./usage.js?v=tenant-usage-1"></script>
+    <script src="../lib/tenant-config.js?v=tenant-usage-2"></script>
+    <script src="./usage.js?v=tenant-usage-2"></script>
   </body>
 </html>

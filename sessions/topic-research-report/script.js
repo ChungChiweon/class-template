@@ -5,6 +5,10 @@ const PRESENCE_STORAGE_PREFIX = "loreaxPresence:";
 const PRESENCE_DEVICE_KEY = "loreaxPresenceDeviceId";
 const HEARTBEAT_INTERVAL_MS = 180000;
 
+if (window.LoreAXTenant?.guardCourseAccess?.(LESSON_ID, { homeUrl: "../../index.html" })?.blocked) {
+  window.LoreAXTopicResearch = { blocked: true };
+} else {
+
 const TOOL_URLS = {
   ChatGPT: "https://chatgpt.com/",
   Gemini: "https://gemini.google.com/",
@@ -2700,6 +2704,7 @@ function initKakaoAuth() {
 renderSteps();
 hydrateForm();
 initKakaoAuth();
+window.LoreAXTenant?.applyTenantLinks?.();
 
 dom.reportForm.addEventListener("input", scheduleSave);
 dom.reportForm.addEventListener("change", scheduleSave);
@@ -3129,6 +3134,7 @@ if ("serviceWorker" in navigator) {
     window.LoreAXUsage?.trackCourseOpen?.(LESSON_ID, { source: "topic_research_page" });
     navigator.serviceWorker.register("../../sw.js").catch(() => {});
   });
+}
 }
 
 

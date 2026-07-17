@@ -216,12 +216,28 @@ function filteredCourses() {
 
 function setLink(anchor, course, fallbackUrl) {
   if (!anchor) return;
-  anchor.href = `./${course?.studentUrl || fallbackUrl || ""}`;
+  anchor.href = tenantHref(course?.studentUrl || fallbackUrl || "");
   if (course?.id) anchor.dataset.lessonId = course.id;
 }
 
 function imageUrl(course) {
   return `./${course?.thumbnail || COURSE_DEFAULTS.thumbnail}`;
+}
+
+function tenantHref(url) {
+  const raw = String(url || "").trim();
+  if (!raw) return "#";
+  const relative = raw.startsWith("./") ? raw : `./${raw}`;
+  if (!tenantApi?.tenantUrl) return relative;
+  return tenantApi.tenantUrl(relative);
+}
+
+function applyTenantBranding() {
+  const tenant = tenantApi?.applyTenantBranding?.() || tenantApi?.getCurrentTenant?.();
+  if (!tenant) return;
+  const brandSmall = document.querySelector(".brand small");
+  if (brandSmall) brandSmall.textContent = tenant.displayName || "AI 수업 포털";
+  document.title = `${tenant.displayName || "LoreAX Class"} | AI 수업 포털`;
 }
 
 function normalizeDuration(course) {
@@ -305,14 +321,14 @@ function courseCard(course, mode = "default") {
   const tools = (course.tools || []).slice(0, 3).join(", ");
   const classes = mode === "mini" ? "course-card is-mini" : "course-card";
   const action = course.studentUrl
-    ? `<a class="primary-button course-action" href="./${escapeHtml(course.studentUrl)}" data-lesson-id="${escapeHtml(course.id || "")}">${progress ? "이어서 하기" : "수업 시작"}</a>`
+    ? `<a class="primary-button course-action" href="${escapeHtml(tenantHref(course.studentUrl))}" data-lesson-id="${escapeHtml(course.id || "")}">${progress ? "이어서 하기" : "수업 시작"}</a>`
     : `<span class="primary-button course-action is-disabled-action" aria-disabled="true">준비 중</span>`;
   return `<article class="${classes}"><img src="${imageUrl(course)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='./assets/empty/no-report.webp';" /><div class="course-body"><span class="category-badge">${escapeHtml(course.category)}</span><h3>${escapeHtml(course.title)}</h3><p>${escapeHtml(course.description)}</p><dl><div><dt>차시</dt><dd>${escapeHtml(course.duration || `${course.lessons || "-"}차시`)}</dd></div><div><dt>도구</dt><dd>${escapeHtml(tools || "수업 도구")}</dd></div><div><dt>결과물</dt><dd>${escapeHtml(course.resultType)}</dd></div></dl>${progressHtml(progress)}${action}</div></article>`;
 }
 
 function sliderMarkup(course) {
   const action = course.studentUrl
-    ? `<a class="primary-button slider-action" href="./${escapeHtml(course.studentUrl)}" data-lesson-id="${escapeHtml(course.id || "")}">수업 보기</a>`
+    ? `<a class="primary-button slider-action" href="${escapeHtml(tenantHref(course.studentUrl))}" data-lesson-id="${escapeHtml(course.id || "")}">수업 보기</a>`
     : `<span class="primary-button slider-action is-disabled-action" aria-disabled="true">준비 중</span>`;
   const meta = sliderMetaItems(course)
     .map((item) => `<span class="slider-meta-item ${item.className}" title="${escapeHtml(item.title)}">${escapeHtml(item.label)}</span>`)
@@ -413,8 +429,8 @@ function renderToday() {
   setLink(dom.todayStartButton, today);
   setLink(dom.navStartButton, today);
   setLink(dom.quickToday, today);
-  if (dom.navReportLink && today.reportUrl) dom.navReportLink.href = `./${today.reportUrl}`;
-  if (dom.quickReport && today.reportUrl) dom.quickReport.href = `./${today.reportUrl}`;
+  if (dom.navReportLink && today.reportUrl) dom.navReportLink.href = tenantHref(today.reportUrl);
+  if (dom.quickReport && today.reportUrl) dom.quickReport.href = tenantHref(today.reportUrl);
   if (dom.todayCourse) dom.todayCourse.innerHTML = courseCard(today, "mini");
 }
 
@@ -428,7 +444,7 @@ function renderContinue() {
   } else if (dom.quickContinue) {
     dom.quickContinue.classList.add("is-disabled");
     dom.quickContinue.href = "#";
-    if (dom.bottomContinueLink) dom.bottomContinueLink.href = "./sessions/topic-research-report/";
+    if (dom.bottomContinueLink) dom.bottomContinueLink.href = tenantHref("sessions/topic-research-report/");
   }
   if (!dom.continueList) return;
   if (!items.length) {
@@ -436,7 +452,7 @@ function renderContinue() {
     return;
   }
   dom.continueList.innerHTML = items
-    .map(({ course, progress }) => `<a class="continue-item" href="./${escapeHtml(course.studentUrl)}" data-lesson-id="${escapeHtml(course.id)}"><strong>${escapeHtml(course.shortTitle || course.title)}</strong><span>${escapeHtml(progress.label)}</span><em>${progress.percent}%</em></a>`)
+    .map(({ course, progress }) => `<a class="continue-item" href="${escapeHtml(tenantHref(course.studentUrl))}" data-lesson-id="${escapeHtml(course.id)}"><strong>${escapeHtml(course.shortTitle || course.title)}</strong><span>${escapeHtml(progress.label)}</span><em>${progress.percent}%</em></a>`)
     .join("");
 }
 
@@ -459,6 +475,8 @@ function renderAllCourses() {
 }
 
 function renderAll() {
+  applyTenantBranding();
+  tenantApi?.applyTenantLinks?.();
   renderCategories();
   renderToday();
   renderContinue();

@@ -2086,6 +2086,10 @@ const LESSON_STORAGE_KEY = "selectedLessonId";
 let currentLessonId = getStoredLessonId();
 let lessonData = lessons[currentLessonId];
 
+if (window.LoreAXTenant?.guardCourseAccess?.(currentLessonId, { homeUrl: "../../index.html" })?.blocked) {
+  window.LoreAXPractice = { blocked: true };
+} else {
+
 const practiceSteps = [
   {
     title: "HeyGen 체험 + 합본 프롬프트 생성",
@@ -4270,6 +4274,7 @@ renderLessonSelector();
 initVideoSlots();
 renderLesson();
 applyMode(currentMode);
+window.LoreAXTenant?.applyTenantLinks?.();
 
 lessonSelect.addEventListener("change", () => {
   handleLessonSelectChange();
@@ -4764,4 +4769,5 @@ if ("serviceWorker" in navigator) {
       .then(() => console.log("Service Worker registered"))
       .catch((error) => console.warn("Service Worker registration failed:", error));
   });
+}
 }

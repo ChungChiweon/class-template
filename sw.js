@@ -1,4 +1,4 @@
-const CACHE_NAME = "loreax-class-erp-v60";
+const CACHE_NAME = "loreax-class-erp-v61";
 
 const CORE_ASSETS = [
   "./",
@@ -44,12 +44,15 @@ const CORE_ASSETS = [
   "./lib/loreax-supabase.js?v=9",
   "./lib/tenant-config.js",
   "./lib/tenant-config.js?v=tenant-usage-1",
+  "./lib/tenant-config.js?v=tenant-usage-2",
   "./lib/usage-tracker.js",
   "./lib/usage-tracker.js?v=tenant-usage-1",
+  "./lib/usage-tracker.js?v=tenant-usage-2",
   "./tenant-admin/usage.html",
   "./tenant-admin/usage.css",
   "./tenant-admin/usage.js",
   "./tenant-admin/usage.js?v=tenant-usage-1",
+  "./tenant-admin/usage.js?v=tenant-usage-2",
   "./sessions/ai-practice/index.html",
   "./sessions/ai-practice/styles.css",
   "./sessions/ai-practice/script.js",

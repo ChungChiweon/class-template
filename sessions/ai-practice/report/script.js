@@ -3,6 +3,10 @@ const LESSON_STORAGE_KEY = "selectedLessonId";
 const PRESENCE_STORAGE_PREFIX = "loreaxPresence:";
 const PRESENCE_DEVICE_KEY = "loreaxPresenceDeviceId";
 
+if (window.LoreAXTenant?.guardCourseAccess?.(getCurrentLessonId(), { homeUrl: "../../../index.html" })?.blocked) {
+  window.LoreAXReport = { blocked: true };
+} else {
+
 const LOREAX_CONTACT = {
   kakaoChannelUrl: "",
   kakaoChannelName: "LoreAX 수업지원",
@@ -659,6 +663,7 @@ dom.completeParentViewButton?.addEventListener("click", openParentView);
 
 applyParentMode();
 refreshPreview();
+window.LoreAXTenant?.applyTenantLinks?.();
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
@@ -676,3 +681,4 @@ window.LoreAXReport = {
   markPdfGenerated,
   getReportStorageKey,
 };
+}
