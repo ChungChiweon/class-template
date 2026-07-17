@@ -4554,6 +4554,7 @@ function saveReportData(data, statusText = "저장 완료") {
   try {
     window.localStorage.setItem(getReportStorageKey(), JSON.stringify(reportData));
     if (reportSaveStatus) reportSaveStatus.textContent = `${statusText} · ${new Date(reportData.metadata.updatedAt).toLocaleTimeString("ko-KR")}`;
+    window.LoreAXUsage?.trackActivitySave?.(currentLessonId, { source: "ai_practice_report_save" });
     scheduleReportServerSave(reportData);
   } catch {
     if (reportSaveStatus) reportSaveStatus.textContent = "로컬 저장 실패";
@@ -4757,6 +4758,7 @@ window.setInterval(sendPresenceHeartbeat, PRESENCE_HEARTBEAT_INTERVAL_MS);
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
+    window.LoreAXUsage?.trackCourseOpen?.(currentLessonId, { source: "ai_practice_page" });
     navigator.serviceWorker
       .register("../../sw.js")
       .then(() => console.log("Service Worker registered"))

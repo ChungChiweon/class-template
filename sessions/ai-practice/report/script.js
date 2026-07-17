@@ -596,6 +596,7 @@ async function generatePdf() {
 
   try {
     const blob = await html2pdf().set(options).from(dom.reportPreview).toPdf().outputPdf("blob");
+    window.LoreAXUsage?.trackPdfGenerate?.(getCurrentLessonId(), { filename });
     const url = URL.createObjectURL(blob);
     const downloadLink = document.createElement("a");
     downloadLink.href = url;
@@ -604,6 +605,7 @@ async function generatePdf() {
     document.body.appendChild(downloadLink);
     downloadLink.click();
     downloadLink.remove();
+    window.LoreAXUsage?.trackPdfDownload?.(getCurrentLessonId(), { source: "ai_practice_report_generate" });
     window.setTimeout(() => URL.revokeObjectURL(url), 30000);
     let uploadedUrl = "";
     if (window.LoreAXSupabase?.isEnabled?.()) {
@@ -617,6 +619,7 @@ async function generatePdf() {
       uploadedUrl = uploadResult.url || "";
     }
     const saved = markPdfGenerated(uploadedUrl);
+    window.LoreAXUsage?.trackReportSubmit?.(getCurrentLessonId(), { pdfUploaded: Boolean(uploadedUrl) });
     if (window.LoreAXSupabase?.isEnabled?.()) {
       await window.LoreAXSupabase.syncPresence(buildReportPresencePayload(saved, uploadedUrl));
     }
@@ -659,6 +662,7 @@ refreshPreview();
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
+    window.LoreAXUsage?.trackCourseOpen?.(getCurrentLessonId(), { source: "ai_practice_report_page" });
     navigator.serviceWorker.register("../../../sw.js").catch((error) => {
       console.warn("Service Worker registration failed:", error);
     });

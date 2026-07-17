@@ -1,4 +1,4 @@
-const CACHE_NAME = "loreax-class-erp-v59";
+const CACHE_NAME = "loreax-class-erp-v60";
 
 const CORE_ASSETS = [
   "./",
@@ -11,6 +11,7 @@ const CORE_ASSETS = [
   "./styles.css?v=course-portal-11",
   "./styles.css?v=course-portal-12",
   "./styles.css?v=course-portal-13",
+  "./styles.css?v=course-portal-14",
   "./script.js",
   "./script.js?v=landing-platform-1",
   "./script.js?v=course-portal-8",
@@ -19,6 +20,7 @@ const CORE_ASSETS = [
   "./script.js?v=course-portal-11",
   "./script.js?v=course-portal-12",
   "./script.js?v=course-portal-13",
+  "./script.js?v=course-portal-14",
   "./data-courses.js",
   "./data-courses.js?v=landing-platform-1",
   "./data-courses.js?v=course-portal-8",
@@ -40,6 +42,14 @@ const CORE_ASSETS = [
   "./lib/loreax-supabase.js?v=7",
   "./lib/loreax-supabase.js?v=8",
   "./lib/loreax-supabase.js?v=9",
+  "./lib/tenant-config.js",
+  "./lib/tenant-config.js?v=tenant-usage-1",
+  "./lib/usage-tracker.js",
+  "./lib/usage-tracker.js?v=tenant-usage-1",
+  "./tenant-admin/usage.html",
+  "./tenant-admin/usage.css",
+  "./tenant-admin/usage.js",
+  "./tenant-admin/usage.js?v=tenant-usage-1",
   "./sessions/ai-practice/index.html",
   "./sessions/ai-practice/styles.css",
   "./sessions/ai-practice/script.js",

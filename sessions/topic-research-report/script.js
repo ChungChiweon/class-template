@@ -588,6 +588,7 @@ function saveReportData(data) {
   } catch {
     showToast("저장 공간을 확인해 주세요.");
   }
+  window.LoreAXUsage?.trackActivitySave?.(LESSON_ID, { source: "topic_research_save" });
   return normalized;
 }
 
@@ -1540,14 +1541,22 @@ function validatePeriod1Generation(type, studentData) {
 }
 
 async function postReportAiHelp(task, studentData) {
-  const response = await fetch("/api/report-ai-help", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ task, studentData }),
-  });
-  const payload = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(payload.error || "AI 생성 요청에 실패했습니다.");
-  return payload;
+  const requestId = window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  window.LoreAXUsage?.trackAiGenerate?.(LESSON_ID, task, { requestId });
+  try {
+    const response = await fetch("/api/report-ai-help", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ task, studentData }),
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload.error || "AI 생성 요청에 실패했습니다.");
+    window.LoreAXUsage?.trackAiGenerateResult?.(LESSON_ID, true, { taskName: task, requestId });
+    return payload;
+  } catch (error) {
+    window.LoreAXUsage?.trackAiGenerateResult?.(LESSON_ID, false, { taskName: task, requestId, reason: String(error?.message || "").slice(0, 120) });
+    throw error;
+  }
 }
 
 function normalizeTopicCandidates(candidates) {
@@ -3117,6 +3126,7 @@ window.setInterval(sendPresenceHeartbeat, HEARTBEAT_INTERVAL_MS);
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
+    window.LoreAXUsage?.trackCourseOpen?.(LESSON_ID, { source: "topic_research_page" });
     navigator.serviceWorker.register("../../sw.js").catch(() => {});
   });
 }

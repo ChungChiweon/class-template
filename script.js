@@ -34,6 +34,7 @@ const data = {
   categories: Array.isArray(sourceData.categories) && sourceData.categories.length ? sourceData.categories : ALLOWED_CATEGORIES,
   courses: Array.isArray(sourceData.courses) ? sourceData.courses.map(normalizeCourse) : [],
 };
+const tenantApi = window.LoreAXTenant || null;
 
 let activeCategory = "전체";
 let visibleCount = PAGE_SIZE;
@@ -109,6 +110,7 @@ function normalizeCourse(course = {}) {
 }
 
 function getActiveCourses() {
+  if (tenantApi?.getTenantEnabledCourses) return tenantApi.getTenantEnabledCourses(data.courses);
   return data.courses.filter((course) => course.status === "active");
 }
 
@@ -495,7 +497,10 @@ dom.loadMoreButton?.addEventListener("click", () => {
 
 document.addEventListener("click", (event) => {
   const link = event.target.closest?.("[data-lesson-id]");
-  if (link) saveLessonId(link.dataset.lessonId);
+  if (link) {
+    saveLessonId(link.dataset.lessonId);
+    window.LoreAXUsage?.trackCourseOpen?.(link.dataset.lessonId, { source: "landing_link" });
+  }
   if (event.target.closest?.(".main-nav a")) {
     document.body.classList.remove("is-menu-open");
     dom.menuButton?.setAttribute("aria-expanded", "false");

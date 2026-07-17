@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>업체 사용량 확인 | LoreAX Class</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <link rel="stylesheet" href="./usage.css" />
+  </head>
+  <body>
+    <main class="usage-shell">
+      <header class="usage-hero">
+        <p class="eyebrow">Tenant Usage Console</p>
+        <h1>업체별 월간 사용량 확인</h1>
+        <p>이 화면은 운영 점검용 숨김 경로입니다. 실제 판매 전에는 로그인과 관리자 권한 보호가 필요합니다.</p>
+        <form id="usageForm" class="usage-form">
+          <label>업체 ID <input id="tenantInput" name="tenant" value="default" /></label>
+          <label>월 <input id="monthInput" name="month" type="month" /></label>
+          <button type="submit">조회</button>
+        </form>
+      </header>
+
+      <section class="summary-grid" aria-label="사용량 요약">
+        <article><span>요금제</span><strong id="planName">Starter</strong></article>
+        <article><span>포함 활성 학습자</span><strong id="includedLearners">50명</strong></article>
+        <article><span>실제 활성 학습자</span><strong id="activeLearners">0명</strong></article>
+        <article><span>초과 인원</span><strong id="overageLearners">0명</strong></article>
+        <article><span>AI 생성</span><strong id="aiGenerateCount">0회</strong></article>
+        <article><span>PDF 생성</span><strong id="pdfGenerateCount">0회</strong></article>
+        <article><span>보고서 제출</span><strong id="submittedReports">0건</strong></article>
+        <article><span>예상 총액</span><strong id="estimatedTotalFee">0원</strong></article>
+      </section>
+
+      <section class="billing-panel">
+        <h2>예상 이용료</h2>
+        <dl>
+          <div><dt>예상 기본료</dt><dd id="estimatedBaseFee">0원</dd></div>
+          <div><dt>예상 초과료</dt><dd id="estimatedOverageFee">0원</dd></div>
+          <div><dt>초과 단가</dt><dd id="overagePrice">0원</dd></div>
+        </dl>
+        <p>표시 금액은 결제 확정액이 아닌 사용량 기반 예상 이용료입니다. 초기 구축비와 별도 AI 이미지·영상 크레딧은 포함하지 않습니다.</p>
+      </section>
+
+      <section class="events-panel">
+        <div class="panel-head">
+          <h2>최근 사용 이벤트</h2>
+          <span id="loadStatus">조회 대기</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>시각</th>
+                <th>이벤트</th>
+                <th>수업</th>
+                <th>학생 익명 ID</th>
+                <th>수량</th>
+              </tr>
+            </thead>
+            <tbody id="eventTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    <script src="../lib/tenant-config.js?v=tenant-usage-1"></script>
+    <script src="./usage.js?v=tenant-usage-1"></script>
+  </body>
+</html>
