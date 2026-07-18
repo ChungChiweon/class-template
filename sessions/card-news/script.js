@@ -401,7 +401,57 @@
       ${field("copy", "cta", "\ud589\ub3d9 \uc720\ub3c4 \ubb38\uad6c")}
       <h3>Flux \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.fluxPrompt || "\uc544\uc9c1 \uc0dd\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.")}</div>
       <h3>GPT \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.gptPrompt || "\uc544\uc9c1 \uc0dd\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.")}</div>
-    </aside></div>`;
+    </aside></div>${promptTheoryView()}`;
+  }
+
+  function promptTheoryView() {
+    const items = [
+      {
+        title: "프롬프트는 AI에게 전달하는 설계 문서다",
+        body: [
+          "생성형 AI는 사용자가 준 맥락을 바탕으로 결과를 만듭니다. 그래서 짧게 “카드뉴스 만들어 줘”라고 쓰는 것보다, 필요한 정보와 조건을 구조화해서 전달해야 원하는 결과에 가까워집니다.",
+          "인간과 컴퓨터의 상호작용(Human Computer Interaction) 관점에서 프롬프트는 사람이 AI에게 의도, 조건, 제한사항을 설명하는 인터페이스입니다.",
+          "카드뉴스 제작에서는 주제, 대상, 목적, 핵심 메시지, 꼭 넣어야 할 사실을 먼저 정리해야 AI가 제목과 문구, 이미지 방향을 안정적으로 제안할 수 있습니다.",
+        ],
+        source: "Norman, D. A. (1988). The Design of Everyday Things.",
+      },
+      {
+        title: "좋은 프롬프트의 6가지 핵심 요소",
+        body: [
+          "역할(Persona)은 AI가 어떤 전문가처럼 답해야 하는지 정하는 요소입니다. 예를 들어 “너는 청소년 대상 카드뉴스 디자이너다”처럼 쓸 수 있습니다.",
+          "과업(Task)은 AI가 해야 할 일을 분명하게 적는 부분입니다. 카드뉴스에서는 제목 만들기, 짧은 설명 쓰기, 행동 유도 문구 제안하기처럼 구체적으로 나눕니다.",
+          "맥락(Context)은 주제와 배경 정보입니다. 행사명, 대상, 목적, 확인된 사실을 넣어야 AI가 임의로 내용을 만들 가능성이 줄어듭니다.",
+          "대상(Target Audience)은 누가 읽을지 정하는 요소입니다. 중학생, 학부모, 지역 주민처럼 대상이 달라지면 말투와 정보 수준도 달라집니다.",
+          "형식(Format)은 결과를 어떤 모양으로 받을지 정하는 요소입니다. 예를 들어 제목 1개, 보조 문구 1개, 본문 3줄, 행동 유도 문구 1개처럼 요청합니다.",
+          "스타일·어조(Tone & Style)는 밝게, 신뢰감 있게, 공식 안내처럼, 친근하게처럼 표현 분위기를 정하는 요소입니다.",
+        ],
+        source: "White, J. et al. (2023). A Prompt Pattern Catalog to Enhance Prompt Engineering with ChatGPT.",
+      },
+      {
+        title: "구조화된 프롬프트가 좋은 결과를 만드는 이유",
+        body: [
+          "프롬프트의 기본 흐름은 입력 요청(Prompt) → AI 모델(AI Model) → 결과(Output)로 볼 수 있습니다.",
+          "입력 요청이 흐릿하면 AI 결과도 흐릿해집니다. 반대로 역할, 과업, 맥락, 대상, 형식, 어조가 정리되어 있으면 AI가 무엇을 우선해야 하는지 더 잘 판단합니다.",
+          "구조화된 요청(Structured Prompting)은 AI에게 생각할 순서와 출력 형식을 알려 주는 방법입니다. 카드뉴스에서는 확인된 사실을 먼저 주고, 그다음 제목과 문구를 만들게 하는 방식이 안전합니다.",
+        ],
+        source: "Liu, P. et al. (2023). Pre-train, Prompt, and Predict. / OpenAI Prompt Engineering Guide.",
+      },
+      {
+        title: "AI 결과물은 검토와 수정이 필요하다",
+        body: [
+          "AI는 그럴듯한 문장을 만들 수 있지만, 실제 날짜, 장소, 비용, 신청 방법처럼 확인이 필요한 정보를 틀리게 쓸 수 있습니다.",
+          "따라서 생성 결과는 바로 제출하지 않고 생성 → 검토 → 수정 → 완성의 순서로 다뤄야 합니다.",
+          "이 수업의 입력 항목도 같은 흐름으로 연결됩니다. 1단계에서 확인된 사실을 정리하고, 2단계에서 프롬프트를 설계한 뒤, 3·4단계에서 결과물을 만들고 마지막에 사실과 표현을 다시 점검합니다.",
+        ],
+        source: "OpenAI Prompt Engineering Guide.",
+      },
+    ];
+    return `<details class="planning-theory-panel prompt-theory-panel" aria-label="AI 활용 원리와 프롬프트 엔지니어링 이론">
+      <summary class="planning-theory-title"><span aria-hidden="true">📘</span><h3>배우기 | AI 활용 원리와 프롬프트 설계</h3><i aria-hidden="true">›</i></summary>
+      <div class="planning-theory-list">${items.map(theoryAccordion).join("")}</div>
+      <div class="planning-checklist"><strong>프롬프트 설계 체크리스트</strong><ul><li>역할(Persona)</li><li>과업(Task)</li><li>맥락(Context)</li><li>대상(Target Audience)</li><li>형식(Format)</li><li>스타일·어조(Tone & Style)</li></ul></div>
+      <p class="theory-source">참고자료: Norman, D. A. (1988). / White, J. et al. (2023). / Liu, P. et al. (2023). / OpenAI Prompt Engineering Guide.</p>
+    </details>`;
   }
 
   function fluxView() {
