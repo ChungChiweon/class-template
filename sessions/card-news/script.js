@@ -914,6 +914,28 @@
     const canvas = document.querySelector("#cardCanvas");
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
+    if (project.flux.imageUrl) {
+      const image = new Image();
+      image.onload = () => {
+        ctx.clearRect(0, 0, 1080, 1080);
+        drawCoverImage(ctx, image, 1080, 1080);
+        drawTextLayers(ctx);
+        project.flux.finalImage = canvas.toDataURL("image/png");
+      };
+      image.onerror = () => {
+        drawFallbackBackground(ctx);
+        drawTextLayers(ctx);
+        project.flux.finalImage = canvas.toDataURL("image/png");
+      };
+      image.src = project.flux.imageUrl;
+      return;
+    }
+    drawFallbackBackground(ctx);
+    drawTextLayers(ctx);
+    project.flux.finalImage = canvas.toDataURL("image/png");
+  }
+
+  function drawFallbackBackground(ctx) {
     ctx.clearRect(0, 0, 1080, 1080);
     const gradient = ctx.createLinearGradient(0, 0, 1080, 1080);
     gradient.addColorStop(0, "#eaf3ff");
@@ -927,13 +949,24 @@
     ctx.fill();
     ctx.fillStyle = "#102a66";
     ctx.fillRect(0, 850, 1080, 230);
+  }
+
+  function drawCoverImage(ctx, image, targetWidth, targetHeight) {
+    const scale = Math.max(targetWidth / image.width, targetHeight / image.height);
+    const width = image.width * scale;
+    const height = image.height * scale;
+    const x = (targetWidth - width) / 2;
+    const y = (targetHeight - height) / 2;
+    ctx.drawImage(image, x, y, width, height);
+  }
+
+  function drawTextLayers(ctx) {
     project.flux.layers.forEach((layer) => {
       if (!layer.text) return;
       ctx.font = `900 ${layer.size}px Arial`;
       ctx.fillStyle = layer.color;
       wrap(ctx, layer.text, layer.x, layer.y, 820, layer.size * 1.25);
     });
-    project.flux.finalImage = canvas.toDataURL("image/png");
   }
 
   function wrap(ctx, text, x, y, max, lineHeight) {

@@ -113,7 +113,8 @@ function extractImageDataUrl(payload) {
   const image = String(candidates[0] || "").trim();
   if (!image) throw new Error("Flux image response did not include image data");
   if (image.startsWith("data:image/")) return image;
-  return `data:image/png;base64,${image}`;
+  const mime = image.startsWith("/9j/") ? "image/jpeg" : image.startsWith("iVBOR") ? "image/png" : "image/png";
+  return `data:${mime};base64,${image}`;
 }
 
 function buildFluxPrompt(planning = {}) {
