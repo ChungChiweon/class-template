@@ -125,6 +125,16 @@
       "planning": null
     }
   ];
+  const GIMPO_TOPIC_FIXES = {
+    "gimpo-culture-calendar": { label: "\uae40\ud3ec \ubb38\ud654\ud589\uc0ac", sourceLabel: "\uae40\ud3ec\uc2dc \ubb38\ud654\ud589\uc0ac\uc77c\uc815", description: "\uae40\ud3ec\uc2dc \ubb38\ud654\ud589\uc0ac \uc548\ub0b4", planning: { topic: "\uae40\ud3ec\uc2dc \ubb38\ud654\ud589\uc0ac \uc548\ub0b4", audience: "\uae40\ud3ec\uc2dc\uc758 \uc804\uc2dc\u00b7\uacf5\uc5f0\u00b7\ucd95\uc81c \uc815\ubcf4\ub97c \ucc3e\ub294 \uc2dc\ubbfc", purpose: "\uae40\ud3ec\uc2dc\uc5d0\uc11c \uc5f4\ub9ac\ub294 \ubb38\ud654\ud589\uc0ac\ub97c \uc54c\ub9ac\uace0 \ucc38\uc5ec\ub97c \uc720\ub3c4\ud55c\ub2e4.", message: "\uae40\ud3ec\uc5d0\uc11c \uc5f4\ub9ac\ub294 \ub2e4\uc591\ud55c \ubb38\ud654\ud589\uc0ac\ub97c \ud655\uc778\ud574 \ubcf4\uc138\uc694.", mood: "\ubb38\ud654\uc801\uc774\uace0 \ubc1d\uc73c\uba70 \uc815\ubcf4\uac00 \uba85\ud655\ud55c \ubd84\uc704\uae30", facts: "\ud589\uc0ac\uba85\n\ud589\uc0ac \ub0a0\uc9dc\uc640 \uc2dc\uac04\n\ud589\uc0ac \uc7a5\uc18c\n\ucc38\uc5ec \ub610\ub294 \uad00\ub78c \ubc29\ubc95", requiredFacts: ["\ud589\uc0ac\uba85", "\ud589\uc0ac \ub0a0\uc9dc\uc640 \uc2dc\uac04", "\ud589\uc0ac \uc7a5\uc18c", "\ucc38\uc5ec \ub610\ub294 \uad00\ub78c \ubc29\ubc95"] } },
+    "gimpo-art-program": { label: "\uae40\ud3ec \uc608\uc220\uccb4\ud5d8", sourceLabel: "\uae40\ud3ec\ubb38\ud654\uc7ac\ub2e8 \uad50\uc721\u00b7\uccb4\ud5d8", description: "\uae40\ud3ec\ubb38\ud654\uc7ac\ub2e8 \uc608\uc220\uad50\uc721\u00b7\uccb4\ud5d8 \ud504\ub85c\uadf8\ub7a8 \uc548\ub0b4", planning: { topic: "\uae40\ud3ec\ubb38\ud654\uc7ac\ub2e8 \uc608\uc220\uad50\uc721\u00b7\uccb4\ud5d8 \ud504\ub85c\uadf8\ub7a8 \uc548\ub0b4", audience: "\uae40\ud3ec\uc2dc\uc758 \ubb38\ud654\uc608\uc220 \uccb4\ud5d8\uc5d0 \uad00\uc2ec \uc788\ub294 \uc2dc\ubbfc\uacfc \uac00\uc871", purpose: "\uae40\ud3ec\ubb38\ud654\uc7ac\ub2e8\uc758 \uad50\uc721\u00b7\uccb4\ud5d8 \ud504\ub85c\uadf8\ub7a8\uc744 \uc18c\uac1c\ud558\uace0 \uc2e0\uccad\uc744 \uc720\ub3c4\ud55c\ub2e4.", message: "\uae40\ud3ec\uc5d0\uc11c \ub2e4\uc591\ud55c \ubb38\ud654\uc608\uc220 \ud504\ub85c\uadf8\ub7a8\uc744 \uc9c1\uc811 \uccb4\ud5d8\ud574 \ubcf4\uc138\uc694.", mood: "\ucc3d\uc758\uc801\uc774\uace0 \uce5c\uadfc\ud558\uba70 \uc990\uac70\uc6b4 \ubd84\uc704\uae30", facts: "\ud504\ub85c\uadf8\ub7a8\uba85\n\uc6b4\uc601 \uae30\uac04\n\uc6b4\uc601 \uc7a5\uc18c\n\ucc38\uc5ec \ub300\uc0c1\n\uc2e0\uccad \ubc29\ubc95", requiredFacts: ["\ud504\ub85c\uadf8\ub7a8\uba85", "\uc6b4\uc601 \uae30\uac04", "\uc6b4\uc601 \uc7a5\uc18c", "\ucc38\uc5ec \ub300\uc0c1", "\uc2e0\uccad \ubc29\ubc95"] } },
+    "gimpo-museum-event": { label: "\uae40\ud3ec \uc804\uc2dc\u00b7\ud589\uc0ac", sourceLabel: "\uae40\ud3ec\ubb38\ud654\uc7ac\ub2e8", description: "\uae40\ud3ec\ubb38\ud654\uc7ac\ub2e8 \uc804\uc2dc\u00b7\ud589\uc0ac \uc18c\uac1c", planning: { topic: "\uae40\ud3ec\ubb38\ud654\uc7ac\ub2e8 \uc804\uc2dc\u00b7\ud589\uc0ac \uc18c\uac1c", audience: "\uae40\ud3ec\uc2dc\uc758 \uc804\uc2dc\uc640 \uc9c0\uc5ed \ubb38\ud654\ud589\uc0ac\uc5d0 \uad00\uc2ec \uc788\ub294 \uc2dc\ubbfc", purpose: "\ud604\uc7ac \uc9c4\ud589\ub418\uac70\ub098 \uc608\uc815\ub41c \uae40\ud3ec\uc758 \uc804\uc2dc\u00b7\ud589\uc0ac\ub97c \uc54c\ub9b0\ub2e4.", message: "\uae40\ud3ec \uacf3\uacf3\uc5d0\uc11c \uc5f4\ub9ac\ub294 \uc804\uc2dc\uc640 \ubb38\ud654\ud589\uc0ac\ub97c \ub9cc\ub098\ubcf4\uc138\uc694.", mood: "\uc138\ub828\ub418\uace0 \ubb38\ud654\uc801\uc774\uba70 \uc2e0\ub8b0\uac10 \uc788\ub294 \ubd84\uc704\uae30", facts: "\uc804\uc2dc \ub610\ub294 \ud589\uc0ac\uba85\n\uc6b4\uc601 \uae30\uac04\n\uc6b4\uc601 \uc7a5\uc18c\n\uad00\ub78c \ub610\ub294 \ucc38\uc5ec \ubc29\ubc95", requiredFacts: ["\uc804\uc2dc \ub610\ub294 \ud589\uc0ac\uba85", "\uc6b4\uc601 \uae30\uac04", "\uc6b4\uc601 \uc7a5\uc18c", "\uad00\ub78c \ub610\ub294 \ucc38\uc5ec \ubc29\ubc95"] } },
+    "gimpo-performance": { label: "\uae40\ud3ec \uacf5\uc5f0", sourceLabel: "\uae40\ud3ec\ubb38\ud654\uc7ac\ub2e8 \uacf5\uc5f0 \uc548\ub0b4", description: "\uae40\ud3ec\uc544\ud2b8\ud640 \uacf5\uc5f0 \uc548\ub0b4", planning: { topic: "\uae40\ud3ec\uc544\ud2b8\ud640 \uacf5\uc5f0 \uc548\ub0b4", audience: "\uac00\uc871\uacfc \ud568\uaed8 \uacf5\uc5f0\uc744 \uad00\ub78c\ud558\ub824\ub294 \uae40\ud3ec \uc2dc\ubbfc", purpose: "\uae40\ud3ec\uc544\ud2b8\ud640 \uacf5\uc5f0 \uc815\ubcf4\ub97c \uc804\ub2ec\ud558\uace0 \uad00\ub78c\uc744 \uc720\ub3c4\ud55c\ub2e4.", message: "\uac00\uc871\uacfc \ud568\uaed8 \uae40\ud3ec\uc5d0\uc11c \uc990\uac70\uc6b4 \uacf5\uc5f0\uc744 \ub9cc\ub098\ubcf4\uc138\uc694.", mood: "\ubc1d\uace0 \uc990\uac70\uc6b0\uba70 \uac00\uc871 \uce5c\ud654\uc801\uc778 \ubd84\uc704\uae30", facts: "\uacf5\uc5f0\uba85\n\uacf5\uc5f0 \ub0a0\uc9dc\uc640 \uc2dc\uac04\n\uacf5\uc5f0 \uc7a5\uc18c\n\uad00\ub78c \uc5f0\ub839\n\uc608\ub9e4 \ubc29\ubc95", requiredFacts: ["\uacf5\uc5f0\uba85", "\uacf5\uc5f0 \ub0a0\uc9dc\uc640 \uc2dc\uac04", "\uacf5\uc5f0 \uc7a5\uc18c", "\uad00\ub78c \uc5f0\ub839", "\uc608\ub9e4 \ubc29\ubc95"] } },
+    "gimpo-reservation": { label: "\uae40\ud3ec \ubaa8\uc9d1\u00b7\uccb4\ud5d8", sourceLabel: "\uae40\ud3ec\uc2dc \ud1b5\ud569\uc608\uc57d", description: "\uae40\ud3ec\uc2dc \ubaa8\uc9d1\u00b7\uad50\uc721\u00b7\uccb4\ud5d8 \ud504\ub85c\uadf8\ub7a8 \uc548\ub0b4", planning: { topic: "\uae40\ud3ec\uc2dc \ubaa8\uc9d1\u00b7\uad50\uc721\u00b7\uccb4\ud5d8 \ud504\ub85c\uadf8\ub7a8 \uc548\ub0b4", audience: "\uae40\ud3ec\uc2dc\uc758 \uad50\uc721\uacfc \uccb4\ud5d8 \ud504\ub85c\uadf8\ub7a8\uc5d0 \ucc38\uc5ec\ud558\ub824\ub294 \uc2dc\ubbfc", purpose: "\uae40\ud3ec\uc2dc \ud1b5\ud569\uc608\uc57d\uc5d0\uc11c \uc2e0\uccad \uac00\ub2a5\ud55c \ud504\ub85c\uadf8\ub7a8\uc744 \uc18c\uac1c\ud558\uace0 \ucc38\uc5ec\ub97c \uc720\ub3c4\ud55c\ub2e4.", message: "\uae40\ud3ec\uc2dc\uc5d0\uc11c \uc6b4\uc601\ud558\ub294 \ub2e4\uc591\ud55c \uad50\uc721\uacfc \uccb4\ud5d8\uc5d0 \ucc38\uc5ec\ud574 \ubcf4\uc138\uc694.", mood: "\uacf5\uacf5 \uc548\ub0b4\uc5d0 \uc801\ud569\ud55c \uae54\ub054\ud558\uace0 \uc2e0\ub8b0\uac10 \uc788\ub294 \ubd84\uc704\uae30", facts: "\ud504\ub85c\uadf8\ub7a8\uba85\n\uc2e0\uccad \uae30\uac04\n\uc6b4\uc601 \uc77c\uc2dc\n\uc6b4\uc601 \uc7a5\uc18c\n\uc2e0\uccad \ub300\uc0c1\uacfc \ubc29\ubc95", requiredFacts: ["\ud504\ub85c\uadf8\ub7a8\uba85", "\uc2e0\uccad \uae30\uac04", "\uc6b4\uc601 \uc77c\uc2dc", "\uc6b4\uc601 \uc7a5\uc18c", "\uc2e0\uccad \ub300\uc0c1\uacfc \ubc29\ubc95"] } },
+    custom: { label: "\uc9c1\uc811 \uc8fc\uc81c \uc785\ub825", sourceLabel: "", description: "\uc9c1\uc811 \uc8fc\uc81c \uc785\ub825", planning: null },
+  };
+  GIMPO_TOPIC_EXAMPLES.forEach((example) => Object.assign(example, GIMPO_TOPIC_FIXES[example.id] || {}));
+
   const LABELS = {
     savedLocal: "\ub85c\uceec \uc800\uc7a5\ub428",
     savedServer: "\uc11c\ubc84 \uc800\uc7a5\ub428",
@@ -140,8 +150,8 @@
     projectId: "",
     currentStep: 0,
     planning: { selectedExampleId: "", sourceLabel: "", sourceUrl: "", topic: "", audience: "", purpose: "", message: "", coreMessage: "", facts: "", requiredFacts: [], mood: "" },
-    prompt: { role: "\ub274\uc2a4\uce74\ub4dc \ub514\uc790\uc774\ub108", task: "\uc815\uc0ac\uac01\ud615 \ub274\uc2a4\uce74\ub4dc 1\uc7a5 \uc81c\uc791", style: "\ud559\uc0dd\uc774 \uc77d\uae30 \uc26c\uc6b4 \uae54\ub054\ud55c \uc2a4\ud0c0\uc77c", rules: "\ud655\uc778\ud55c \uc0ac\uc2e4\ub9cc \uc0ac\uc6a9" },
-    copy: { title: "", subtitle: "", cta: "", fluxPrompt: "", gptPrompt: "" },
+    prompt: { generationMode: "flux", role: "\uce74\ub4dc\ub274\uc2a4 \uae30\ud68d\uc790", task: "\uc9c0\uc5ed \ud589\uc0ac \ud64d\ubcf4\uc6a9 \uc20f\ud3fc \uce74\ub4dc\ub274\uc2a4 \uc81c\uc791", audience: "", context: "", format: "9:16 \uc138\ub85c\ud615 \ubaa8\ubc14\uc77c \uce74\ub4dc\ub274\uc2a4", style: "\uce5c\uadfc\ud558\uace0 \ucc3d\uc758\uc801\uc778 \ud64d\ubcf4 \uc2a4\ud0c0\uc77c", rules: fluxRules() },
+    copy: { title: "", subtitle: "", cta: "", fluxPrompt: "", gptPrompt: "", negativePrompt: "", metaPrompt: "", generationMode: "flux" },
     flux: { used: false, imageUrl: "", finalImage: "", layers: [{ id: "title", text: "", x: 80, y: 120, size: 58, color: "#0f172a" }, { id: "subtitle", text: "", x: 80, y: 420, size: 36, color: "#1e293b" }, { id: "cta", text: "", x: 80, y: 820, size: 30, color: "#ffffff" }] },
     gpt: { used: false, imageUrl: "" },
     final: { selected: "", reflection: "", submittedAt: "" },
@@ -260,7 +270,7 @@
 
   function complete(index) {
     if (index === 0) return project.planning.topic && project.planning.audience && project.planning.purpose && project.planning.message;
-    if (index === 1) return project.copy.title && project.copy.fluxPrompt && project.copy.gptPrompt;
+    if (index === 1) return project.copy.title && (project.prompt.generationMode === "gpt_integrated" ? project.copy.gptPrompt : project.copy.fluxPrompt);
     if (index === 2) return project.flux.finalImage || project.flux.imageUrl;
     if (index === 3) return project.gpt.imageUrl;
     return project.final.selected && project.final.reflection;
@@ -390,18 +400,52 @@
   }
 
   function promptView() {
-    return `<div class="step-title"><div><span class="badge">2\ub2e8\uacc4</span><h2>\ud504\ub86c\ud504\ud2b8 \uc124\uacc4</h2></div><button id="generateCopy" class="primary-button" type="button">\ubb38\uad6c\uc640 \ud504\ub86c\ud504\ud2b8 \ub9cc\ub4e4\uae30</button></div>
+    ensurePromptDefaults();
+    const mode = project.prompt.generationMode || "flux";
+    return `<div class="step-title"><div><span class="badge">2\ub2e8\uacc4</span><h2>\ud504\ub86c\ud504\ud2b8 \uc124\uacc4</h2></div><button id="generateCopy" class="primary-button" type="button">\u2728 AI \ud504\ub86c\ud504\ud2b8 \uc0dd\uc131</button></div>
     <div class="layout"><section class="card field-grid">
-      <div class="field-grid two">${field("prompt", "role", "\uc5ed\ud560")}${field("prompt", "task", "\uc791\uc5c5")}</div>
-      ${field("prompt", "style", "\uc2dc\uac01 \uc2a4\ud0c0\uc77c")}
+      ${generationModeView(mode)}
+      <div class="prompt-rule-note">\uc0dd\uc131 \uaddc\uce59\uc740 \uc774\ubbf8\uc9c0 \uc0dd\uc131 AI\uac00 \uc9c0\ucf1c\uc57c \ud560 \uc870\uac74\uc774\uba70, \ub3d9\uc2dc\uc5d0 AI\uc5d0\uac8c \uc804\ub2ec\ud558\ub294 \ud504\ub86c\ud504\ud2b8 \uc124\uacc4 \uae30\uc900\uc785\ub2c8\ub2e4.</div>
+      <div class="field-grid two">${field("prompt", "role", "\uc5ed\ud560")}${field("prompt", "task", "\uacfc\uc5c5")}</div>
+      <div class="field-grid two">${field("prompt", "audience", "\ub300\uc0c1")}${field("prompt", "context", "\ub9e5\ub77d")}</div>
+      <div class="field-grid two">${field("prompt", "format", "\ud615\uc2dd")}${field("prompt", "style", "\uc2a4\ud0c0\uc77c")}</div>
       ${field("prompt", "rules", "\uc0dd\uc131 \uaddc\uce59", true)}
     </section><aside class="preview-card field-grid">
       ${field("copy", "title", "\uc81c\ubaa9")}
       ${field("copy", "subtitle", "\ubcf4\uc870 \ubb38\uad6c")}
       ${field("copy", "cta", "\ud589\ub3d9 \uc720\ub3c4 \ubb38\uad6c")}
-      <h3>Flux \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.fluxPrompt || "\uc544\uc9c1 \uc0dd\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.")}</div>
-      <h3>GPT \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.gptPrompt || "\uc544\uc9c1 \uc0dd\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.")}</div>
+      ${promptResultView(mode)}
+      <button id="copyPrompt" class="ghost-button" type="button">\ud504\ub86c\ud504\ud2b8 \ubcf5\uc0ac</button>
+      <p class="notice">API\uac00 \uc2e4\ud328\ud558\uba74 \uc704 \ubc84\ud2bc\uc73c\ub85c \ubcf5\uc0ac\ud55c \ub0b4\uc6a9\uc744 ChatGPT\ub098 Gemini\uc5d0 \ubd99\uc5ec\ub123\uc5b4 \uac19\uc740 \uc804\ubb38 \ud504\ub86c\ud504\ud2b8\ub97c \ub9cc\ub4e4 \uc218 \uc788\uc2b5\ub2c8\ub2e4.</p>
     </aside></div>${promptTheoryView()}`;
+  }
+
+  function generationModeView(mode) {
+    const activeFlux = mode === "flux" ? "is-active" : "";
+    const activeGpt = mode === "gpt_integrated" ? "is-active" : "";
+    return `<section class="generation-mode-panel" aria-label="AI \uc81c\uc791 \ubc29\uc2dd \uc120\ud0dd">
+      <h3>AI \uc81c\uc791 \ubc29\uc2dd \uc120\ud0dd</h3>
+      <div class="generation-mode-grid">
+        <button class="generation-mode-card ${activeFlux}" data-generation-mode="flux" type="button">
+          <strong>Flux \uc774\ubbf8\uc9c0 \uc0dd\uc131 + \ud14d\uc2a4\ud2b8 \uc624\ubc84\ub808\uc774</strong>
+          <span>AI\ub294 \ubc30\uacbd \uc774\ubbf8\uc9c0\uc640 \uc2dc\uac01 \uc694\uc18c\ub97c \uc81c\uc791\ud558\uace0, \ud14d\uc2a4\ud2b8\ub294 \uc774\ud6c4 \ud3b8\uc9d1 \ub2e8\uacc4\uc5d0\uc11c \uc0ac\ub78c\uc774 \ucd94\uac00\ud569\ub2c8\ub2e4.</span>
+          <em>\uc774\ubbf8\uc9c0 \ud488\uc9c8 \uc911\uc2ec \u00b7 \ud55c\uae00 \ud14d\uc2a4\ud2b8 \uc624\ub958 \uac10\uc18c \u00b7 \uc9c1\uc811 \ud3b8\uc9d1 \uac00\ub2a5</em>
+        </button>
+        <button class="generation-mode-card ${activeGpt}" data-generation-mode="gpt_integrated" type="button">
+          <strong>GPT \ud1b5\ud569 \uce74\ub4dc \uc81c\uc791</strong>
+          <span>AI\uac00 \uc774\ubbf8\uc9c0\uc640 \ud14d\uc2a4\ud2b8\uac00 \ud3ec\ud568\ub41c \uc644\uc131\ud615 \uce74\ub4dc\ub274\uc2a4\ub97c \uc81c\uc791\ud569\ub2c8\ub2e4.</span>
+          <em>\ube60\ub978 \uc644\uc131\ud615 \uc81c\uc791 \u00b7 \uc544\uc774\ub514\uc5b4 \ud655\uc778 \uc6a9\uc774 \u00b7 \ud14d\uc2a4\ud2b8 \ubc30\uce58\uae4c\uc9c0 AI \uc218\ud589</em>
+        </button>
+      </div>
+    </section>`;
+  }
+
+  function promptResultView(mode) {
+    if (mode === "gpt_integrated") {
+      return `<h3>GPT \ud1b5\ud569 \uc81c\uc791\uc6a9 \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.gptPrompt || "\uc544\uc9c1 \uc0dd\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.")}</div>`;
+    }
+    return `<h3>Flux \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.fluxPrompt || "\uc544\uc9c1 \uc0dd\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.")}</div>
+      <h3>Negative Prompt</h3><div class="prompt-box">${esc(project.copy.negativePrompt || "no text,\nno letters,\nno numbers,\nno logo,\nno watermark")}</div>`;
   }
 
   function promptTheoryView() {
@@ -589,7 +633,9 @@
       debounceSave();
     }));
     dom.main.querySelectorAll("[data-example-select]").forEach((button) => button.addEventListener("click", () => selectTopicExample(button.dataset.exampleSelect)));
+    dom.main.querySelectorAll("[data-generation-mode]").forEach((button) => button.addEventListener("click", () => setGenerationMode(button.dataset.generationMode)));
     dom.main.querySelector("#generateCopy")?.addEventListener("click", generateCopy);
+    dom.main.querySelector("#copyPrompt")?.addEventListener("click", copyGeneratedPrompt);
     dom.main.querySelector("#resetProject")?.addEventListener("click", resetProject);
     dom.main.querySelector("#generateFlux")?.addEventListener("click", generateFlux);
     dom.main.querySelector("#generateGpt")?.addEventListener("click", generateGpt);
@@ -612,12 +658,27 @@
   }
 
   async function generateCopy() {
-    const data = await post("/api/card-news/generate-copy", { ...project, planning: project.planning, promptDesign: project.prompt });
+    ensurePromptDefaults();
+    const button = dom.main.querySelector("#generateCopy");
+    if (button) button.disabled = true;
+    const data = await post("/api/card-news/generate-copy", { ...project, planning: project.planning, promptDesign: project.prompt, generationMode: project.prompt.generationMode });
+    if (button) button.disabled = false;
     if (!data) return;
     project.copy = { ...project.copy, ...data.copy };
     loadCopy();
     save();
     render();
+  }
+
+  async function copyGeneratedPrompt() {
+    ensurePromptDefaults();
+    const text = project.copy.metaPrompt || buildStandalonePromptRequest();
+    try {
+      await navigator.clipboard.writeText(text);
+      dom.saveStatus.textContent = "\ud504\ub86c\ud504\ud2b8\ub97c \ubcf5\uc0ac\ud588\uc2b5\ub2c8\ub2e4.";
+    } catch {
+      alert(text);
+    }
   }
 
   async function generateFlux() {
@@ -669,6 +730,34 @@
     render();
   }
 
+  function fluxRules() {
+    return "\ud655\uc778\ub41c \uc815\ubcf4\ub9cc \uc0ac\uc6a9\ud55c\ub2e4.\n\uc774\ubbf8\uc9c0 \uc548\uc5d0\ub294 \uae00\uc790, \uc22b\uc790, \ub85c\uace0\ub97c \ub123\uc9c0 \uc54a\ub294\ub2e4.\n\ucd5c\uc885 \ubb38\uad6c\ub97c \ucd94\uac00\ud560 \uc218 \uc788\ub3c4\ub85d \ucda9\ubd84\ud55c \ube48 \uacf5\uac04\uc744 \ud655\ubcf4\ud55c\ub2e4.\n9:16 \uc138\ub85c\ud615 \ubaa8\ubc14\uc77c \uce74\ub4dc\ub274\uc2a4 \uad6c\ub3c4\ub97c \uc720\uc9c0\ud55c\ub2e4.\n\ud575\uc2ec \uc774\ubbf8\uc9c0\ub294 \uc911\uc559 \uc548\uc804 \uc601\uc5ed\uc5d0 \ubc30\uce58\ud55c\ub2e4.\n\ubcf5\uc7a1\ud55c \ubc30\uacbd\ubcf4\ub2e4 \ud14d\uc2a4\ud2b8\uac00 \uc798 \ubcf4\uc774\ub294 \uad6c\uc131\uc744 \uc6b0\uc120\ud55c\ub2e4.";
+  }
+
+  function gptIntegratedRules() {
+    return "\ud655\uc778\ub41c \uc815\ubcf4\ub9cc \uc0ac\uc6a9\ud55c\ub2e4.\n\uc774\ubbf8\uc9c0\uc640 \ud14d\uc2a4\ud2b8\uac00 \ud3ec\ud568\ub41c \uc644\uc131\ud615 \uce74\ub4dc\ub274\uc2a4\ub97c \uc81c\uc791\ud55c\ub2e4.\n9:16 \ubaa8\ubc14\uc77c \ud654\uba74 \uae30\uc900\uc73c\ub85c \uad6c\uc131\ud55c\ub2e4.\n\uc81c\ubaa9, \uc124\uba85, \ud589\ub3d9 \uc720\ub3c4 \ubb38\uad6c\uc758 \uc815\ubcf4 \uc704\uacc4\ub97c \uba85\ud655\ud788 \ud55c\ub2e4.\n\ud55c\uad6d\uc5b4 \ud14d\uc2a4\ud2b8\uac00 \uc77d\uae30 \uc27d\uac8c \ud45c\ud604\ub418\ub3c4\ub85d \ud55c\ub2e4.\n\uacfc\uc7a5\ub418\uac70\ub098 \uc874\uc7ac\ud558\uc9c0 \uc54a\ub294 \uc815\ubcf4\ub294 \uc0dd\uc131\ud558\uc9c0 \uc54a\ub294\ub2e4.";
+  }
+
+  function ensurePromptDefaults() {
+    project.prompt.generationMode = project.prompt.generationMode || project.copy.generationMode || "flux";
+    project.prompt.role = project.prompt.role || "\uce74\ub4dc\ub274\uc2a4 \uae30\ud68d\uc790";
+    project.prompt.task = project.prompt.task || "\uc9c0\uc5ed \ud589\uc0ac \ud64d\ubcf4\uc6a9 \uc20f\ud3fc \uce74\ub4dc\ub274\uc2a4 \uc81c\uc791";
+    project.prompt.audience = project.prompt.audience || project.planning.audience || "";
+    project.prompt.context = project.prompt.context || project.planning.purpose || "";
+    project.prompt.format = project.prompt.format || "9:16 \uc138\ub85c\ud615 \ubaa8\ubc14\uc77c \uce74\ub4dc\ub274\uc2a4";
+    project.prompt.style = project.prompt.style || project.planning.mood || "\uce5c\uadfc\ud558\uace0 \ucc3d\uc758\uc801\uc778 \ud64d\ubcf4 \uc2a4\ud0c0\uc77c";
+    project.prompt.rules = project.prompt.rules || (project.prompt.generationMode === "gpt_integrated" ? gptIntegratedRules() : fluxRules());
+    project.copy.generationMode = project.copy.generationMode || project.prompt.generationMode;
+  }
+
+  function setGenerationMode(mode) {
+    project.prompt.generationMode = mode === "gpt_integrated" ? "gpt_integrated" : "flux";
+    project.copy.generationMode = project.prompt.generationMode;
+    project.prompt.rules = project.prompt.generationMode === "gpt_integrated" ? gptIntegratedRules() : fluxRules();
+    save(false);
+    render();
+  }
+
   function resetProject() {
     localStorage.removeItem(storageKey());
     localStorage.removeItem(legacyStorageKey());
@@ -679,8 +768,42 @@
     render();
   }
 
+  function buildStandalonePromptRequest() {
+    ensurePromptDefaults();
+    const mode = project.prompt.generationMode === "gpt_integrated" ? "GPT \ud1b5\ud569 \uce74\ub4dc \uc81c\uc791" : "Flux \uc774\ubbf8\uc9c0 \uc0dd\uc131 + \ud14d\uc2a4\ud2b8 \uc624\ubc84\ub808\uc774";
+    const modeInstruction = project.prompt.generationMode === "gpt_integrated"
+      ? "\uc644\uc131\ud615 \uce74\ub4dc\ub274\uc2a4\ub97c \uc704\ud55c IMAGE PROMPT\ub97c \uc791\uc131\ud574 \uc918. \uc81c\ubaa9 \uc704\uce58, \ubcf8\ubb38 \uc704\uce58, CTA \uc704\uce58, \ud14d\uc2a4\ud2b8 \uc704\uacc4, \ubaa8\ubc14\uc77c \uac00\ub3c5\uc131, \ud55c\uad6d\uc5b4 \ud14d\uc2a4\ud2b8 \ud3ec\ud568 \uc870\uac74\uc744 \ubc18\uc601\ud574 \uc918."
+      : "\ud14d\uc2a4\ud2b8 \uc5c6\ub294 Flux \uc774\ubbf8\uc9c0\ub97c \uc704\ud55c IMAGE PROMPT\uc640 NEGATIVE PROMPT\ub97c \uc791\uc131\ud574 \uc918. 9:16 vertical composition, clear empty space for text overlay, no text, no letters, no numbers, no logo, no watermark \uc870\uac74\uc744 \ubc18\ub4dc\uc2dc \ubc18\uc601\ud574 \uc918.";
+    return [
+      "\ub108\ub294 AI \uc774\ubbf8\uc9c0 \uc0dd\uc131 \ud504\ub86c\ud504\ud2b8 \uc124\uacc4 \uc804\ubb38\uac00\uc774\uba70, \uc20f\ud3fc \ucf58\ud150\uce20\uc640 \uce74\ub4dc\ub274\uc2a4 \uc81c\uc791 \uc804\ubb38\uac00\uc774\ub2e4.",
+      "",
+      `\uc81c\uc791 \ubc29\uc2dd: ${mode}`,
+      `\uc5ed\ud560: ${project.prompt.role}`,
+      `\uacfc\uc5c5: ${project.prompt.task}`,
+      `\ub300\uc0c1: ${project.prompt.audience || project.planning.audience}`,
+      `\ub9e5\ub77d: ${project.prompt.context || project.planning.purpose}`,
+      `\ud615\uc2dd: ${project.prompt.format}`,
+      `\uc2a4\ud0c0\uc77c: ${project.prompt.style || project.planning.mood}`,
+      "",
+      "\uc218\uc5c5 \uae30\ud68d \uc815\ubcf4:",
+      `\uc8fc\uc81c: ${project.planning.topic}`,
+      `\ubaa9\uc801: ${project.planning.purpose}`,
+      `\ud575\uc2ec \uba54\uc2dc\uc9c0: ${project.planning.message}`,
+      `\ud655\uc778\ub41c \uc0ac\uc2e4: ${project.planning.facts}`,
+      project.planning.sourceLabel ? `\uacf5\uc2dd \ucd9c\ucc98: ${project.planning.sourceLabel}` : "",
+      project.planning.sourceUrl ? `\uacf5\uc2dd \ub9c1\ud06c: ${project.planning.sourceUrl}` : "",
+      "",
+      "\uc0dd\uc131 \uaddc\uce59:",
+      project.prompt.rules,
+      "",
+      "\uc694\uccad:",
+      modeInstruction,
+      "\ud655\uc778\ub418\uc9c0 \uc54a\uc740 \ub0a0\uc9dc, \uc7a5\uc18c, \ube44\uc6a9, \uc2e0\uccad \ubc29\ubc95, \ub85c\uace0, \uc0ac\uc2e4\uc740 \uc784\uc758\ub85c \ub9cc\ub4e4\uc9c0 \ub9c8.",
+    ].filter(Boolean).join("\n");
+  }
+
   function buildGptPrompt() {
-    return `Make one 1080x1080 news card. Title: ${project.copy.title}. Subtitle: ${project.copy.subtitle}. CTA: ${project.copy.cta}. Use only these facts: ${project.planning.facts}.`;
+    return project.copy.gptPrompt || `Make one 1080x1080 news card. Title: ${project.copy.title}. Subtitle: ${project.copy.subtitle}. CTA: ${project.copy.cta}. Use only these facts: ${project.planning.facts}.`;
   }
 
   function summary() {
