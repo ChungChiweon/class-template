@@ -696,7 +696,7 @@
     if (!project.gpt.imageUrl) {
       return `<aside class="preview-card gpt-result-card"><h3>GPT \uc0dd\uc131 \uacb0\uacfc</h3><div class="preview-box">\uc544\uc9c1 \uc0dd\uc131\ub41c \uc774\ubbf8\uc9c0\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.<br>\"\uc774\ubbf8\uc9c0 \uc0dd\uc131\ud558\uae30\"\ub97c \ub204\ub974\uba74 \uc774 \uc601\uc5ed\uc5d0 \uacb0\uacfc\uac00 \ud45c\uc2dc\ub429\ub2c8\ub2e4.</div></aside>`;
     }
-    return `<aside class="preview-card gpt-result-card is-ready"><div class="result-heading"><div><span class="badge">GPT \uacb0\uacfc</span><h3>\uc0dd\uc131\ub41c \uce74\ub4dc\ub274\uc2a4 \uc774\ubbf8\uc9c0</h3></div><button id="downloadGpt" class="ghost-button" type="button">PNG \ub2e4\uc6b4\ub85c\ub4dc</button></div><div class="gpt-canvas-wrap"><canvas id="gptCanvas" width="1080" height="1920"></canvas></div><p class="notice">GPT\ub294 \ubc30\uacbd \uc774\ubbf8\uc9c0\ub97c \uc0dd\uc131\ud558\uace0, \ud55c\uae00 \ubb38\uad6c\ub294 \uc774 \ud654\uba74\uc5d0\uc11c \uc77d\uae30 \uc27d\uac8c \uc62c\ub824 \ud45c\uc2dc\ud569\ub2c8\ub2e4.</p></aside>`;
+    return `<aside class="preview-card gpt-result-card is-ready"><div class="result-heading"><div><span class="badge">GPT \uacb0\uacfc</span><h3>\uc0dd\uc131\ub41c \uc774\ubbf8\uc9c0</h3></div><button id="downloadGpt" class="ghost-button" type="button">PNG \ub2e4\uc6b4\ub85c\ub4dc</button></div><div class="gpt-canvas-wrap"><canvas id="gptCanvas" width="1080" height="1920"></canvas></div><p class="notice">GPT \uc774\ubbf8\uc9c0 \uc0dd\uc131 \uacb0\uacfc\ub9cc \ud45c\uc2dc\ud569\ub2c8\ub2e4. \uae00\uc790 \ub808\uc774\uc5b4 \ud3b8\uc9d1\uc740 3\ub2e8\uacc4 Flux \ubc29\uc2dd\uc5d0\uc11c\ub9cc \uc0ac\uc6a9\ud569\ub2c8\ub2e4.</p></aside>`;
   }
 
   function gptStatusView() {
@@ -1193,26 +1193,22 @@
     const canvas = document.querySelector("#gptCanvas");
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
-    const drawOverlay = () => {
-      drawReadableOverlay(ctx);
-      project.gpt.finalImage = canvas.toDataURL("image/png");
-    };
     if (project.gpt.imageUrl) {
       const image = new Image();
       image.onload = () => {
         ctx.clearRect(0, 0, 1080, 1920);
         drawCoverImage(ctx, image, 1080, 1920);
-        drawOverlay();
+        project.gpt.finalImage = canvas.toDataURL("image/png");
       };
       image.onerror = () => {
         drawGptFallback(ctx);
-        drawOverlay();
+        project.gpt.finalImage = canvas.toDataURL("image/png");
       };
       image.src = project.gpt.imageUrl;
       return;
     }
     drawGptFallback(ctx);
-    drawOverlay();
+    project.gpt.finalImage = canvas.toDataURL("image/png");
   }
 
   function drawGptFallback(ctx) {
