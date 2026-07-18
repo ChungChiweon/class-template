@@ -799,6 +799,43 @@ textarea {
   background: #eef3fb;
 }
 
+.gpt-result-card {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+}
+
+.gpt-result-card .preview-box {
+  min-height: 360px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  color: var(--muted);
+  font-weight: 800;
+  line-height: 1.7;
+}
+
+.result-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.result-heading h3 {
+  margin: 8px 0 0;
+}
+
+.result-image {
+  width: min(100%, 360px);
+  justify-self: center;
+  aspect-ratio: 2 / 3;
+  object-fit: contain;
+  border-radius: 18px;
+  background: #eef3fb;
+  box-shadow: 0 14px 40px rgba(15, 35, 70, 0.16);
+}
+
 .bottom-bar {
   position: fixed;
   right: 0;

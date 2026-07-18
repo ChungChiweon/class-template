@@ -654,7 +654,14 @@
   function gptView() {
     const generateLabel = project.gpt.used ? "\uc774\ubbf8\uc9c0 \uc0dd\uc131 \uc644\ub8cc" : project.gpt.status === "loading" ? "\uc774\ubbf8\uc9c0 \uc0dd\uc131 \uc911..." : "\uc774\ubbf8\uc9c0 \uc0dd\uc131\ud558\uae30";
     return `<div class="step-title"><div><span class="badge">4\ub2e8\uacc4</span><h2>GPT \uc774\ubbf8\uc9c0 \uc0dd\uc131</h2></div><button id="generateGpt" class="primary-button" ${project.gpt.used || project.gpt.status === "loading" ? "disabled" : ""} type="button">${generateLabel}</button></div>
-    <div class="layout"><section class="card">${gptStatusView()}<h3>\ud655\uc815\ub41c \uae30\ud68d</h3><div class="preview-box">${esc(summary())}</div><h3>GPT \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.gptPrompt || buildGptPrompt())}</div></section><aside class="preview-card">${project.gpt.imageUrl ? `<img class="result-image" src="${esc(project.gpt.imageUrl)}" alt="GPT \uc0dd\uc131 \uacb0\uacfc" />` : `<div class="preview-box">\uc544\uc9c1 \uacb0\uacfc\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.</div>`}</aside></div>`;
+    <div class="layout"><section class="card">${gptStatusView()}<h3>\ud655\uc815\ub41c \uae30\ud68d</h3><div class="preview-box">${esc(summary())}</div><h3>GPT \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.gptPrompt || buildGptPrompt())}</div></section>${gptResultView()}</div>`;
+  }
+
+  function gptResultView() {
+    if (!project.gpt.imageUrl) {
+      return `<aside class="preview-card gpt-result-card"><h3>GPT \uc0dd\uc131 \uacb0\uacfc</h3><div class="preview-box">\uc544\uc9c1 \uc0dd\uc131\ub41c \uc774\ubbf8\uc9c0\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.<br>\"\uc774\ubbf8\uc9c0 \uc0dd\uc131\ud558\uae30\"\ub97c \ub204\ub974\uba74 \uc774 \uc601\uc5ed\uc5d0 \uacb0\uacfc\uac00 \ud45c\uc2dc\ub429\ub2c8\ub2e4.</div></aside>`;
+    }
+    return `<aside class="preview-card gpt-result-card is-ready"><div class="result-heading"><div><span class="badge">GPT \uacb0\uacfc</span><h3>\uc0dd\uc131\ub41c \uce74\ub4dc\ub274\uc2a4 \uc774\ubbf8\uc9c0</h3></div><button id="downloadGpt" class="ghost-button" type="button">PNG \ub2e4\uc6b4\ub85c\ub4dc</button></div><img class="result-image" src="${esc(project.gpt.imageUrl)}" alt="GPT \uc0dd\uc131 \uacb0\uacfc" /><p class="notice">\uc774 \uc774\ubbf8\uc9c0\ub294 5\ub2e8\uacc4\uc5d0\uc11c Flux \uacb0\uacfc\uc640 \ube44\uad50\ud574 \ucd5c\uc885 \uc120\ud0dd\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.</p></aside>`;
   }
 
   function gptStatusView() {
@@ -699,6 +706,7 @@
     dom.main.querySelector("#loadCopy")?.addEventListener("click", loadCopy);
     dom.main.querySelector("#resetLayout")?.addEventListener("click", resetLayout);
     dom.main.querySelector("#downloadFlux")?.addEventListener("click", () => download(project.flux.finalImage || canvasData(), "flux-card-news.png"));
+    dom.main.querySelector("#downloadGpt")?.addEventListener("click", () => download(project.gpt.imageUrl, "gpt-card-news.png"));
     dom.main.querySelector("#downloadFinal")?.addEventListener("click", downloadFinal);
     dom.main.querySelector("#submitProject")?.addEventListener("click", submit);
     dom.main.querySelectorAll("[data-select]").forEach((button) => button.addEventListener("click", () => {
