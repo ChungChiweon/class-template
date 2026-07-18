@@ -629,7 +629,7 @@
   }
 
   function fluxView() {
-    return `<div class="step-title"><div><span class="badge">3\ub2e8\uacc4</span><h2>\ubc30\uacbd \uc0dd\uc131+\uae00 \ubc30\uce58</h2></div><div class="button-row"><button id="generateFlux" class="primary-button" ${project.flux.used ? "disabled" : ""} type="button">\uae00\uc790 \uc5c6\ub294 \ubc30\uacbd \uc0dd\uc131</button><button id="downloadFlux" class="ghost-button" type="button">PNG \ub2e4\uc6b4\ub85c\ub4dc</button></div></div>
+    return `<div class="step-title"><div><span class="badge">3\ub2e8\uacc4</span><h2>\uc774\ubbf8\uc9c0 \uc0dd\uc131+\uae00 \ubc30\uce58</h2></div><div class="button-row"><button id="generateFlux" class="primary-button" ${project.flux.used ? "disabled" : ""} type="button">\uc774\ubbf8\uc9c0 \uc0dd\uc131\ud558\uae30</button><button id="downloadFlux" class="ghost-button" type="button">PNG \ub2e4\uc6b4\ub85c\ub4dc</button></div></div>
     <div class="canvas-workspace"><div class="canvas-wrap"><canvas id="cardCanvas" width="1080" height="1080"></canvas></div><aside class="card"><p class="notice">\uc774 \ubc29\uc2dd\uc740 \uae00\uc790 \uc5c6\ub294 \ubc30\uacbd\uc744 \uba3c\uc800 \ub9cc\ub4e0 \ub4a4, \ud3b8\uc9d1 \uac00\ub2a5\ud55c \ubb38\uad6c\ub97c \uc62c\ub824 \uc644\uc131\ud569\ub2c8\ub2e4.</p><div class="layer-list">${project.flux.layers.map(layerView).join("")}</div><div class="button-row"><button id="loadCopy" class="ghost-button" type="button">\ubb38\uad6c \ubd88\ub7ec\uc624\uae30</button><button id="resetLayout" class="ghost-button" type="button">\ub808\uc774\uc544\uc6c3 \ucd08\uae30\ud654</button></div></aside></div>`;
   }
 
@@ -727,9 +727,21 @@
 
   async function generateFlux() {
     if (project.flux.used) return;
+    const button = dom.main.querySelector("#generateFlux");
+    if (button) {
+      button.disabled = true;
+      button.textContent = "\uc774\ubbf8\uc9c0 \uc0dd\uc131 \uc911...";
+    }
     window.LoreAXUsage?.trackAiGenerate?.(COURSE_ID, "flux_generation", { provider: "flux" });
     const data = await post("/api/card-news/generate-flux", { ...project, planning: project.planning, prompt: project.copy.fluxPrompt, idempotencyKey: `${project.projectId}:flux_generation` });
-    if (!data) return window.LoreAXUsage?.trackAiGenerateResult?.(COURSE_ID, false, { provider: "flux" });
+    if (!data) {
+      window.LoreAXUsage?.trackAiGenerateResult?.(COURSE_ID, false, { provider: "flux" });
+      if (button) {
+        button.disabled = false;
+        button.textContent = "\uc774\ubbf8\uc9c0 \uc0dd\uc131\ud558\uae30";
+      }
+      return;
+    }
     project.flux.imageUrl = data.imageUrl;
     project.flux.used = true;
     window.LoreAXUsage?.trackAiGenerateResult?.(COURSE_ID, true, { provider: "flux" });
