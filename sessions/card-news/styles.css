@@ -755,8 +755,8 @@ textarea {
 }
 
 #cardCanvas {
-  width: min(100%, 520px);
-  aspect-ratio: 1 / 1;
+  width: min(100%, 360px);
+  aspect-ratio: 9 / 16;
   border-radius: 18px;
   background: #fff;
   box-shadow: 0 14px 40px rgba(15, 35, 70, 0.18);
