@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI News Card Project | LoreAX Class</title>
+    <meta name="description" content="Create one AI news card in a 90 minute class." />
+    <link rel="manifest" href="../../manifest.json" />
+    <link rel="icon" href="../../assets/icons/icon-192.png" />
+    <link rel="stylesheet" href="./styles.css?v=card-news-1" />
+  </head>
+  <body>
+    <main class="cardnews-app">
+      <header class="app-header">
+        <a class="back-link" href="../../index.html">Back to class portal</a>
+        <div class="hero">
+          <div>
+            <p class="eyebrow">90 minute class project</p>
+            <h1>AI News Card Maker</h1>
+            <p>Plan one message, design prompts, try a Flux-style background workflow and a GPT integrated card workflow, then submit one final PNG.</p>
+          </div>
+          <div class="status-card">
+            <span id="saveStatus">Local save ready</span>
+            <strong id="stepStatus">1 / 5 steps</strong>
+            <small>Flux 1 use · GPT 1 use</small>
+          </div>
+        </div>
+        <nav id="stepper" class="stepper" aria-label="News card project steps"></nav>
+      </header>
+      <section id="mainStep" class="step-panel" aria-live="polite"></section>
+      <footer class="bottom-bar">
+        <button id="prevButton" class="ghost-button" type="button">Previous</button>
+        <button id="saveButton" class="ghost-button" type="button">Save draft</button>
+        <button id="nextButton" class="primary-button" type="button">Save and continue</button>
+      </footer>
+    </main>
+    <script src="../../lib/tenant-config.js?v=tenant-usage-2"></script>
+    <script src="../../lib/usage-tracker.js?v=tenant-usage-2"></script>
+    <script src="./script.js?v=card-news-2"></script>
+  </body>
+</html>
