@@ -1032,7 +1032,7 @@ dd small {
   min-height: 108px;
   background:
     linear-gradient(135deg, rgba(17, 27, 43, 0.88), rgba(47, 58, 72, 0.86)),
-    url("../../assets/hotel-ai-video-class-hero.png") center / cover;
+    url("../../assets/hero/portal-learning.webp") center / cover;
 }
 
 .scene-result-empty span {
@@ -1835,7 +1835,7 @@ textarea:focus {
   aspect-ratio: 16 / 9;
   background:
     linear-gradient(135deg, rgba(17, 27, 43, 0.92), rgba(47, 58, 72, 0.88)),
-    url("../../assets/hotel-ai-video-class-hero.png") center / cover;
+    url("../../assets/hero/portal-learning.webp") center / cover;
 }
 
 .video-frame video {

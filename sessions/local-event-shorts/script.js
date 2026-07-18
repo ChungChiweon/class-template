@@ -525,7 +525,7 @@ function createSamplePromptTabs(topic) {
       tabTitle: "자료/구성 프롬프트",
       description: `${topic.outputName} 제작에 필요한 장면 구성과 참고 자료를 정리합니다.`,
       studentSummary: "영상 생성 전에 장면 순서, 핵심 메시지, 참고 자료를 간단히 정리합니다.",
-      teacherNote: "호텔 수업의 레퍼런스시트 탭에 해당하는 샘플 자리입니다. 실제 수업에서는 주제별 자료 구조로 바꾸세요.",
+      teacherNote: "장면 순서와 핵심 메시지를 먼저 정리하는 자리입니다. 확인되지 않은 날짜·장소·비용·신청정보는 넣지 않도록 안내하세요.",
       blocks: [
         {
           title: `${topic.shortName} 장면 구성 프롬프트`,
@@ -2136,6 +2136,16 @@ Object.assign(lessonRegistry.localEventShorts, {
   ],
 });
 
+lessonRegistry.localEventShorts.practiceSteps = lessonRegistry.localEventShorts.periods.map((period) => ({
+  title: `${period.period} · ${period.title}`,
+  toolKey: period.toolKeys?.[0] || "gpt",
+  role: period.goal,
+  activity: period.activity,
+  output: period.outputs.join(", "),
+  infoLabels: ["단계 목표", "학생 활동", "결과물"],
+  checklist: period.checkpoints,
+}));
+
 const lessons = lessonRegistry;
 window.LoreAXLessonRegistry = lessonRegistry;
 
@@ -3549,14 +3559,14 @@ function renderLesson() {
   if (promptHeadingCopy) {
     promptHeadingCopy.textContent = isHotelLesson()
       ? "HeyGen 캐릭터를 먼저 확정한 뒤 Claude에서 GPT/Flow 제작 프롬프트 합본을 생성합니다."
-      : "수업 단계에 맞는 AI 활용 프롬프트를 복사해 탐구보고서 작성을 보조합니다.";
+      : "장면별 자막과 이미지·영상 생성 프롬프트를 복사해 15초 지역행사 홍보 숏츠 제작을 보조합니다.";
   }
-  if (promptFoldEyebrow) promptFoldEyebrow.textContent = isHotelLesson() ? "Prompt Tabs" : "Report Prompt Tabs";
-  if (promptFoldTitle) promptFoldTitle.textContent = isHotelLesson() ? "Claude 프롬프트 박스" : "주제탐구 프롬프트";
+  if (promptFoldEyebrow) promptFoldEyebrow.textContent = isHotelLesson() ? "Prompt Tabs" : "Prompt Tabs";
+  if (promptFoldTitle) promptFoldTitle.textContent = isHotelLesson() ? "Claude 프롬프트 박스" : "숏츠 제작 프롬프트";
   if (promptFoldCopy) {
     promptFoldCopy.textContent = isHotelLesson()
       ? "수업용 Claude 프롬프트 탭을 펼쳐 확인합니다."
-      : "차시별 AI 활용 프롬프트를 펼쳐 확인합니다.";
+      : "단계별 AI 활용 프롬프트를 펼쳐 확인합니다.";
   }
   renderPrompts();
   const promptGeneratorPanel = promptGenerator?.closest("details");

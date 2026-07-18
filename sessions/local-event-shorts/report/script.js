@@ -97,9 +97,9 @@ function getCurrentLessonId() {
       window.localStorage.setItem(LESSON_STORAGE_KEY, queryLessonId);
       return queryLessonId;
     }
-    return window.localStorage.getItem(LESSON_STORAGE_KEY) || "hotelPromo";
+    return window.localStorage.getItem(LESSON_STORAGE_KEY) || "localEventShorts";
   } catch {
-    return "hotelPromo";
+    return "localEventShorts";
   }
 }
 

@@ -71,7 +71,7 @@
 
     <main id="top">
       <section class="hero" aria-label="강의 소개">
-        <img class="hero-image" src="../../assets/hotel-ai-video-class-hero.png" alt="" aria-hidden="true" />
+        <img class="hero-image" src="../../assets/hero/portal-learning.webp" alt="" aria-hidden="true" />
         <div class="hero-shade" aria-hidden="true"></div>
         <div class="hero-content">
           <p id="heroEyebrow" class="eyebrow">강의관리 ERP</p>
@@ -81,8 +81,8 @@
             현재 실행 모듈: AI 실습형 수업 운영 모듈
           </p>
           <div class="hero-chips" aria-label="수업 주요 정보">
-            <span>4교시</span>
-            <span>AI 영상 제작</span>
+            <span>90분</span>
+            <span>15초 세로형 숏츠</span>
             <span>학생/강사 모드</span>
             <span>프롬프트 기반 실습</span>
           </div>
@@ -94,9 +94,9 @@
           <aside class="hero-dashboard-card" aria-label="오늘의 실행 수업">
             <p class="eyebrow">오늘의 실행 수업</p>
             <div class="hero-dashboard-main">
-              <img src="../../assets/hotel-ai-video-class-hero.png" alt="" aria-hidden="true" />
+              <img src="../../assets/hero/portal-learning.webp" alt="" aria-hidden="true" />
               <div>
-                <h2 id="heroModuleTitle">AI 홍보영상 제작 프로젝트</h2>
+                <h2 id="heroModuleTitle">AI 지역행사 홍보 숏츠 제작</h2>
                 <span class="status-pill is-ready">준비 완료</span>
               </div>
             </div>
@@ -149,7 +149,7 @@
         </div>
         <dl class="module-launch-meta">
           <div><dt>과목</dt><dd>AI 영상 제작 실습</dd></div>
-          <div><dt>차시</dt><dd id="moduleLessonTitle">AI 홍보영상 제작 프로젝트</dd></div>
+          <div><dt>차시</dt><dd id="moduleLessonTitle">AI 지역행사 홍보 숏츠 제작</dd></div>
           <div><dt>유형</dt><dd>AI 실습형 수업</dd></div>
           <div><dt>수업 시간</dt><dd id="moduleDuration">4교시</dd></div>
           <div><dt>최종 산출물</dt><dd id="moduleFinalOutput">30~60초 AI 홍보영상</dd></div>
@@ -182,7 +182,7 @@
         <article class="class-notice-card url-guide-card">
           <span>접속 주소</span>
           <h2>수업 URL</h2>
-          <p>학생 접속 주소: https://class-template.vercel.app/sessions/ai-practice/</p>
+          <p>학생 접속 주소: https://class-template.vercel.app/sessions/local-event-shorts/</p>
           <p>강사용 메인 주소: https://class-template.vercel.app/</p>
         </article>
       </section>
@@ -299,16 +299,16 @@
 
       <section id="prompts" class="section">
         <div class="section-heading">
-          <p class="eyebrow">Claude Prompt Box</p>
-          <h2>Claude 프롬프트 박스</h2>
-          <p>HeyGen 캐릭터를 먼저 확정한 뒤 Claude에서 GPT/Flow 제작 프롬프트 합본을 생성합니다.</p>
+          <p class="eyebrow">AI Prompt Box</p>
+          <h2>AI 프롬프트 박스</h2>
+          <p>장면별 자막과 이미지·영상 생성 프롬프트를 복사해 15초 지역행사 홍보 숏츠 제작을 보조합니다.</p>
         </div>
         <details class="prompt-fold-panel">
           <summary class="prompt-fold-summary">
             <div>
               <p class="eyebrow">Prompt Tabs</p>
-              <h3>Claude 프롬프트 박스</h3>
-              <p>수업용 Claude 프롬프트 탭을 펼쳐 확인합니다.</p>
+              <h3>숏츠 제작 프롬프트</h3>
+              <p>단계별 AI 활용 프롬프트를 펼쳐 확인합니다.</p>
             </div>
           </summary>
         <div class="prompt-shell">
@@ -337,7 +337,7 @@
           </div>
           <div class="prompt-generator-controls">
             <label><span>프로젝트/수업명</span><input id="promptProjectTitle" type="text" /></label>
-            <label><span>홍보 대상 유형</span><select id="promptTargetType"><option>우리 학교</option><option>학과 또는 동아리</option><option>지역 명소</option><option>축제 또는 행사</option><option>소상공인 매장</option><option>제품</option><option>서비스</option><option>공공 캠페인</option><option>호텔·숙박시설</option><option>직접 입력</option></select></label><label><span>홍보 대상명</span><input id="promptPlaceName" type="text" /></label>
+            <label><span>홍보 대상 유형</span><select id="promptTargetType"><option>우리 학교</option><option>학과 또는 동아리</option><option>지역 명소</option><option>축제 또는 행사</option><option>소상공인 매장</option><option>제품</option><option>서비스</option><option>공공 캠페인</option><option>직접 입력</option></select></label><label><span>홍보 대상명</span><input id="promptPlaceName" type="text" /></label>
             <label><span>핵심 장면 1</span><input id="promptPlaceOne" type="text" /></label>
             <label><span>핵심 장면 2</span><input id="promptPlaceTwo" type="text" /></label>
             <label><span>캐릭터 역할</span><input id="promptCharacterRole" type="text" /></label>
@@ -537,12 +537,12 @@
         <div class="final-output-layout">
           <article class="video-slot is-primary">
             <div class="video-frame">
-              <video controls playsinline src="../../assets/final-hotel-introduction.mp4"></video>
+              <video controls playsinline></video>
             </div>
             <div class="video-slot-footer">
               <div>
                 <h3>최종 동영상</h3>
-                <p>완성한 AI 홍보영상 또는 수업 결과물을 확인합니다.</p>
+                <p>완성한 15초 세로형 지역행사 홍보 숏츠를 선택해 확인합니다.</p>
               </div>
               <label class="video-upload">
                 영상 선택
@@ -560,45 +560,45 @@
             </summary>
             <div class="review-accordion">
               <details>
-                <summary><span>01</span>전체 완성도</summary>
+                <summary><span>01</span>15초 전체 흐름</summary>
                 <div>
-                  <p>영상이 수업 주제와 맞는지, 처음부터 끝까지 자연스럽게 이어지는지 확인합니다.</p>
-                  <p>인트로 1장면, 핵심 소개 2장면, 아웃트로 1장면 구조가 보이면 가장 안정적입니다.</p>
+                  <p>영상이 15초 안에 끝나고, 세로형 9:16 화면으로 완성되었는지 확인합니다.</p>
+                  <p>Hook(0~3초) → Main Visual(3~7초) → Information(7~12초) → CTA(12~15초) 흐름이 보이면 가장 안정적입니다.</p>
                 </div>
               </details>
               <details>
-                <summary><span>02</span>HeyGen 캐릭터 체험</summary>
+                <summary><span>02</span>정보 정확성</summary>
                 <div>
-                  <p>HeyGen에서 만든 캐릭터 설정과 짧은 대사가 수업 주제와 어울리는지 확인합니다.</p>
-                  <p>무료 체험 결과는 다운로드가 안 될 수 있으므로 화면 확인 또는 캡처 중심으로 정리합니다.</p>
+                  <p>행사명, 날짜, 시간, 장소, 참여 방법을 공식 페이지에서 확인한 정보로만 넣었는지 확인합니다.</p>
+                  <p>확인되지 않은 날짜·장소·비용·신청정보나 과장 표현이 없는지 다시 점검합니다.</p>
                 </div>
               </details>
               <details>
-                <summary><span>03</span>GPT 레퍼런스샷</summary>
+                <summary><span>03</span>첫 3초 Hook</summary>
                 <div>
-                  <p>4방향 레퍼런스샷에서 정면, 왼쪽, 오른쪽, 뒷모습이 모두 보이는지 확인합니다.</p>
-                  <p>얼굴, 헤어스타일, 체형, 복장, 신발이 네 방향에서 같은 인물처럼 유지되어야 합니다.</p>
+                  <p>0~3초 안에 지역행사의 분위기나 핵심 메시지로 시선을 잡는지 확인합니다.</p>
+                  <p>Hook 문구가 모바일에서 한눈에 읽히도록 짧고 또렷한지 확인합니다.</p>
                 </div>
               </details>
               <details>
-                <summary><span>04</span>Flow 장면별 프롬프트</summary>
+                <summary><span>04</span>세로형 자막 가독성</summary>
                 <div>
-                  <p>Flow에 입력한 프롬프트가 4개 장면으로 분리되어 있는지 확인합니다.</p>
-                  <p>각 장면에는 레퍼런스샷 사용 조건, 장면 위치, 카메라 움직임, 금지 조건이 들어가야 합니다.</p>
+                  <p>9:16 세로 화면에서 자막이 화면 밖으로 나가지 않고 잘 읽히는지 확인합니다.</p>
+                  <p>자막 길이가 장면 시간(3~4초)에 맞게 짧게 정리되었는지 확인합니다.</p>
                 </div>
               </details>
               <details>
-                <summary><span>05</span>나레이션</summary>
+                <summary><span>05</span>장면별 문구·프롬프트</summary>
                 <div>
-                  <p>각 장면의 한국어 나레이션이 20자 내외로 짧고 또렷한지 확인합니다.</p>
-                  <p>나레이션이 너무 길면 영상 길이와 맞지 않거나 중간에 끊길 수 있습니다.</p>
+                  <p>Hook, Main Visual, Information, CTA 장면별 자막과 생성 프롬프트가 준비됐는지 확인합니다.</p>
+                  <p>프롬프트에 9:16 비율과 안정적인 카메라 조건이 들어갔는지 확인합니다.</p>
                 </div>
               </details>
               <details>
-                <summary><span>06</span>캐릭터 일관성</summary>
+                <summary><span>06</span>CTA 명확성</summary>
                 <div>
-                  <p>장면마다 얼굴, 복장, 분위기가 갑자기 바뀌지 않는지 확인합니다.</p>
-                  <p>캐릭터가 바뀌었다면 레퍼런스샷 업로드 여부와 프롬프트의 고정 캐릭터 조건을 다시 확인합니다.</p>
+                  <p>마지막 12~15초에 참여·방문·검색 등 행동을 유도하는 CTA가 분명한지 확인합니다.</p>
+                  <p>CTA 문구가 공식 정보와 어긋나지 않는지 확인합니다.</p>
                 </div>
               </details>
               <details>
@@ -664,8 +664,8 @@
     </dialog>
 
     <footer class="site-footer">
-      <span>AI 홍보영상 제작 프로젝트</span>
-      <span>4교시 실습형 프로그램</span>
+      <span>AI 지역행사 홍보 숏츠 제작</span>
+      <span>90분 실습형 프로그램</span>
     </footer>
 
     <script src="../../lib/supabase-config.js?v=7"></script>
