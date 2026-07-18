@@ -7,6 +7,124 @@
     { id: "gpt", title: "GPT \ud1b5\ud569 \uc81c\uc791" },
     { id: "final", title: "\ube44\uad50\u00b7\uc644\uc131" },
   ];
+  const GIMPO_TOPIC_EXAMPLES = [
+    {
+      "id": "gimpo-culture-calendar",
+      "label": "김포 문화행사",
+      "sourceLabel": "김포시 문화행사일정",
+      "sourceUrl": "https://www.gimpo.go.kr/culture/schdulCalendar.do?key=6814&schdulDiv=CULTURE",
+      "description": "김포시 문화행사 안내",
+      "planning": {
+        "topic": "김포시 문화행사 안내",
+        "audience": "김포시의 전시·공연·축제 정보를 찾는 시민",
+        "purpose": "김포시에서 열리는 문화행사를 알리고 참여를 유도한다.",
+        "message": "김포에서 열리는 다양한 문화행사를 확인해 보세요.",
+        "mood": "문화적이고 밝으며 정보가 명확한 분위기",
+        "facts": "행사명\n행사 날짜와 시간\n행사 장소\n참여 또는 관람 방법",
+        "requiredFacts": [
+          "행사명",
+          "행사 날짜와 시간",
+          "행사 장소",
+          "참여 또는 관람 방법"
+        ]
+      }
+    },
+    {
+      "id": "gimpo-art-program",
+      "label": "김포 예술체험",
+      "sourceLabel": "김포문화재단 교육·체험",
+      "sourceUrl": "https://www.gcf.or.kr/gclass/edu/list.do",
+      "description": "김포문화재단 예술교육·체험 프로그램 안내",
+      "planning": {
+        "topic": "김포문화재단 예술교육·체험 프로그램 안내",
+        "audience": "김포시의 문화예술 체험에 관심 있는 시민과 가족",
+        "purpose": "김포문화재단의 교육·체험 프로그램을 소개하고 신청을 유도한다.",
+        "message": "김포에서 다양한 문화예술 프로그램을 직접 체험해 보세요.",
+        "mood": "창의적이고 친근하며 즐거운 분위기",
+        "facts": "프로그램명\n운영 기간\n운영 장소\n참여 대상\n신청 방법",
+        "requiredFacts": [
+          "프로그램명",
+          "운영 기간",
+          "운영 장소",
+          "참여 대상",
+          "신청 방법"
+        ]
+      }
+    },
+    {
+      "id": "gimpo-museum-event",
+      "label": "김포 전시·행사",
+      "sourceLabel": "김포문화재단",
+      "sourceUrl": "https://www.gcf.or.kr/",
+      "description": "김포문화재단 전시·행사 소개",
+      "planning": {
+        "topic": "김포문화재단 전시·행사 소개",
+        "audience": "김포시의 전시와 지역 문화행사에 관심 있는 시민",
+        "purpose": "현재 진행하거나 예정된 김포의 전시·행사를 알린다.",
+        "message": "김포 곳곳에서 열리는 전시와 문화행사를 만나보세요.",
+        "mood": "세련되고 문화적이며 신뢰감 있는 분위기",
+        "facts": "전시 또는 행사명\n운영 기간\n운영 장소\n관람 또는 참여 방법",
+        "requiredFacts": [
+          "전시 또는 행사명",
+          "운영 기간",
+          "운영 장소",
+          "관람 또는 참여 방법"
+        ]
+      }
+    },
+    {
+      "id": "gimpo-performance",
+      "label": "김포 공연",
+      "sourceLabel": "김포문화재단 공연 안내",
+      "sourceUrl": "https://www.gcf.or.kr/main/exh/view.do?exh_sn=1823&mthd=SHOW",
+      "description": "김포아트홀 공연 안내",
+      "planning": {
+        "topic": "김포아트홀 공연 안내",
+        "audience": "가족과 함께 공연을 관람하려는 김포시민",
+        "purpose": "김포아트홀 공연 정보를 전달하고 관람을 유도한다.",
+        "message": "가족과 함께 김포에서 즐거운 공연을 만나보세요.",
+        "mood": "밝고 즐거우며 가족 친화적인 분위기",
+        "facts": "공연명\n공연 날짜와 시간\n공연 장소\n관람 연령\n예매 방법",
+        "requiredFacts": [
+          "공연명",
+          "공연 날짜와 시간",
+          "공연 장소",
+          "관람 연령",
+          "예매 방법"
+        ]
+      }
+    },
+    {
+      "id": "gimpo-reservation",
+      "label": "김포 모집·체험",
+      "sourceLabel": "김포시 통합예약",
+      "sourceUrl": "https://www.gimpo.go.kr/reserve/index.do",
+      "description": "김포시 모집·교육·체험 프로그램 안내",
+      "planning": {
+        "topic": "김포시 모집·교육·체험 프로그램 안내",
+        "audience": "김포시의 교육과 체험 프로그램에 참여하려는 시민",
+        "purpose": "김포시 통합예약에서 신청 가능한 프로그램을 소개하고 참여를 유도한다.",
+        "message": "김포시에서 운영하는 다양한 교육과 체험에 참여해 보세요.",
+        "mood": "공공 안내에 적합한 깔끔하고 신뢰감 있는 분위기",
+        "facts": "프로그램명\n신청 기간\n운영 일시\n운영 장소\n신청 대상과 방법",
+        "requiredFacts": [
+          "프로그램명",
+          "신청 기간",
+          "운영 일시",
+          "운영 장소",
+          "신청 대상과 방법"
+        ]
+      }
+    },
+    {
+      "id": "custom",
+      "label": "직접 주제 입력",
+      "sourceLabel": "",
+      "sourceUrl": "",
+      "description": "직접 주제 입력",
+      "planning": null
+    }
+  ];
   const LABELS = {
     savedLocal: "\ub85c\uceec \uc800\uc7a5\ub428",
     savedServer: "\uc11c\ubc84 \uc800\uc7a5\ub428",
@@ -21,7 +139,7 @@
   const DEFAULT_PROJECT = {
     projectId: "",
     currentStep: 0,
-    planning: { topic: "", audience: "", purpose: "", message: "", facts: "", mood: "" },
+    planning: { selectedExampleId: "", sourceLabel: "", sourceUrl: "", topic: "", audience: "", purpose: "", message: "", coreMessage: "", facts: "", requiredFacts: [], mood: "" },
     prompt: { role: "\ub274\uc2a4\uce74\ub4dc \ub514\uc790\uc774\ub108", task: "\uc815\uc0ac\uac01\ud615 \ub274\uc2a4\uce74\ub4dc 1\uc7a5 \uc81c\uc791", style: "\ud559\uc0dd\uc774 \uc77d\uae30 \uc26c\uc6b4 \uae54\ub054\ud55c \uc2a4\ud0c0\uc77c", rules: "\ud655\uc778\ud55c \uc0ac\uc2e4\ub9cc \uc0ac\uc6a9" },
     copy: { title: "", subtitle: "", cta: "", fluxPrompt: "", gptPrompt: "" },
     flux: { used: false, imageUrl: "", finalImage: "", layers: [{ id: "title", text: "", x: 80, y: 120, size: 58, color: "#0f172a" }, { id: "subtitle", text: "", x: 80, y: 420, size: 36, color: "#1e293b" }, { id: "cta", text: "", x: 80, y: 820, size: 30, color: "#ffffff" }] },
@@ -151,13 +269,75 @@
   function planView() {
     return `<div class="step-title"><div><span class="badge">1\ub2e8\uacc4</span><h2>\uc8fc\uc81c\uc640 \uae30\ud68d</h2></div><span class="mock-badge">${LABELS.mockNotice}</span></div>
     <div class="layout"><section class="card field-grid">
-      <div class="topic-presets">${["\ud559\uad50 \ud589\uc0ac", "\ub3d9\uc544\ub9ac \ud64d\ubcf4", "\ud658\uacbd \ucea0\ud398\uc778", "\uc9c0\uc5ed \uad00\uad11", "\uac00\uac8c \ud64d\ubcf4", "\uc548\uc804 \uc548\ub0b4"].map((x) => `<button class="preset-button" data-topic="${x}" type="button">${x}</button>`).join("")}</div>
+      ${topicExamplesView()}
       ${field("planning", "topic", "\uc8fc\uc81c")}
       <div class="field-grid two">${field("planning", "audience", "\ub300\uc0c1")}${field("planning", "purpose", "\ubaa9\uc801")}</div>
       ${field("planning", "message", "\ud575\uc2ec \uba54\uc2dc\uc9c0")}
       ${field("planning", "facts", "\ubc18\ub4dc\uc2dc \ub123\uc744 \ud655\uc778\ub41c \uc0ac\uc2e4", true)}
       ${field("planning", "mood", "\ubd84\uc704\uae30")}
     </section><aside class="preview-card"><h3>\uae30\ud68d \uc694\uc57d</h3><div class="preview-box">${esc(summary())}</div><p class="notice">\ud655\uc778\ud55c \uc0ac\uc2e4\ub9cc \uc0ac\uc6a9\ud558\uc138\uc694. \ub0a0\uc9dc, \uc7a5\uc18c, \uac00\uaca9, \uc774\ub984\uc744 \uc784\uc758\ub85c \ub9cc\ub4e4\uba74 \uc548 \ub429\ub2c8\ub2e4.</p></aside></div>`;
+  }
+
+  function topicExamplesView() {
+    return `<section class="topic-example-panel" aria-label="\uae40\ud3ec\uc2dc \ud589\uc0ac\u00b7\uc804\uc2dc \ucd94\ucc9c\uc8fc\uc81c">
+      <div class="topic-example-head">
+        <div>
+          <h3>\uae40\ud3ec\uc2dc \ud589\uc0ac\u00b7\uc804\uc2dc \ucd94\ucc9c\uc8fc\uc81c</h3>
+          <p>\ucd94\ucc9c\uc8fc\uc81c\ub97c \uc120\ud0dd\ud558\uace0 \uacf5\uc2dd \ud398\uc774\uc9c0\uc5d0\uc11c \ucd5c\uc2e0 \uc77c\uc815\uacfc \uc7a5\uc18c\ub97c \ud655\uc778\ud558\uc138\uc694.</p>
+        </div>
+      </div>
+      <div class="topic-example-grid">${GIMPO_TOPIC_EXAMPLES.map(topicExampleCard).join("")}</div>
+      ${topicSelectionNotice()}
+      <p class="topic-example-warning">\ud589\uc0ac \uc77c\uc815\uacfc \uc2e0\uccad \uc0c1\ud0dc\ub294 \ubcc0\uacbd\ub420 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uacf5\uc2dd \uc815\ubcf4 \ubcf4\uae30\uc5d0\uc11c \ucd5c\uc2e0 \ub0b4\uc6a9\uc744 \ud655\uc778\ud55c \ub4a4 \uce74\ub4dc\ub274\uc2a4\uc5d0 \uc815\ud655\ud558\uac8c \uc785\ub825\ud558\uc138\uc694. AI\uac00 \ud655\uc778\ud558\uc9c0 \uc54a\uc740 \ub0a0\uc9dc\u00b7\uc7a5\uc18c\u00b7\ube44\uc6a9\u00b7\uc2e0\uccad\uc815\ubcf4\ub97c \uc784\uc758\ub85c \ub9cc\ub4e4\uc9c0 \uc54a\ub3c4\ub85d \ud558\uc138\uc694.</p>
+    </section>`;
+  }
+
+  function topicSelectionNotice() {
+    if (!project.planning.selectedExampleId) return "";
+    if (project.planning.selectedExampleId === "custom") {
+      return `<p class="topic-example-selected">\uc9c1\uc811 \uc8fc\uc81c\ub97c \uc791\uc131\ud558\uc138\uc694. \uae30\uc874 \uc785\ub825 \ub0b4\uc6a9\uc740 \uc720\uc9c0\ub429\ub2c8\ub2e4.</p>`;
+    }
+    return `<p class="topic-example-selected">\uae30\ubcf8 \uae30\ud68d\uc744 \ubd88\ub7ec\uc654\uc2b5\ub2c8\ub2e4. \uacf5\uc2dd \ud398\uc774\uc9c0\ub97c \ud655\uc778\ud558\uace0 \uc2e4\uc81c \ud589\uc0ac\uba85\u00b7\ub0a0\uc9dc\u00b7\uc7a5\uc18c\ub97c \uc218\uc815\ud558\uc138\uc694.</p>`;
+  }
+
+  function topicExampleCard(example) {
+    const selected = project.planning.selectedExampleId === example.id;
+    const link = example.sourceUrl
+      ? `<a class="topic-source-link" href="${esc(example.sourceUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(example.sourceLabel)} \uacf5\uc2dd \uc815\ubcf4 \ubcf4\uae30">\uacf5\uc2dd \uc815\ubcf4 \ubcf4\uae30 \u2197</a>`
+      : "";
+    return `<article class="topic-example-card ${selected ? "is-selected" : ""}">
+      <div>
+        <h4>${esc(example.label)}</h4>
+        <p>${esc(example.description || example.sourceLabel || "")}</p>
+      </div>
+      <div class="topic-example-actions">
+        <button class="preset-button" data-example-select="${esc(example.id)}" type="button">${example.id === "custom" ? "\uc9c1\uc811 \uc791\uc131\ud558\uae30" : "\uc8fc\uc81c\ub85c \uc120\ud0dd"}</button>
+        ${link}
+      </div>
+    </article>`;
+  }
+
+  function selectTopicExample(id) {
+    const example = GIMPO_TOPIC_EXAMPLES.find((item) => item.id === id);
+    if (!example) return;
+    project.planning.selectedExampleId = example.id;
+    project.planning.sourceLabel = example.sourceLabel || "";
+    project.planning.sourceUrl = example.sourceUrl || "";
+    if (example.planning) {
+      project.planning.topic = example.planning.topic || "";
+      project.planning.audience = example.planning.audience || "";
+      project.planning.purpose = example.planning.purpose || "";
+      project.planning.message = example.planning.message || "";
+      project.planning.coreMessage = example.planning.message || "";
+      project.planning.facts = example.planning.facts || "";
+      project.planning.requiredFacts = Array.isArray(example.planning.requiredFacts) ? example.planning.requiredFacts : [];
+      project.planning.mood = example.planning.mood || "";
+      dom.saveStatus.textContent = "\uae30\ubcf8 \uae30\ud68d\uc744 \ubd88\ub7ec\uc654\uc2b5\ub2c8\ub2e4. \uacf5\uc2dd \ud398\uc774\uc9c0\ub97c \ud655\uc778\ud558\uace0 \uc2e4\uc81c \ud589\uc0ac\uba85\u00b7\ub0a0\uc9dc\u00b7\uc7a5\uc18c\ub97c \uc218\uc815\ud558\uc138\uc694.";
+    } else {
+      dom.saveStatus.textContent = "\uc9c1\uc811 \uc8fc\uc81c\ub97c \uc791\uc131\ud558\uc138\uc694. \uae30\uc874 \uc785\ub825 \ub0b4\uc6a9\uc740 \uc720\uc9c0\ub429\ub2c8\ub2e4.";
+    }
+    save(false);
+    render();
   }
 
   function promptView() {
@@ -203,11 +383,7 @@
       project[group][key] = input.value;
       debounceSave();
     }));
-    dom.main.querySelectorAll("[data-topic]").forEach((button) => button.addEventListener("click", () => {
-      project.planning.topic = button.dataset.topic;
-      save(false);
-      render();
-    }));
+    dom.main.querySelectorAll("[data-example-select]").forEach((button) => button.addEventListener("click", () => selectTopicExample(button.dataset.exampleSelect)));
     dom.main.querySelector("#generateCopy")?.addEventListener("click", generateCopy);
     dom.main.querySelector("#generateFlux")?.addEventListener("click", generateFlux);
     dom.main.querySelector("#generateGpt")?.addEventListener("click", generateGpt);
@@ -292,7 +468,7 @@
   }
 
   function summary() {
-    return `\uc8fc\uc81c: ${project.planning.topic || "-"}\n\ub300\uc0c1: ${project.planning.audience || "-"}\n\ubaa9\uc801: ${project.planning.purpose || "-"}\n\ud575\uc2ec \uba54\uc2dc\uc9c0: ${project.planning.message || "-"}\n\ud655\uc778\ub41c \uc0ac\uc2e4: ${project.planning.facts || "-"}\n\ubd84\uc704\uae30: ${project.planning.mood || "-"}`;
+    return `\uc120\ud0dd \ucd94\ucc9c\uc8fc\uc81c: ${project.planning.selectedExampleId || "-"}\n\uacf5\uc2dd \ucd9c\ucc98: ${project.planning.sourceLabel || "-"}\n\uacf5\uc2dd \ub9c1\ud06c: ${project.planning.sourceUrl || "-"}\n\uc8fc\uc81c: ${project.planning.topic || "-"}\n\ub300\uc0c1: ${project.planning.audience || "-"}\n\ubaa9\uc801: ${project.planning.purpose || "-"}\n\ud575\uc2ec \uba54\uc2dc\uc9c0: ${project.planning.message || "-"}\n\ud655\uc778\ub41c \uc0ac\uc2e4: ${project.planning.facts || "-"}\n\ubd84\uc704\uae30: ${project.planning.mood || "-"}`;
   }
 
   function drawCanvas() {

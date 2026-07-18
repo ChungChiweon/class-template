@@ -17,7 +17,9 @@ module.exports = async function handler(req, res) {
   const audience = cleanText(planning.audience || "\ud559\uc0dd", 120);
   const purpose = cleanText(planning.purpose || "\uc815\ubcf4 \uc804\ub2ec", 120);
   const core = cleanText(planning.message || planning.coreMessage || topic, 160);
-  const facts = cleanText(planning.facts || planning.requiredFacts || "\ud655\uc778\ud55c \uc0ac\uc2e4\ub9cc \uc0ac\uc6a9", 1200);
+  const facts = cleanText(planning.facts || (Array.isArray(planning.requiredFacts) ? planning.requiredFacts.join("\n") : planning.requiredFacts) || "\ud655\uc778\ud55c \uc0ac\uc2e4\ub9cc \uc0ac\uc6a9", 1200);
+  const sourceLabel = cleanText(planning.sourceLabel || "", 160);
+  const sourceUrl = cleanText(planning.sourceUrl || "", 300);
   const mood = cleanText(planning.mood || design.style || "\ubc1d\uace0 \uc2e0\ub8b0\uac10 \uc788\ub294", 120);
   const title = compact(topic, 18);
   const subtitle = compact(core, 34);
@@ -33,9 +35,12 @@ module.exports = async function handler(req, res) {
       `Audience: ${audience}`,
       `Purpose: ${purpose}`,
       `Mood: ${mood}`,
+      sourceLabel ? `Official source label: ${sourceLabel}` : "",
+      sourceUrl ? `Official source URL for student checking only: ${sourceUrl}` : "",
       "Leave clear empty space for title and short copy.",
       "Do not add letters, numbers, logos, or invented facts.",
-    ].join("\n"),
+      "Do not invent dates, places, fees, deadlines, or application details that the student did not confirm on the official page.",
+    ].filter(Boolean).join("\n"),
     gptPrompt: [
       "Create one square 1080x1080 Korean news card.",
       `Title: ${title}`,
@@ -44,9 +49,12 @@ module.exports = async function handler(req, res) {
       `Audience: ${audience}`,
       `Mood: ${mood}`,
       `Required facts: ${facts}`,
+      sourceLabel ? `Official source label: ${sourceLabel}` : "",
+      sourceUrl ? `Official source URL for student checking only: ${sourceUrl}` : "",
       "Do not invent facts that were not provided.",
+      "Do not invent dates, places, fees, deadlines, or application details that the student did not confirm on the official page.",
       "Make text large, simple, and easy to read on a tablet.",
-    ].join("\n"),
+    ].filter(Boolean).join("\n"),
   };
 
   await upsertProject(context, { ...body, copy, currentStep: body.currentStep ?? 1 });

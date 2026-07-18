@@ -272,7 +272,10 @@ function sanitizeProjectData(source = {}) {
     anonymousStudentId: safeString(source.anonymousStudentId || source.anonymous_student_id, 160),
     currentStep: clampNumber(source.currentStep, 0, 0, 4),
     updatedAt: safeString(source.updatedAt || new Date().toISOString(), 40),
-    planning: pickStrings(source.planning, ["topic", "audience", "purpose", "message", "facts", "mood"], 2000),
+    planning: {
+      ...pickStrings(source.planning, ["selectedExampleId", "sourceLabel", "sourceUrl", "topic", "audience", "purpose", "message", "coreMessage", "facts", "mood"], 2000),
+      requiredFacts: Array.isArray(source.planning?.requiredFacts) ? source.planning.requiredFacts.slice(0, 12).map((item) => safeString(item, 300)) : [],
+    },
     prompt: pickStrings(source.prompt, ["role", "task", "style", "rules"], 4000),
     copy: pickStrings(source.copy, ["title", "subtitle", "cta", "fluxPrompt", "gptPrompt"], 5000),
     flux: {
