@@ -484,7 +484,7 @@
   }
 
   function gptNegativeDefault() {
-    return "Do not create:\n- broken or unreadable Korean text\n- fake dates or information\n- unnecessary logos\n- unreadable typography\n- excessive decorative elements\n- overcrowded layout";
+    return "Do not create:\n- broken or unreadable Korean text\n- fake dates or information\n- unnecessary logos\n- plain empty poster\n- sparse gradient background\n- low-detail generic layout\n- cropped text or characters\n- unreadable typography\n- excessive decorative elements\n- overcrowded layout";
   }
 
   function oldPromptResultView(mode) {

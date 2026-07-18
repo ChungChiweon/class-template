@@ -133,6 +133,10 @@ async function callOpenAiPromptDesigner(metaPrompt, generationMode) {
                   ].join("\n")
                 : [
                     'For gpt_integrated mode, create a complete 9:16 Korean card-news image prompt for GPT image generation.',
+                    "The prompt must produce a rich premium card-news poster, not a plain blank template.",
+                    "Require concrete visual storytelling: foreground people or meaningful objects, relevant place/background, decorative motifs, information panel, and CTA button.",
+                    "For culture, art, performance, and education topics, actively suggest visible elements such as stage curtains, spotlights, families/students, venue exterior/interior, music notes, art tools, theater tickets, or workshop scenes when relevant.",
+                    "Avoid prompts that lead to a sparse orange/gradient poster, one empty information panel, or low-detail generic notice design.",
                     "It must request a finished card-news image with readable Korean title, short body, information labels, official source area, and CTA button rendered inside the image.",
                     "Do not say no text, text-free, background only, safe area for later overlay, or HTML/canvas overlay.",
                     "Use only confirmed facts. Do not invent event dates, places, prices, schedules, organizations, or unsupported details.",
@@ -253,6 +257,9 @@ function buildMetaPrompt(planning, contentInfo, copyText, design) {
         "\uc81c\ubaa9, \ubcf8\ubb38, \ud655\uc778\ud560 \uc815\ubcf4, \uacf5\uc2dd \ucd9c\ucc98, CTA \ud14d\uc2a4\ud2b8\ub97c \uc774\ubbf8\uc9c0 \uc548\uc5d0 \uc77d\uae30 \uc27d\uac8c \ubc30\uce58",
         "\ud55c\uae00 \ud0c0\uc774\ud3ec\uadf8\ub798\ud53c\ub97c \ud06c\uace0 \ub2e8\uc21c\ud558\uac8c \uc0ac\uc6a9",
         "\ubaa8\ubc14\uc77c\uc5d0\uc11c \uc77d\ud788\ub294 \ud06c\uae30\uc640 \ub300\ube44, \uc815\ub9ac\ub41c \uc815\ubcf4 \ubc15\uc2a4, \ud558\ub2e8 CTA \ubc84\ud2bc \uad6c\uc870",
+        "Rich visual scene: include foreground characters or meaningful objects, relevant place/background, decorative motifs, information panel, and CTA button.",
+        "Culture/performance/education topics: prefer stage curtains, spotlights, smiling families or students, performance hall or cultural venue, music notes, art tools, tickets, workshop details when relevant.",
+        "Avoid sparse gradient poster, plain single-panel notice, low-detail generic card, and excessive empty background.",
         "\uae00\uc790 \uc5c6\ub294 \ubc30\uacbd, \ub098\uc911\uc5d0 HTML/canvas\ub85c \ubb38\uad6c\ub97c \uc62c\ub9b0\ub2e4\ub294 \uc9c0\uc2dc\ub294 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc74c",
         "\uc790\uc5f0\uc5b4 \ud615\ud0dc\uc758 negative prompt \uc0dd\uc131",
         "Do not create broken Korean text, fake dates or information, unnecessary logos, unreadable typography, excessive decorative elements, overcrowded layout.",
@@ -365,9 +372,18 @@ function ensureGptIntegratedPrompt(prompt) {
   const cleaned = text
     .replace(/(?:no text|text-free|without text|background only|safe areas? for .*overlay|HTML\/canvas overlay|added later in HTML\/canvas)/gi, "")
     .trim();
-  return /Korean|한글|title|제목|CTA|card-news|카드뉴스/i.test(cleaned)
+  const base = /Korean|한글|title|제목|CTA|card-news|카드뉴스/i.test(cleaned)
     ? cleaned
     : `${cleaned}\n\nCreate a complete 9:16 Korean card-news image with readable Korean title, short body text, information panels, official source area, and CTA button rendered inside the image.`;
+  const qualityBooster = [
+    "",
+    "Quality direction:",
+    "Make it a rich premium Korean card-news poster with visual storytelling, not a plain notice template.",
+    "Include a concrete scene with foreground people or meaningful objects, relevant place/background, decorative motifs, information panel, and CTA button.",
+    "For culture, performance, art, or education topics, use elements such as stage curtains, spotlights, families or students, cultural venue, music notes, art tools, theater tickets, or workshop scenes when relevant.",
+    "Avoid sparse gradient backgrounds, one empty information panel, low-detail generic layouts, and excessive empty space.",
+  ].join("\n");
+  return /visual storytelling|premium Korean card-news|foreground people/i.test(base) ? base : `${base}${qualityBooster}`;
 }
 
 function gptNegativeDefault() {

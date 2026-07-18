@@ -99,6 +99,12 @@ async function callOpenAiImage(prompt) {
 
 function buildOpenAiImagePrompt(planning = {}, copy = {}, studentPrompt = "") {
   return [
+    "Primary quality target: rich ChatGPT-style Korean card-news poster, layered editorial illustration, polished public-information design, strong visual storytelling, not a plain template.",
+    "Use the prompt-design visual brief as the primary art direction. Preserve concrete scene, character, setting, style, layout, panel, and CTA instructions unless they conflict with verified facts.",
+    `Topic-specific visual direction: ${topicVisualHints(planning, copy)}`,
+    "The image must feel like a finished premium Korean event/news card, with foreground characters or meaningful objects, a relevant background scene, decorative motifs, information panels, and a clear CTA button.",
+    "Do not make a mostly empty gradient poster, a single blank information card, or a low-detail generic announcement template.",
+    "Use large, bold, high-contrast Korean typography with clean spacing. The title should look like a designed headline, not plain body text.",
     "Create one complete 9:16 vertical Korean mobile card-news image.",
     "This is NOT a text-free background. Render the Korean title, short body text, information labels, and CTA inside the card-news image.",
     "Design it like a polished educational/public information card-news poster for students: clear hierarchy, readable Korean typography, neat information boxes, friendly but professional visual style.",
@@ -115,7 +121,33 @@ function buildOpenAiImagePrompt(planning = {}, copy = {}, studentPrompt = "") {
     `Audience: ${cleanText(planning.audience || "students", 120)}`,
     `Mood: ${cleanText(planning.mood || "bright and reliable", 120)}`,
     `Required facts: ${cleanText(planning.facts || "", 1200)}`,
+    "Negative direction: avoid broken Korean, unreadable typography, fake facts, unnecessary logos, cropped elements, dull flat backgrounds, sparse blank layouts, and excessive empty space.",
   ].join("\n");
+}
+
+function topicVisualHints(planning = {}, copy = {}) {
+  const haystack = [
+    planning.topic,
+    planning.purpose,
+    planning.message,
+    planning.facts,
+    planning.sourceLabel,
+    copy.title,
+    copy.subtitle,
+  ].filter(Boolean).join(" ").toLowerCase();
+  if (/공연|문화|예술|아트홀|전시|체험|음악|무대|재단|festival|concert|culture|art|exhibition/.test(haystack)) {
+    return "Show a warm cultural event scene: stage curtains, spotlights, music notes, theater/performance icons, art materials, a venue or community arts center, and a smiling family or students enjoying the event. Use a lively premium Korean municipal event card-news style.";
+  }
+  if (/교육|수업|학생|학교|진로|체험|workshop|class|student|career/.test(haystack)) {
+    return "Show students actively participating in a workshop or class, with learning tools, tablets, classroom/workshop space, mentor guidance, and a clean education-platform poster style.";
+  }
+  if (/관광|여행|지역|명소|tour|travel|landmark/.test(haystack)) {
+    return "Show travelers exploring a recognizable local scene, landmark-inspired background, map/travel icons, warm daylight, and a polished tourism card-news poster layout.";
+  }
+  if (/제품|광고|마케팅|브랜드|product|marketing|brand/.test(haystack)) {
+    return "Show the product or service as the hero subject, with people using it, clean product-ad composition, benefit icons, and a strong CTA panel.";
+  }
+  return "Show a concrete scene with people, action, relevant props, and a meaningful place instead of abstract shapes; use layered editorial illustration and clear card-news information design.";
 }
 
 function sanitizeGptVisualBrief(value) {
