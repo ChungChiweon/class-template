@@ -12,7 +12,8 @@ const {
   setCors,
 } = require("./_shared");
 
-const NVIDIA_FLUX_ENDPOINT = "https://ai.api.nvidia.com/v1/genai/black-forest-labs/flux.1-dev";
+const NVIDIA_FLUX_MODEL = process.env.CARDNEWS_FLUX_MODEL || "flux.1-dev";
+const NVIDIA_FLUX_ENDPOINT = `https://ai.api.nvidia.com/v1/genai/black-forest-labs/${NVIDIA_FLUX_MODEL}`;
 const REQUEST_TIMEOUT_MS = 90000;
 
 module.exports = async function handler(req, res) {
@@ -38,9 +39,9 @@ module.exports = async function handler(req, res) {
   if (isLiveProviderMode()) {
     try {
       imageUrl = await callNvidiaFlux(body.prompt || body.copy?.fluxPrompt || buildFluxPrompt(planning), topic, mood);
-      provider = "nvidia-flux.1-dev";
+      provider = `nvidia-${NVIDIA_FLUX_MODEL}`;
     } catch (error) {
-      return endJson(res, 502, { success: false, provider: "nvidia-flux.1-dev", mode, message: safeProviderError(error?.message) });
+      return endJson(res, 502, { success: false, provider: `nvidia-${NVIDIA_FLUX_MODEL}`, mode, message: safeProviderError(error?.message) });
     }
   } else {
     imageUrl = svgDataUrl(topic, mood, false);
@@ -73,13 +74,13 @@ async function callNvidiaFlux(prompt, topic, mood) {
       },
       body: JSON.stringify({
         prompt: cleanText(prompt || buildFluxPrompt({ topic, mood }), 9500),
-        height: 1024,
-        width: 1024,
-        cfg_scale: 5,
+        height: Number(process.env.CARDNEWS_FLUX_SIZE || 768),
+        width: Number(process.env.CARDNEWS_FLUX_SIZE || 768),
+        cfg_scale: Number(process.env.CARDNEWS_FLUX_CFG_SCALE || 3.5),
         mode: "base",
         samples: 1,
         seed: 0,
-        steps: 30,
+        steps: Number(process.env.CARDNEWS_FLUX_STEPS || 5),
       }),
       signal: controller.signal,
     });
