@@ -254,6 +254,31 @@ h1 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.prompt-workflow {
+  display: grid;
+  gap: 18px;
+}
+
+.section-heading {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.section-heading h3 {
+  margin: 0;
+  font-size: 22px;
+  color: var(--text);
+}
+
+.section-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.65;
+}
+
 .generation-mode-panel {
   display: grid;
   gap: 12px;
@@ -318,6 +343,71 @@ h1 {
   font-size: 14px;
   font-weight: 800;
   line-height: 1.6;
+}
+
+.learning-panel {
+  border: 1px solid #c7d7f2;
+  border-radius: 20px;
+  background: #f8fbff;
+  overflow: hidden;
+}
+
+.learning-panel summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 64px;
+  padding: 18px 20px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.learning-panel summary::-webkit-details-marker {
+  display: none;
+}
+
+.learning-panel summary strong {
+  flex: 1;
+  color: var(--text);
+  font-size: 18px;
+}
+
+.learning-panel summary span:first-child {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: #e8f2ff;
+}
+
+.learning-panel summary span:last-child {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: #eef4ff;
+  color: var(--primary);
+  font-weight: 900;
+  transition: transform 0.2s ease;
+}
+
+.learning-panel[open] summary span:last-child {
+  transform: rotate(90deg);
+}
+
+.learning-content {
+  display: grid;
+  gap: 12px;
+  padding: 0 20px 20px;
+  color: #344054;
+  font-weight: 700;
+  line-height: 1.75;
+}
+
+.learning-content p {
+  margin: 0;
 }
 
 label {

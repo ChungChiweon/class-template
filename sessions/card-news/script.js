@@ -150,7 +150,9 @@
     projectId: "",
     currentStep: 0,
     planning: { selectedExampleId: "", sourceLabel: "", sourceUrl: "", topic: "", audience: "", purpose: "", message: "", coreMessage: "", facts: "", requiredFacts: [], mood: "" },
+    contentInfo: { officialInfo: "", programInfo: "", audience: "", benefits: "", ctaInfo: "" },
     prompt: { generationMode: "flux", role: "\uce74\ub4dc\ub274\uc2a4 \uae30\ud68d\uc790", task: "\uc9c0\uc5ed \ud589\uc0ac \ud64d\ubcf4\uc6a9 \uc20f\ud3fc \uce74\ub4dc\ub274\uc2a4 \uc81c\uc791", audience: "", context: "", format: "9:16 \uc138\ub85c\ud615 \ubaa8\ubc14\uc77c \uce74\ub4dc\ub274\uc2a4", style: "\uce5c\uadfc\ud558\uace0 \ucc3d\uc758\uc801\uc778 \ud64d\ubcf4 \uc2a4\ud0c0\uc77c", rules: fluxRules() },
+    copyText: { title: "", body: "", cta: "", status: "" },
     copy: { title: "", subtitle: "", cta: "", fluxPrompt: "", gptPrompt: "", negativePrompt: "", metaPrompt: "", generationMode: "flux", promptStatus: "" },
     flux: { used: false, imageUrl: "", finalImage: "", status: "", message: "", layers: [{ id: "title", text: "", x: 80, y: 120, size: 58, color: "#0f172a" }, { id: "subtitle", text: "", x: 80, y: 420, size: 36, color: "#1e293b" }, { id: "cta", text: "", x: 80, y: 820, size: 30, color: "#ffffff" }] },
     gpt: { used: false, imageUrl: "", finalImage: "", status: "", message: "" },
@@ -215,7 +217,7 @@
 
   function merge(base, data) {
     const out = { ...base, ...data };
-    ["planning", "prompt", "copy", "flux", "gpt", "final"].forEach((key) => {
+    ["planning", "contentInfo", "prompt", "copyText", "copy", "flux", "gpt", "final"].forEach((key) => {
       out[key] = { ...base[key], ...(data?.[key] || {}) };
     });
     if (!Array.isArray(out.flux.layers)) out.flux.layers = base.flux.layers;
@@ -252,10 +254,10 @@
     return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
   }
 
-  function field(group, key, label, long = false) {
+  function field(group, key, label, long = false, placeholder = "") {
     const value = project[group][key] || "";
-    if (long) return `<label>${label}<textarea data-field="${group}.${key}">${esc(value)}</textarea></label>`;
-    return `<label>${label}<input data-field="${group}.${key}" value="${esc(value)}" /></label>`;
+    if (long) return `<label>${label}<textarea data-field="${group}.${key}" placeholder="${esc(placeholder)}">${esc(value)}</textarea></label>`;
+    return `<label>${label}<input data-field="${group}.${key}" value="${esc(value)}" placeholder="${esc(placeholder)}" /></label>`;
   }
 
   function render() {
@@ -403,22 +405,36 @@
   function promptView() {
     ensurePromptDefaults();
     const mode = project.prompt.generationMode || "flux";
-    return `<div class="step-title"><div><span class="badge">2\ub2e8\uacc4</span><h2>\ud504\ub86c\ud504\ud2b8 \uc124\uacc4</h2></div><button id="generateCopy" class="primary-button" type="button">${promptGenerateButtonLabel()}</button></div>
-    <div class="layout"><section class="card field-grid">
-      ${generationModeView(mode)}
-      <div class="prompt-rule-note">\uc0dd\uc131 \uaddc\uce59\uc740 \uc774\ubbf8\uc9c0 \uc0dd\uc131 AI\uac00 \uc9c0\ucf1c\uc57c \ud560 \uc870\uac74\uc774\uba70, \ub3d9\uc2dc\uc5d0 AI\uc5d0\uac8c \uc804\ub2ec\ud558\ub294 \ud504\ub86c\ud504\ud2b8 \uc124\uacc4 \uae30\uc900\uc785\ub2c8\ub2e4.</div>
-      <div class="field-grid two">${field("prompt", "role", "\uc5ed\ud560")}${field("prompt", "task", "\uacfc\uc5c5")}</div>
-      <div class="field-grid two">${field("prompt", "audience", "\ub300\uc0c1")}${field("prompt", "context", "\ub9e5\ub77d")}</div>
-      <div class="field-grid two">${field("prompt", "format", "\ud615\uc2dd")}${field("prompt", "style", "\uc2a4\ud0c0\uc77c")}</div>
-      ${field("prompt", "rules", "\uc0dd\uc131 \uaddc\uce59", true)}
-    </section><aside class="preview-card field-grid">
-      ${field("copy", "title", "\uc81c\ubaa9")}
-      ${field("copy", "subtitle", "\ubcf4\uc870 \ubb38\uad6c")}
-      ${field("copy", "cta", "\ud589\ub3d9 \uc720\ub3c4 \ubb38\uad6c")}
-      ${promptResultView(mode)}
-      <button id="copyPrompt" class="ghost-button" type="button">\uc804\uccb4 \ud504\ub86c\ud504\ud2b8 \ubcf5\uc0ac</button>
-      <p class="notice">API\uac00 \uc2e4\ud328\ud558\uba74 \uc704 \ubc84\ud2bc\uc73c\ub85c \ubcf5\uc0ac\ud55c \ub0b4\uc6a9\uc744 ChatGPT\ub098 Gemini\uc5d0 \ubd99\uc5ec\ub123\uc5b4 \uac19\uc740 \uc804\ubb38 \ud504\ub86c\ud504\ud2b8\ub97c \ub9cc\ub4e4 \uc218 \uc788\uc2b5\ub2c8\ub2e4.</p>
-    </aside></div>${promptTheoryView()}`;
+    return `<div class="step-title"><div><span class="badge">2\ub2e8\uacc4</span><h2>\ud504\ub86c\ud504\ud2b8 \uc124\uacc4</h2><p>AI\uac00 \uc774\ud574\ud560 \uc218 \uc788\ub3c4\ub85d \ucf58\ud150\uce20\uc640 \ub514\uc790\uc778 \uc694\uad6c\uc0ac\ud56d\uc744 \uc124\uacc4\ud569\ub2c8\ub2e4.</p></div></div>
+    <div class="prompt-workflow">
+      <section class="card field-grid">
+        <div class="section-heading"><span class="badge">SECTION 1</span><h3>\ucf58\ud150\uce20 \uc815\ubcf4 \uc785\ub825</h3><p>\uacf5\uc2dd \uc790\ub8cc\ub97c \ud655\uc778\ud558\uace0 \uce74\ub4dc\ub274\uc2a4 \uc81c\uc791\uc5d0 \ud544\uc694\ud55c \uc815\ubcf4\ub97c \uc785\ub825\ud558\uc138\uc694. AI\ub294 \uc785\ub825\ub41c \uc815\ubcf4\ub97c \uae30\ubc18\uc73c\ub85c \ubb38\uad6c\uc640 \ub514\uc790\uc778 \ud504\ub86c\ud504\ud2b8\ub97c \uc0dd\uc131\ud569\ub2c8\ub2e4.</p></div>
+        ${field("contentInfo", "officialInfo", "\uacf5\uc2dd \uc790\ub8cc \ud655\uc778 \ub0b4\uc6a9", true, "\uc608) \uae40\ud3ec\ubb38\ud654\uc7ac\ub2e8\uc5d0\uc11c \uc6b4\uc601\ud558\ub294 \uc2dc\ubbfc \ub300\uc0c1 \uc608\uc220\uad50\uc721 \ud504\ub85c\uadf8\ub7a8.\\n\uac00\uc871\uacfc \ud559\uc0dd\uc774 \ucc38\uc5ec \uac00\ub2a5\ud55c \ubb38\ud654 \uccb4\ud5d8 \ud504\ub85c\uadf8\ub7a8 \uc81c\uacf5.")}
+        ${field("contentInfo", "programInfo", "\ud575\uc2ec \ud504\ub85c\uadf8\ub7a8 \ub0b4\uc6a9", true, "\uc608) \ubbf8\uc220 \uccb4\ud5d8, \ucc3d\uc791 \ud65c\ub3d9, \ubb38\ud654\uc608\uc220 \uad50\uc721 \ud504\ub85c\uadf8\ub7a8 \uc6b4\uc601")}
+        <div class="field-grid two">${field("contentInfo", "audience", "\ub300\uc0c1 \uc0ac\uc6a9\uc790", false, "\uc608) \uae40\ud3ec \uc2dc\ubbfc \uac00\uc871, \ud559\uc0dd, \ubb38\ud654 \uccb4\ud5d8 \uad00\uc2ec\uc790")}${field("contentInfo", "ctaInfo", "\uc2e0\uccad \ubc29\ubc95/CTA \uc815\ubcf4", false, "\uc608) \uae40\ud3ec\ubb38\ud654\uc7ac\ub2e8 \uacf5\uc2dd \ud648\ud398\uc774\uc9c0 \ud655\uc778 \ubc0f \uc2e0\uccad")}</div>
+        ${field("contentInfo", "benefits", "\uc8fc\uc694 \ud2b9\uc9d5/\ud61c\ud0dd", true, "\uc608) \uc9c1\uc811 \ucc38\uc5ec\ud558\ub294 \uccb4\ud5d8\ud615 \ud504\ub85c\uadf8\ub7a8,\\n\uac00\uc871\uacfc \ud568\uaed8 \uc990\uae30\ub294 \ubb38\ud654 \ud65c\ub3d9")}
+      </section>
+      <section class="card field-grid">
+        <div class="section-heading"><span class="badge">SECTION 2</span><h3>AI \uce74\ub4dc\ub274\uc2a4 \ubb38\uad6c \uc0dd\uc131</h3><p>\uc774\ubbf8\uc9c0\uac00 \uc544\ub2c8\ub77c \uce74\ub4dc\ub274\uc2a4\uc5d0 \ub4e4\uc5b4\uac08 \uc81c\ubaa9, \ubcf8\ubb38, \ud589\ub3d9 \uc720\ub3c4 \ubb38\uad6c\ub97c \uba3c\uc800 \uc124\uacc4\ud569\ub2c8\ub2e4.</p></div>
+        <button id="generateCopyText" class="primary-button" type="button">${copyTextButtonLabel()}</button>
+        ${field("copyText", "title", "\uc81c\ubaa9", true)}
+        ${field("copyText", "body", "\ubcf8\ubb38", true)}
+        ${field("copyText", "cta", "\ud589\ub3d9 \uc720\ub3c4 \ubb38\uad6c")}
+      </section>
+      <section class="card field-grid">
+        <div class="section-heading"><span class="badge">SECTION 3</span><h3>AI \uc774\ubbf8\uc9c0 \uc81c\uc791 \ud504\ub86c\ud504\ud2b8 \uc0dd\uc131</h3><p>\ucf58\ud150\uce20 \uc815\ubcf4\uc640 \ubb38\uad6c, \ub514\uc790\uc778 \uc870\uac74\uc744 \ud569\uccd0 Flux/GPT \uc774\ubbf8\uc9c0 \uc81c\uc791\uc5d0 \ub118\uae38 \uc804\ubb38 \ud504\ub86c\ud504\ud2b8\ub97c \ub9cc\ub4ed\ub2c8\ub2e4.</p></div>
+        ${generationModeView(mode)}
+        <div class="prompt-rule-note">\uc0dd\uc131 \uaddc\uce59\uc740 \uc774\ubbf8\uc9c0 \uc0dd\uc131 AI\uac00 \uc9c0\ucf1c\uc57c \ud560 \uc870\uac74\uc774\uba70, \ub3d9\uc2dc\uc5d0 AI\uc5d0\uac8c \uc804\ub2ec\ud558\ub294 \ud504\ub86c\ud504\ud2b8 \uc124\uacc4 \uae30\uc900\uc785\ub2c8\ub2e4.</div>
+        <div class="field-grid two">${field("prompt", "role", "\uc5ed\ud560")}${field("prompt", "task", "\uacfc\uc5c5")}</div>
+        <div class="field-grid two">${field("prompt", "audience", "\ub300\uc0c1")}${field("prompt", "context", "\ub9e5\ub77d")}</div>
+        <div class="field-grid two">${field("prompt", "format", "\ud615\uc2dd")}${field("prompt", "style", "\uc2a4\ud0c0\uc77c")}</div>
+        ${field("prompt", "rules", "\uc0dd\uc131 \uaddc\uce59", true)}
+        <button id="generateCopy" class="primary-button" type="button">${promptGenerateButtonLabel()}</button>
+        ${promptResultView(mode)}
+        <button id="copyPrompt" class="ghost-button" type="button">\uc804\uccb4 \ud504\ub86c\ud504\ud2b8 \ubcf5\uc0ac</button>
+        <p class="notice">API\uac00 \uc2e4\ud328\ud558\uba74 \uc704 \ubc84\ud2bc\uc73c\ub85c \ubcf5\uc0ac\ud55c \ub0b4\uc6a9\uc744 ChatGPT\ub098 Gemini\uc5d0 \ubd99\uc5ec\ub123\uc5b4 \uac19\uc740 \uc804\ubb38 \ud504\ub86c\ud504\ud2b8\ub97c \ub9cc\ub4e4 \uc218 \uc788\uc2b5\ub2c8\ub2e4.</p>
+      </section>
+    </div>${contentTheoryView()}${promptTheoryView()}`;
   }
 
   function generationModeView(mode) {
@@ -454,7 +470,13 @@
   function promptGenerateButtonLabel() {
     if (project.copy.promptStatus === "done") return "\u2713 \ud504\ub86c\ud504\ud2b8 \uc0dd\uc131 \uc644\ub8cc";
     if (project.copy.promptStatus === "error") return "\u26a0 \uc0dd\uc131 \uc2e4\ud328";
-    return "\u2728 AI \ud504\ub86c\ud504\ud2b8 \uc0dd\uc131";
+    return "\u2728 AI \uc774\ubbf8\uc9c0 \ud504\ub86c\ud504\ud2b8 \uc0dd\uc131";
+  }
+
+  function copyTextButtonLabel() {
+    if (project.copyText.status === "done") return "\u2713 \ubb38\uad6c \uc0dd\uc131 \uc644\ub8cc";
+    if (project.copyText.status === "error") return "\u26a0 \ubb38\uad6c \uc0dd\uc131 \uc2e4\ud328";
+    return "\u2728 \uce74\ub4dc\ub274\uc2a4 \ubb38\uad6c \uc0dd\uc131";
   }
 
   function fluxNegativeDefault() {
@@ -462,7 +484,7 @@
   }
 
   function gptNegativeDefault() {
-    return "Do not create:\n- incorrect Korean text\n- fake dates or information\n- unnecessary logos\n- unreadable typography\n- excessive decorative elements";
+    return "Do not create:\n- Korean letters or text inside the image\n- fake dates or information\n- unnecessary logos\n- unreadable typography\n- excessive decorative elements";
   }
 
   function oldPromptResultView(mode) {
@@ -520,6 +542,18 @@
       <div class="planning-theory-list">${items.map(theoryAccordion).join("")}</div>
       <div class="planning-checklist"><strong>프롬프트 설계 체크리스트</strong><ul><li>역할(Persona)</li><li>과업(Task)</li><li>맥락(Context)</li><li>대상(Target Audience)</li><li>형식(Format)</li><li>스타일·어조(Tone & Style)</li></ul></div>
       <p class="theory-source">참고자료: Norman, D. A. (1988). / White, J. et al. (2023). / Liu, P. et al. (2023). / OpenAI Prompt Engineering Guide.</p>
+    </details>`;
+  }
+
+  function contentTheoryView() {
+    return `<details class="learning-panel">
+      <summary><span>\ud83d\udcd8</span><strong>\uc65c \uacf5\uc2dd \uc815\ubcf4\ub97c \uba3c\uc800 \uc785\ub825\ud574\uc57c \ud560\uae4c\uc694?</strong><span aria-hidden="true">\u203a</span></summary>
+      <div class="learning-content">
+        <p>\uc0dd\uc131\ud615 AI\ub294 \uc785\ub825\ub41c \uc815\ubcf4\ub97c \uae30\ubc18\uc73c\ub85c \uacb0\uacfc\ub97c \uc0dd\uc131\ud569\ub2c8\ub2e4.</p>
+        <p>\ub530\ub77c\uc11c \uc815\ud655\ud55c \uce74\ub4dc\ub274\uc2a4\ub97c \ub9cc\ub4e4\uae30 \uc704\ud574\uc11c\ub294 \uba3c\uc800 \uacf5\uc2dd \uc790\ub8cc\ub97c \ud655\uc778\ud558\uace0 \ud575\uc2ec \uc815\ubcf4\ub97c \uc815\ub9ac\ud574\uc57c \ud569\ub2c8\ub2e4.</p>
+        <div class="prompt-rule-note">\uc815\ubcf4 \ud655\uc778 \u2192 \ud575\uc2ec \ub0b4\uc6a9 \uc815\ub9ac \u2192 \uba54\uc2dc\uc9c0 \uc124\uacc4 \u2192 \uc774\ubbf8\uc9c0 \uc81c\uc791</div>
+        <p>AI\ub294 \uc815\ubcf4\ub97c \ub300\uc2e0 \uc870\uc0ac\ud558\ub294 \ub3c4\uad6c\uac00 \uc544\ub2c8\ub77c, \uc815\ub9ac\ub41c \uc815\ubcf4\ub97c \ud6a8\uacfc\uc801\uc73c\ub85c \ud45c\ud604\ud558\ub294 \ub3c4\uad6c\uc785\ub2c8\ub2e4.</p>
+      </div>
     </details>`;
   }
 
@@ -690,6 +724,14 @@
     dom.main.querySelectorAll("[data-field]").forEach((input) => input.addEventListener("input", () => {
       const [group, key] = input.dataset.field.split(".");
       project[group][key] = input.value;
+      if (group === "contentInfo") {
+        project.copyText.status = "";
+        project.copy.promptStatus = "";
+      }
+      if (group === "copyText") {
+        syncCopyFromCopyText();
+        project.copy.promptStatus = "";
+      }
       if (group === "prompt") project.copy.promptStatus = "";
       debounceSave();
     }));
@@ -699,6 +741,7 @@
     }));
     dom.main.querySelectorAll("[data-example-select]").forEach((button) => button.addEventListener("click", () => selectTopicExample(button.dataset.exampleSelect)));
     dom.main.querySelectorAll("[data-generation-mode]").forEach((button) => button.addEventListener("click", () => setGenerationMode(button.dataset.generationMode)));
+    dom.main.querySelector("#generateCopyText")?.addEventListener("click", generateCopyText);
     dom.main.querySelector("#generateCopy")?.addEventListener("click", generateCopy);
     dom.main.querySelector("#copyPrompt")?.addEventListener("click", copyGeneratedPrompt);
     dom.main.querySelector("#resetProject")?.addEventListener("click", resetProject);
@@ -732,7 +775,8 @@
     }
     let data = null;
     try {
-      data = await post("/api/card-news/generate-copy", { ...project, planning: project.planning, promptDesign: project.prompt, generationMode: project.prompt.generationMode });
+      syncCopyFromCopyText();
+      data = await post("/api/card-news/generate-copy", { ...project, action: "image_prompt", contentInfo: project.contentInfo, copyText: project.copyText, planning: project.planning, promptDesign: project.prompt, generationMode: project.prompt.generationMode });
     } finally {
       if (button) button.disabled = false;
     }
@@ -749,6 +793,47 @@
     loadCopy();
     save();
     render();
+  }
+
+  async function generateCopyText() {
+    syncContentInfoFromPlanning();
+    const button = dom.main.querySelector("#generateCopyText");
+    if (button) {
+      button.disabled = true;
+      button.textContent = "\u23f3 \uce74\ub4dc\ub274\uc2a4 \ubb38\uad6c \uc0dd\uc131 \uc911...";
+    }
+    let data = null;
+    try {
+      data = await post("/api/card-news/generate-copy", { ...project, action: "copy_text", contentInfo: project.contentInfo, planning: project.planning });
+    } finally {
+      if (button) button.disabled = false;
+    }
+    if (!data?.copyText) {
+      project.copyText.status = "error";
+      dom.saveStatus.textContent = "\ubb38\uad6c \uc0dd\uc131 \uc2e4\ud328. \uc785\ub825\ud55c \uc815\ubcf4\ub97c \ud655\uc778\ud558\uace0 \ub2e4\uc2dc \uc2dc\ub3c4\ud558\uc138\uc694.";
+      save(false);
+      render();
+      return;
+    }
+    project.copyText = { ...project.copyText, ...data.copyText, status: "done" };
+    syncCopyFromCopyText();
+    project.copy.promptStatus = "";
+    save();
+    render();
+  }
+
+  function syncCopyFromCopyText() {
+    project.copy.title = project.copyText.title || project.copy.title;
+    project.copy.subtitle = project.copyText.body || project.copy.subtitle;
+    project.copy.cta = project.copyText.cta || project.copy.cta;
+  }
+
+  function syncContentInfoFromPlanning() {
+    project.contentInfo.officialInfo = project.contentInfo.officialInfo || project.planning.facts || "";
+    project.contentInfo.programInfo = project.contentInfo.programInfo || project.planning.message || "";
+    project.contentInfo.audience = project.contentInfo.audience || project.planning.audience || "";
+    project.contentInfo.ctaInfo = project.contentInfo.ctaInfo || project.planning.sourceUrl || project.planning.sourceLabel || "";
+    project.contentInfo.benefits = project.contentInfo.benefits || project.planning.purpose || "";
   }
 
   async function copyGeneratedPrompt() {
@@ -915,10 +1000,18 @@
   }
 
   function gptIntegratedRules() {
-    return "\ud655\uc778\ub41c \uc815\ubcf4\ub9cc \uc0ac\uc6a9\ud55c\ub2e4.\n\uc774\ubbf8\uc9c0\uc640 \ud14d\uc2a4\ud2b8\uac00 \ud3ec\ud568\ub41c \uc644\uc131\ud615 \uce74\ub4dc\ub274\uc2a4\ub97c \uc81c\uc791\ud55c\ub2e4.\n9:16 \ubaa8\ubc14\uc77c \ud654\uba74 \uae30\uc900\uc73c\ub85c \uad6c\uc131\ud55c\ub2e4.\n\uc81c\ubaa9, \uc124\uba85, \ud589\ub3d9 \uc720\ub3c4 \ubb38\uad6c\uc758 \uc815\ubcf4 \uc704\uacc4\ub97c \uba85\ud655\ud788 \ud55c\ub2e4.\n\ud55c\uad6d\uc5b4 \ud14d\uc2a4\ud2b8\uac00 \uc77d\uae30 \uc27d\uac8c \ud45c\ud604\ub418\ub3c4\ub85d \ud55c\ub2e4.\n\uacfc\uc7a5\ub418\uac70\ub098 \uc874\uc7ac\ud558\uc9c0 \uc54a\ub294 \uc815\ubcf4\ub294 \uc0dd\uc131\ud558\uc9c0 \uc54a\ub294\ub2e4.";
+    return "\ud655\uc778\ub41c \uc815\ubcf4\ub9cc \uc0ac\uc6a9\ud55c\ub2e4.\nGPT \uc774\ubbf8\uc9c0\ub294 \ubc30\uacbd\uacfc \uc2dc\uac01 \uc694\uc18c\ub97c \uc81c\uc791\ud558\uace0, \ud55c\uae00 \uc81c\ubaa9\u00b7\ubcf8\ubb38\u00b7CTA\ub294 \ud654\uba74\uc5d0\uc11c \uc624\ubc84\ub808\uc774\ud55c\ub2e4.\n9:16 \ubaa8\ubc14\uc77c \ud654\uba74\uc5d0 \ucd5c\uc801\ud654\ud55c\ub2e4.\n\uc81c\ubaa9, \ubcf8\ubb38, \ud589\ub3d9 \uc720\ub3c4 \ubb38\uad6c\uac00 \uc62c\ub77c\uac08 \uc548\uc804 \uc601\uc5ed\uc744 \ud655\ubcf4\ud55c\ub2e4.\n\uc774\ubbf8\uc9c0 \uc548\uc5d0 \ud55c\uae00, \uc601\ubb38, \uc22b\uc790, \ub85c\uace0\ub97c \uc9c1\uc811 \uadf8\ub9ac\uc9c0 \uc54a\ub294\ub2e4.\n\uacfc\uc7a5\ub418\uac70\ub098 \uc874\uc7ac\ud558\uc9c0 \uc54a\ub294 \uc815\ubcf4\ub294 \uc0dd\uc131\ud558\uc9c0 \uc54a\ub294\ub2e4.";
   }
 
   function ensurePromptDefaults() {
+    project.contentInfo.officialInfo = project.contentInfo.officialInfo || project.planning.facts || "";
+    project.contentInfo.programInfo = project.contentInfo.programInfo || project.planning.message || "";
+    project.contentInfo.audience = project.contentInfo.audience || project.planning.audience || "";
+    project.contentInfo.benefits = project.contentInfo.benefits || project.planning.purpose || "";
+    project.contentInfo.ctaInfo = project.contentInfo.ctaInfo || project.planning.sourceLabel || "";
+    project.copyText.title = project.copyText.title || project.copy.title || "";
+    project.copyText.body = project.copyText.body || project.copy.subtitle || "";
+    project.copyText.cta = project.copyText.cta || project.copy.cta || "";
     project.prompt.generationMode = project.prompt.generationMode || project.copy.generationMode || "flux";
     project.prompt.role = project.prompt.role || "\uce74\ub4dc\ub274\uc2a4 \uae30\ud68d\uc790";
     project.prompt.task = project.prompt.task || "\uc9c0\uc5ed \ud589\uc0ac \ud64d\ubcf4\uc6a9 \uc20f\ud3fc \uce74\ub4dc\ub274\uc2a4 \uc81c\uc791";
@@ -955,7 +1048,7 @@
     ensurePromptDefaults();
     const mode = project.prompt.generationMode === "gpt_integrated" ? "GPT \ud1b5\ud569 \uce74\ub4dc \uc81c\uc791" : "Flux \uc774\ubbf8\uc9c0 \uc0dd\uc131 + \ud14d\uc2a4\ud2b8 \uc624\ubc84\ub808\uc774";
     const modeInstruction = project.prompt.generationMode === "gpt_integrated"
-      ? "\uc644\uc131\ud615 \uce74\ub4dc\ub274\uc2a4\ub97c \uc704\ud55c IMAGE PROMPT\ub97c \uc791\uc131\ud574 \uc918. \uc81c\ubaa9 \uc704\uce58, \ubcf8\ubb38 \uc704\uce58, CTA \uc704\uce58, \ud14d\uc2a4\ud2b8 \uc704\uacc4, \ubaa8\ubc14\uc77c \uac00\ub3c5\uc131, \ud55c\uad6d\uc5b4 \ud14d\uc2a4\ud2b8 \ud3ec\ud568 \uc870\uac74\uc744 \ubc18\uc601\ud574 \uc918."
+      ? "GPT \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 9:16 \uce74\ub4dc\ub274\uc2a4 \uc2dc\uac01 \ubc30\uacbd IMAGE PROMPT\ub97c \uc791\uc131\ud574 \uc918. \ud55c\uae00 \uc81c\ubaa9\u00b7\ubcf8\ubb38\u00b7CTA\ub294 \uc774\ud6c4 HTML/canvas\uc5d0\uc11c \uc62c\ub9b4 \uac83\uc774\ubbc0\ub85c, \uc774\ubbf8\uc9c0 \uc548\uc5d0 \ubb38\uc790\ub97c \uadf8\ub9ac\uc9c0 \ub9d0\uace0 \ud14d\uc2a4\ud2b8 \uc548\uc804 \uc601\uc5ed\ub9cc \ud655\ubcf4\ud574 \uc918."
       : "\ud14d\uc2a4\ud2b8 \uc5c6\ub294 Flux \uc774\ubbf8\uc9c0\ub97c \uc704\ud55c IMAGE PROMPT\uc640 NEGATIVE PROMPT\ub97c \uc791\uc131\ud574 \uc918. 9:16 vertical composition, clear empty space for text overlay, no text, no letters, no numbers, no logo, no watermark \uc870\uac74\uc744 \ubc18\ub4dc\uc2dc \ubc18\uc601\ud574 \uc918.";
     return [
       "\ub108\ub294 AI \uc774\ubbf8\uc9c0 \uc0dd\uc131 \ud504\ub86c\ud504\ud2b8 \uc124\uacc4 \uc804\ubb38\uac00\uc774\uba70, \uc20f\ud3fc \ucf58\ud150\uce20\uc640 \uce74\ub4dc\ub274\uc2a4 \uc81c\uc791 \uc804\ubb38\uac00\uc774\ub2e4.",
@@ -973,6 +1066,18 @@
       `\ubaa9\uc801: ${project.planning.purpose}`,
       `\ud575\uc2ec \uba54\uc2dc\uc9c0: ${project.planning.message}`,
       `\ud655\uc778\ub41c \uc0ac\uc2e4: ${project.planning.facts}`,
+      "",
+      "\ucf58\ud150\uce20 \uc815\ubcf4:",
+      `\uacf5\uc2dd \uc790\ub8cc \ud655\uc778 \ub0b4\uc6a9: ${project.contentInfo.officialInfo}`,
+      `\ud575\uc2ec \ud504\ub85c\uadf8\ub7a8 \ub0b4\uc6a9: ${project.contentInfo.programInfo}`,
+      `\ub300\uc0c1 \uc0ac\uc6a9\uc790: ${project.contentInfo.audience}`,
+      `\uc8fc\uc694 \ud2b9\uc9d5/\ud61c\ud0dd: ${project.contentInfo.benefits}`,
+      `\uc2e0\uccad \ubc29\ubc95/CTA: ${project.contentInfo.ctaInfo}`,
+      "",
+      "\uce74\ub4dc\ub274\uc2a4 \ubb38\uad6c:",
+      `\uc81c\ubaa9: ${project.copyText.title || project.copy.title}`,
+      `\ubcf8\ubb38: ${project.copyText.body || project.copy.subtitle}`,
+      `\ud589\ub3d9 \uc720\ub3c4 \ubb38\uad6c: ${project.copyText.cta || project.copy.cta}`,
       project.planning.sourceLabel ? `\uacf5\uc2dd \ucd9c\ucc98: ${project.planning.sourceLabel}` : "",
       project.planning.sourceUrl ? `\uacf5\uc2dd \ub9c1\ud06c: ${project.planning.sourceUrl}` : "",
       "",
