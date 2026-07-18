@@ -146,6 +146,10 @@
     mockNotice: "\ud604\uc7ac \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc740 \ud14c\uc2a4\ud2b8 \ubaa8\ub4dc\uc785\ub2c8\ub2e4.",
     limit: "\uc774 \uc0dd\uc131 \ubc29\uc2dd\uc740 \uc774\ubbf8 \uc0ac\uc6a9\ud588\uc2b5\ub2c8\ub2e4.",
   };
+  const FONT_KO_OPTIONS = ["Noto Sans KR", "Pretendard", "Nanum Gothic", "Malgun Gothic", "Gowun Dodum"];
+  const FONT_EN_OPTIONS = ["Inter", "Arial", "Georgia", "Impact", "Trebuchet MS"];
+  const DEFAULT_FONT_KO = "Noto Sans KR";
+  const DEFAULT_FONT_EN = "Inter";
   const DEFAULT_PROJECT = {
     projectId: "",
     currentStep: 0,
@@ -154,7 +158,7 @@
     prompt: { generationMode: "flux", role: "\uce74\ub4dc\ub274\uc2a4 \uae30\ud68d\uc790", task: "\uc9c0\uc5ed \ud589\uc0ac \ud64d\ubcf4\uc6a9 \uc20f\ud3fc \uce74\ub4dc\ub274\uc2a4 \uc81c\uc791", audience: "", context: "", format: "9:16 \uc138\ub85c\ud615 \ubaa8\ubc14\uc77c \uce74\ub4dc\ub274\uc2a4", style: "\uce5c\uadfc\ud558\uace0 \ucc3d\uc758\uc801\uc778 \ud64d\ubcf4 \uc2a4\ud0c0\uc77c", rules: fluxRules() },
     copyText: { title: "", body: "", cta: "", status: "" },
     copy: { title: "", subtitle: "", cta: "", fluxPrompt: "", gptPrompt: "", negativePrompt: "", metaPrompt: "", generationMode: "flux", promptStatus: "" },
-    flux: { used: false, imageUrl: "", finalImage: "", status: "", message: "", layers: [{ id: "title", text: "", x: 80, y: 120, size: 58, color: "#0f172a" }, { id: "subtitle", text: "", x: 80, y: 420, size: 36, color: "#1e293b" }, { id: "cta", text: "", x: 80, y: 820, size: 30, color: "#ffffff" }] },
+    flux: { used: false, imageUrl: "", finalImage: "", status: "", message: "", layers: [{ id: "title", text: "", x: 80, y: 120, size: 58, color: "#0f172a", fontKo: DEFAULT_FONT_KO, fontEn: DEFAULT_FONT_EN }, { id: "subtitle", text: "", x: 80, y: 420, size: 36, color: "#1e293b", fontKo: DEFAULT_FONT_KO, fontEn: DEFAULT_FONT_EN }, { id: "cta", text: "", x: 80, y: 820, size: 30, color: "#ffffff", fontKo: DEFAULT_FONT_KO, fontEn: DEFAULT_FONT_EN }] },
     gpt: { used: false, imageUrl: "", finalImage: "", status: "", message: "" },
     final: { selected: "", reflection: "", submittedAt: "" },
   };
@@ -173,6 +177,8 @@
   let saveTimer = null;
   let isRemoteLoaded = false;
   let userNavigatedBeforeRemoteRestore = false;
+  let activeLayerId = "title";
+  let draggingLayerId = "";
 
   function tenantId() {
     return window.LoreAXTenant?.resolveTenantId?.() || "default";
@@ -221,8 +227,21 @@
       out[key] = { ...base[key], ...(data?.[key] || {}) };
     });
     if (!Array.isArray(out.flux.layers)) out.flux.layers = base.flux.layers;
+    out.flux.layers = out.flux.layers.map((layer, index) => normalizeLayer(layer, base.flux.layers[index] || base.flux.layers[0]));
     out.projectId = out.projectId || readProjectId();
     return out;
+  }
+
+  function normalizeLayer(layer, fallback) {
+    return {
+      ...fallback,
+      ...layer,
+      x: Number(layer?.x ?? fallback?.x ?? 80),
+      y: Number(layer?.y ?? fallback?.y ?? 120),
+      size: Number(layer?.size ?? fallback?.size ?? 42),
+      fontKo: layer?.fontKo || fallback?.fontKo || DEFAULT_FONT_KO,
+      fontEn: layer?.fontEn || fallback?.fontEn || DEFAULT_FONT_EN,
+    };
   }
 
   function save(remote = true) {
@@ -683,7 +702,25 @@
   }
 
   function layerView(layer) {
-    return `<div class="layer-item" data-layer="${layer.id}"><label>${layer.id}<textarea data-layer-field="text">${esc(layer.text)}</textarea></label><div class="field-grid two"><label>X<input type="range" min="20" max="900" value="${layer.x}" data-layer-field="x" /></label><label>Y<input type="range" min="20" max="960" value="${layer.y}" data-layer-field="y" /></label><label>Size<input type="range" min="20" max="90" value="${layer.size}" data-layer-field="size" /></label><label>Color<input type="color" value="${layer.color}" data-layer-field="color" /></label></div></div>`;
+    return `<div class="layer-item ${activeLayerId === layer.id ? "is-active" : ""}" data-layer="${layer.id}">
+      <div class="layer-heading"><strong>${layerName(layer.id)}</strong><span>${activeLayerId === layer.id ? "\uc120\ud0dd\ub428" : "\ud074\ub9ad\ud558\uc5ec \uc120\ud0dd"}</span></div>
+      <label>\uae00\uc528<textarea data-layer-field="text">${esc(layer.text)}</textarea></label>
+      <div class="field-grid two">
+        <label>\ud55c\uae00 \ud3f0\ud2b8<select data-layer-field="fontKo">${fontOptions(FONT_KO_OPTIONS, layer.fontKo || DEFAULT_FONT_KO)}</select></label>
+        <label>\uc601\ubb38 \ud3f0\ud2b8<select data-layer-field="fontEn">${fontOptions(FONT_EN_OPTIONS, layer.fontEn || DEFAULT_FONT_EN)}</select></label>
+        <label>\uae00\uc528 \ud06c\uae30<input type="number" min="12" max="180" step="1" value="${Number(layer.size) || 42}" data-layer-field="size" /></label>
+        <label>\uc0c9\uc0c1<input type="color" value="${layer.color}" data-layer-field="color" /></label>
+      </div>
+      <p class="layer-hint">\uc704\uce58: \uc774 \ub808\uc774\uc5b4\ub97c \uc120\ud0dd\ud55c \ub4a4 \uc67c\ucabd \uce94\ubc84\uc2a4\uc5d0\uc11c \ud074\ub9ad\ud558\uac70\ub098 \ub4dc\ub798\uadf8\ud558\uc138\uc694.</p>
+    </div>`;
+  }
+
+  function layerName(id) {
+    return ({ title: "\uc81c\ubaa9", subtitle: "\ubcf8\ubb38", cta: "\ud589\ub3d9 \uc720\ub3c4 \ubb38\uad6c" })[id] || id;
+  }
+
+  function fontOptions(options, selected) {
+    return options.map((font) => `<option value="${esc(font)}" ${font === selected ? "selected" : ""}>${esc(font)}</option>`).join("");
   }
 
   function gptView() {
@@ -760,10 +797,74 @@
     }));
     dom.main.querySelectorAll("[data-layer-field]").forEach((input) => input.addEventListener("input", () => {
       const layer = project.flux.layers.find((item) => item.id === input.closest("[data-layer]").dataset.layer);
-      layer[input.dataset.layerField] = input.type === "range" ? Number(input.value) : input.value;
+      activeLayerId = layer.id;
+      layer[input.dataset.layerField] = input.type === "number" ? Number(input.value) : input.value;
       debounceSave();
       drawCanvas();
+      markActiveLayer();
     }));
+    dom.main.querySelectorAll("[data-layer]").forEach((item) => item.addEventListener("click", () => {
+      activeLayerId = item.dataset.layer;
+      markActiveLayer();
+    }));
+    const canvas = dom.main.querySelector("#cardCanvas");
+    if (canvas) {
+      canvas.addEventListener("pointerdown", (event) => {
+        if (!project.flux.imageUrl) return;
+        draggingLayerId = activeLayerId || project.flux.layers[0]?.id || "";
+        canvas.setPointerCapture?.(event.pointerId);
+        moveLayerToPointer(event, draggingLayerId);
+      });
+      canvas.addEventListener("pointermove", (event) => {
+        if (!draggingLayerId || !project.flux.imageUrl) return;
+        moveLayerToPointer(event, draggingLayerId);
+      });
+      canvas.addEventListener("pointerup", (event) => {
+        if (draggingLayerId) {
+          moveLayerToPointer(event, draggingLayerId);
+          save(false);
+        }
+        draggingLayerId = "";
+      });
+      canvas.addEventListener("pointercancel", () => {
+        draggingLayerId = "";
+      });
+    }
+  }
+
+  function markActiveLayer() {
+    dom.main.querySelectorAll("[data-layer]").forEach((item) => {
+      item.classList.toggle("is-active", item.dataset.layer === activeLayerId);
+      const label = item.querySelector(".layer-heading span");
+      if (label) label.textContent = item.dataset.layer === activeLayerId ? "\uc120\ud0dd\ub428" : "\ud074\ub9ad\ud558\uc5ec \uc120\ud0dd";
+    });
+  }
+
+  function moveLayerToPointer(event, layerId) {
+    const canvas = event.currentTarget;
+    const layer = project.flux.layers.find((item) => item.id === layerId);
+    if (!canvas || !layer) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 1080;
+    const y = ((event.clientY - rect.top) / rect.height) * 1920;
+    layer.x = Math.round(clamp(x, 20, 1000));
+    layer.y = Math.round(clamp(y, 40, 1840));
+    activeLayerId = layer.id;
+    syncLayerPositionControls(layer);
+    drawCanvas();
+    debounceSave();
+    markActiveLayer();
+  }
+
+  function syncLayerPositionControls(layer) {
+    const item = dom.main.querySelector(`[data-layer="${layer.id}"]`);
+    if (!item) return;
+    item.dataset.x = layer.x;
+    item.dataset.y = layer.y;
+  }
+
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, Number(value) || min));
   }
 
   async function generateCopy() {
@@ -1203,10 +1304,17 @@
   function drawTextLayers(ctx) {
     project.flux.layers.forEach((layer) => {
       if (!layer.text) return;
-      ctx.font = `900 ${layer.size}px Arial`;
+      const size = Number(layer.size) || 42;
+      ctx.font = `900 ${size}px ${fontStack(layer)}`;
       ctx.fillStyle = layer.color;
-      wrap(ctx, layer.text, layer.x, layer.y, 820, layer.size * 1.25);
+      wrap(ctx, layer.text, layer.x, layer.y, 820, size * 1.25);
     });
+  }
+
+  function fontStack(layer) {
+    const ko = layer.fontKo || DEFAULT_FONT_KO;
+    const en = layer.fontEn || DEFAULT_FONT_EN;
+    return `"${ko}", "${en}", "Malgun Gothic", Arial, sans-serif`;
   }
 
   function wrap(ctx, text, x, y, max, lineHeight) {

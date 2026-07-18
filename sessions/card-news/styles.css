@@ -850,6 +850,8 @@ textarea {
   border-radius: 18px;
   background: #fff;
   box-shadow: 0 14px 40px rgba(15, 35, 70, 0.18);
+  cursor: crosshair;
+  touch-action: none;
 }
 
 .layer-list {
@@ -862,6 +864,38 @@ textarea {
   border-radius: 16px;
   padding: 12px;
   background: #fff;
+}
+
+.layer-item.is-active {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(36, 87, 214, 0.12);
+}
+
+.layer-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.layer-heading strong {
+  color: var(--text);
+  font-size: 15px;
+}
+
+.layer-heading span {
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.layer-hint {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.5;
 }
 
 .compare-grid {
