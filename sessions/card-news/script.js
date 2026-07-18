@@ -413,7 +413,7 @@
           "인간과 컴퓨터의 상호작용(Human Computer Interaction) 관점에서 프롬프트는 사람이 AI에게 의도, 조건, 제한사항을 설명하는 인터페이스입니다.",
           "카드뉴스 제작에서는 주제, 대상, 목적, 핵심 메시지, 꼭 넣어야 할 사실을 먼저 정리해야 AI가 제목과 문구, 이미지 방향을 안정적으로 제안할 수 있습니다.",
         ],
-        source: "Liu, P. et al. (2023). Pre-train, Prompt, and Predict: A Systematic Survey of Prompting Methods in NLP.",
+        source: "Norman, D. A. (1988). The Design of Everyday Things. / Liu, P. et al. (2023). Pre-train, Prompt, and Predict: A Systematic Survey of Prompting Methods in NLP.",
       },
       {
         title: "좋은 프롬프트의 6가지 핵심 요소",
