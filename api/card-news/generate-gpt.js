@@ -77,7 +77,7 @@ async function callOpenAiImage(prompt) {
       body: JSON.stringify({
         model: OPENAI_IMAGE_MODEL,
         prompt: cleanText(prompt, 4000),
-        size: "1024x1024",
+        size: process.env.CARDNEWS_GPT_IMAGE_SIZE || "1024x1536",
         quality: "low",
         output_format: "png",
         n: 1,
@@ -100,7 +100,7 @@ async function callOpenAiImage(prompt) {
 
 function buildOpenAiImagePrompt(planning = {}, copy = {}) {
   return [
-    "Create one square 1024x1024 Korean educational news card.",
+    "Create one 9:16 vertical Korean educational news card.",
     `Title: ${cleanText(copy.title || planning.topic || "news card", 120)}`,
     `Subtitle: ${cleanText(copy.subtitle || planning.message || "", 180)}`,
     `CTA: ${cleanText(copy.cta || "\uc790\uc138\ud788 \ubcf4\uae30", 80)}`,
@@ -120,16 +120,16 @@ function safeProviderError(value) {
 }
 
 function svgDataUrl(title, subtitle, cta) {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
   <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#102a66"/><stop offset="1" stop-color="#2457d6"/></linearGradient></defs>
-  <rect width="1080" height="1080" fill="url(#g)"/>
-  <circle cx="860" cy="170" r="180" fill="#7c3aed" opacity=".45"/>
-  <circle cx="170" cy="900" r="210" fill="#14b8a6" opacity=".45"/>
-  <rect x="86" y="118" width="908" height="812" rx="54" fill="#ffffff" opacity=".94"/>
-  <text x="140" y="250" font-family="Arial" font-size="76" font-weight="900" fill="#0f172a">${escapeXml(title)}</text>
-  <text x="140" y="390" font-family="Arial" font-size="40" font-weight="700" fill="#334155">${escapeXml(subtitle)}</text>
-  <rect x="140" y="760" width="620" height="84" rx="42" fill="#2457d6"/>
-  <text x="178" y="815" font-family="Arial" font-size="34" font-weight="800" fill="#ffffff">${escapeXml(cta)}</text>
+  <rect width="1080" height="1920" fill="url(#g)"/>
+  <circle cx="860" cy="260" r="220" fill="#7c3aed" opacity=".45"/>
+  <circle cx="170" cy="1620" r="270" fill="#14b8a6" opacity=".45"/>
+  <rect x="86" y="160" width="908" height="1480" rx="54" fill="#ffffff" opacity=".94"/>
+  <text x="140" y="330" font-family="Arial" font-size="76" font-weight="900" fill="#0f172a">${escapeXml(title)}</text>
+  <text x="140" y="500" font-family="Arial" font-size="40" font-weight="700" fill="#334155">${escapeXml(subtitle)}</text>
+  <rect x="140" y="1370" width="620" height="96" rx="48" fill="#2457d6"/>
+  <text x="178" y="1432" font-family="Arial" font-size="34" font-weight="800" fill="#ffffff">${escapeXml(cta)}</text>
 </svg>`;
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }

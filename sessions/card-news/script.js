@@ -153,7 +153,7 @@
     prompt: { generationMode: "flux", role: "\uce74\ub4dc\ub274\uc2a4 \uae30\ud68d\uc790", task: "\uc9c0\uc5ed \ud589\uc0ac \ud64d\ubcf4\uc6a9 \uc20f\ud3fc \uce74\ub4dc\ub274\uc2a4 \uc81c\uc791", audience: "", context: "", format: "9:16 \uc138\ub85c\ud615 \ubaa8\ubc14\uc77c \uce74\ub4dc\ub274\uc2a4", style: "\uce5c\uadfc\ud558\uace0 \ucc3d\uc758\uc801\uc778 \ud64d\ubcf4 \uc2a4\ud0c0\uc77c", rules: fluxRules() },
     copy: { title: "", subtitle: "", cta: "", fluxPrompt: "", gptPrompt: "", negativePrompt: "", metaPrompt: "", generationMode: "flux", promptStatus: "" },
     flux: { used: false, imageUrl: "", finalImage: "", status: "", message: "", layers: [{ id: "title", text: "", x: 80, y: 120, size: 58, color: "#0f172a" }, { id: "subtitle", text: "", x: 80, y: 420, size: 36, color: "#1e293b" }, { id: "cta", text: "", x: 80, y: 820, size: 30, color: "#ffffff" }] },
-    gpt: { used: false, imageUrl: "" },
+    gpt: { used: false, imageUrl: "", status: "", message: "" },
     final: { selected: "", reflection: "", submittedAt: "" },
   };
   const dom = {
@@ -652,8 +652,22 @@
   }
 
   function gptView() {
-    return `<div class="step-title"><div><span class="badge">4\ub2e8\uacc4</span><h2>\uc774\ubbf8\uc9c0+\uae00 \ud55c \ubc88\uc5d0 \uc790\ub3d9 \uc81c\uc791</h2></div><button id="generateGpt" class="primary-button" ${project.gpt.used ? "disabled" : ""} type="button">\uce74\ub4dc \ud55c \ubc88\uc5d0 \uc0dd\uc131</button></div>
-    <div class="layout"><section class="card"><h3>\ud655\uc815\ub41c \uae30\ud68d</h3><div class="preview-box">${esc(summary())}</div><h3>\ud1b5\ud569 \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.gptPrompt || buildGptPrompt())}</div></section><aside class="preview-card">${project.gpt.imageUrl ? `<img class="result-image" src="${esc(project.gpt.imageUrl)}" alt="GPT \uc0dd\uc131 \uacb0\uacfc" />` : `<div class="preview-box">\uc544\uc9c1 \uacb0\uacfc\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.</div>`}</aside></div>`;
+    const generateLabel = project.gpt.used ? "\uc774\ubbf8\uc9c0 \uc0dd\uc131 \uc644\ub8cc" : project.gpt.status === "loading" ? "\uc774\ubbf8\uc9c0 \uc0dd\uc131 \uc911..." : "\uc774\ubbf8\uc9c0 \uc0dd\uc131\ud558\uae30";
+    return `<div class="step-title"><div><span class="badge">4\ub2e8\uacc4</span><h2>GPT \uc774\ubbf8\uc9c0 \uc0dd\uc131</h2></div><button id="generateGpt" class="primary-button" ${project.gpt.used || project.gpt.status === "loading" ? "disabled" : ""} type="button">${generateLabel}</button></div>
+    <div class="layout"><section class="card">${gptStatusView()}<h3>\ud655\uc815\ub41c \uae30\ud68d</h3><div class="preview-box">${esc(summary())}</div><h3>GPT \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.gptPrompt || buildGptPrompt())}</div></section><aside class="preview-card">${project.gpt.imageUrl ? `<img class="result-image" src="${esc(project.gpt.imageUrl)}" alt="GPT \uc0dd\uc131 \uacb0\uacfc" />` : `<div class="preview-box">\uc544\uc9c1 \uacb0\uacfc\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.</div>`}</aside></div>`;
+  }
+
+  function gptStatusView() {
+    const hasPrompt = Boolean(project.copy.gptPrompt);
+    const status = project.gpt.status || (project.gpt.used ? "success" : hasPrompt ? "ready" : "waiting");
+    const messages = {
+      waiting: "2\ub2e8\uacc4\uc5d0\uc11c GPT \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 \ud504\ub86c\ud504\ud2b8\ub97c \uba3c\uc800 \uc0dd\uc131\ud558\uc138\uc694.",
+      ready: "2\ub2e8\uacc4 GPT \ud504\ub86c\ud504\ud2b8\ub97c \uac00\uc838\uc654\uc2b5\ub2c8\ub2e4. \uc774\ubbf8\uc9c0 \uc0dd\uc131\ud558\uae30\ub97c \ub204\ub974\uc138\uc694.",
+      loading: "GPT \uc774\ubbf8\uc9c0\ub97c \uc0dd\uc131 \uc911\uc785\ub2c8\ub2e4. \uc7a0\uc2dc\ub9cc \uae30\ub2e4\ub824 \uc8fc\uc138\uc694.",
+      success: "GPT \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc774 \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.",
+      failed: project.gpt.message || "GPT \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. 2\ub2e8\uacc4 \ud504\ub86c\ud504\ud2b8\ub97c \ud655\uc778\ud558\uace0 \ub2e4\uc2dc \uc2dc\ub3c4\ud558\uc138\uc694.",
+    };
+    return `<div class="generation-status is-${status}" role="status">${messages[status] || messages.ready}</div>`;
   }
 
   function finalView() {
@@ -783,11 +797,41 @@
 
   async function generateGpt() {
     if (project.gpt.used) return;
+    project.gpt.status = "loading";
+    project.gpt.message = "";
+    save(false);
+    const button = dom.main.querySelector("#generateGpt");
+    const status = dom.main.querySelector(".generation-status");
+    if (button) {
+      button.disabled = true;
+      button.textContent = "\uc774\ubbf8\uc9c0 \uc0dd\uc131 \uc911...";
+    }
+    if (status) {
+      status.className = "generation-status is-loading";
+      status.textContent = "GPT \uc774\ubbf8\uc9c0\ub97c \uc0dd\uc131 \uc911\uc785\ub2c8\ub2e4. \uc7a0\uc2dc\ub9cc \uae30\ub2e4\ub824 \uc8fc\uc138\uc694.";
+    }
+    await nextPaint();
     window.LoreAXUsage?.trackAiGenerate?.(COURSE_ID, "gpt_integrated_generation", { provider: "gpt" });
     const data = await post("/api/card-news/generate-gpt", { ...project, planning: project.planning, copy: project.copy, prompt: project.copy.gptPrompt, idempotencyKey: `${project.projectId}:gpt_integrated_generation` });
-    if (!data) return window.LoreAXUsage?.trackAiGenerateResult?.(COURSE_ID, false, { provider: "gpt" });
+    if (!data) {
+      window.LoreAXUsage?.trackAiGenerateResult?.(COURSE_ID, false, { provider: "gpt" });
+      project.gpt.status = "failed";
+      project.gpt.message = "GPT \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. 2\ub2e8\uacc4 \ud504\ub86c\ud504\ud2b8\ub97c \ud655\uc778\ud558\uace0 \ub2e4\uc2dc \uc2dc\ub3c4\ud558\uc138\uc694.";
+      save(false);
+      if (button) {
+        button.disabled = false;
+        button.textContent = "\uc774\ubbf8\uc9c0 \uc0dd\uc131\ud558\uae30";
+      }
+      if (status) {
+        status.className = "generation-status is-failed";
+        status.textContent = project.gpt.message;
+      }
+      return;
+    }
     project.gpt.imageUrl = data.imageUrl;
     project.gpt.used = true;
+    project.gpt.status = "success";
+    project.gpt.message = "";
     window.LoreAXUsage?.trackAiGenerateResult?.(COURSE_ID, true, { provider: "gpt" });
     save();
     render();
