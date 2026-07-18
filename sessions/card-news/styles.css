@@ -269,6 +269,130 @@ textarea {
   gap: 10px;
 }
 
+.planning-theory-panel {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #c7d7f2;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #f3f7ff, #ffffff);
+}
+
+.planning-theory-title {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.planning-theory-title span {
+  display: inline-grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--primary-soft);
+}
+
+.planning-theory-title h3 {
+  margin-bottom: 0;
+  font-size: 19px;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+
+.planning-theory-list {
+  display: grid;
+  gap: 8px;
+}
+
+.planning-theory-item {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.planning-theory-item summary {
+  display: flex;
+  min-height: 54px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 15px;
+  cursor: pointer;
+  color: var(--text);
+  font-weight: 900;
+  list-style: none;
+}
+
+.planning-theory-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.planning-theory-item summary span {
+  display: inline-grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--primary-dark);
+  font-size: 20px;
+  transition: transform 0.18s ease;
+}
+
+.planning-theory-item[open] summary span {
+  transform: rotate(90deg);
+}
+
+.planning-theory-body {
+  display: grid;
+  gap: 10px;
+  padding: 0 15px 16px;
+  border-top: 1px solid rgba(216, 227, 245, 0.7);
+}
+
+.planning-theory-body p {
+  margin: 0;
+  color: #344054;
+  line-height: 1.7;
+}
+
+.planning-theory-body p:first-child {
+  margin-top: 14px;
+}
+
+.theory-source {
+  color: var(--primary-dark) !important;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.planning-checklist {
+  display: grid;
+  gap: 10px;
+  border-radius: 16px;
+  padding: 14px;
+  background: #eef7ff;
+}
+
+.planning-checklist strong {
+  color: var(--primary-dark);
+}
+
+.planning-checklist ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 14px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.planning-checklist li {
+  color: #344054;
+  font-weight: 800;
+}
+
 .topic-example-panel {
   display: grid;
   gap: 14px;
@@ -552,6 +676,10 @@ textarea {
   }
 
   .topic-example-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .planning-checklist ul {
     grid-template-columns: 1fr;
   }
 }
