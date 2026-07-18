@@ -146,10 +146,6 @@
     mockNotice: "\ud604\uc7ac \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc740 \ud14c\uc2a4\ud2b8 \ubaa8\ub4dc\uc785\ub2c8\ub2e4.",
     limit: "\uc774 \uc0dd\uc131 \ubc29\uc2dd\uc740 \uc774\ubbf8 \uc0ac\uc6a9\ud588\uc2b5\ub2c8\ub2e4.",
   };
-  const FONT_KO_OPTIONS = ["Noto Sans KR", "Pretendard", "Nanum Gothic", "Malgun Gothic", "Gowun Dodum"];
-  const FONT_EN_OPTIONS = ["Inter", "Arial", "Georgia", "Impact", "Trebuchet MS"];
-  const DEFAULT_FONT_KO = "Noto Sans KR";
-  const DEFAULT_FONT_EN = "Inter";
   const DEFAULT_PROJECT = {
     projectId: "",
     currentStep: 0,
@@ -158,7 +154,7 @@
     prompt: { generationMode: "flux", role: "\uce74\ub4dc\ub274\uc2a4 \uae30\ud68d\uc790", task: "\uc9c0\uc5ed \ud589\uc0ac \ud64d\ubcf4\uc6a9 \uc20f\ud3fc \uce74\ub4dc\ub274\uc2a4 \uc81c\uc791", audience: "", context: "", format: "9:16 \uc138\ub85c\ud615 \ubaa8\ubc14\uc77c \uce74\ub4dc\ub274\uc2a4", style: "\uce5c\uadfc\ud558\uace0 \ucc3d\uc758\uc801\uc778 \ud64d\ubcf4 \uc2a4\ud0c0\uc77c", rules: fluxRules() },
     copyText: { title: "", body: "", cta: "", status: "" },
     copy: { title: "", subtitle: "", cta: "", fluxPrompt: "", gptPrompt: "", negativePrompt: "", metaPrompt: "", generationMode: "flux", promptStatus: "" },
-    flux: { used: false, imageUrl: "", finalImage: "", status: "", message: "", layers: [{ id: "title", text: "", x: 80, y: 120, size: 58, color: "#0f172a", fontKo: DEFAULT_FONT_KO, fontEn: DEFAULT_FONT_EN }, { id: "subtitle", text: "", x: 80, y: 420, size: 36, color: "#1e293b", fontKo: DEFAULT_FONT_KO, fontEn: DEFAULT_FONT_EN }, { id: "cta", text: "", x: 80, y: 820, size: 30, color: "#ffffff", fontKo: DEFAULT_FONT_KO, fontEn: DEFAULT_FONT_EN }] },
+    flux: { used: false, imageUrl: "", finalImage: "", status: "", message: "", layers: [] },
     gpt: { used: false, imageUrl: "", finalImage: "", status: "", message: "" },
     final: { selected: "", reflection: "", submittedAt: "" },
   };
@@ -177,8 +173,6 @@
   let saveTimer = null;
   let isRemoteLoaded = false;
   let userNavigatedBeforeRemoteRestore = false;
-  let activeLayerId = "title";
-  let draggingLayerId = "";
 
   function tenantId() {
     return window.LoreAXTenant?.resolveTenantId?.() || "default";
@@ -226,22 +220,9 @@
     ["planning", "contentInfo", "prompt", "copyText", "copy", "flux", "gpt", "final"].forEach((key) => {
       out[key] = { ...base[key], ...(data?.[key] || {}) };
     });
-    if (!Array.isArray(out.flux.layers)) out.flux.layers = base.flux.layers;
-    out.flux.layers = out.flux.layers.map((layer, index) => normalizeLayer(layer, base.flux.layers[index] || base.flux.layers[0]));
+    if (!Array.isArray(out.flux.layers)) out.flux.layers = [];
     out.projectId = out.projectId || readProjectId();
     return out;
-  }
-
-  function normalizeLayer(layer, fallback) {
-    return {
-      ...fallback,
-      ...layer,
-      x: Number(layer?.x ?? fallback?.x ?? 80),
-      y: Number(layer?.y ?? fallback?.y ?? 120),
-      size: Number(layer?.size ?? fallback?.size ?? 42),
-      fontKo: layer?.fontKo || fallback?.fontKo || DEFAULT_FONT_KO,
-      fontEn: layer?.fontEn || fallback?.fontEn || DEFAULT_FONT_EN,
-    };
   }
 
   function save(remote = true) {
@@ -684,8 +665,8 @@
 
   function fluxView() {
     const generateLabel = project.flux.used ? "\uc774\ubbf8\uc9c0 \uc0dd\uc131 \uc644\ub8cc" : project.flux.status === "loading" ? "\uc774\ubbf8\uc9c0 \uc0dd\uc131 \uc911..." : "\uc774\ubbf8\uc9c0 \uc0dd\uc131\ud558\uae30";
-    return `<div class="step-title"><div><span class="badge">3\ub2e8\uacc4</span><h2>\uc774\ubbf8\uc9c0 \uc0dd\uc131+\uae00 \ubc30\uce58</h2></div><div class="button-row"><button id="generateFlux" class="primary-button" ${project.flux.used || project.flux.status === "loading" ? "disabled" : ""} type="button">${generateLabel}</button><button id="downloadFlux" class="ghost-button" type="button">PNG \ub2e4\uc6b4\ub85c\ub4dc</button></div></div>
-    <div class="canvas-workspace"><div class="canvas-wrap"><canvas id="cardCanvas" width="1080" height="1920"></canvas></div><aside class="card">${fluxStatusView()}<p class="notice">\uc774 \ubc29\uc2dd\uc740 2\ub2e8\uacc4\uc5d0\uc11c \ub9cc\ub4e0 Flux \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 \ud504\ub86c\ud504\ud2b8\ub97c \uc0ac\uc6a9\ud574 \uc774\ubbf8\uc9c0\ub97c \uba3c\uc800 \ub9cc\ub4e0 \ub4a4, \ud3b8\uc9d1 \uac00\ub2a5\ud55c \ubb38\uad6c\ub97c \uc62c\ub824 \uc644\uc131\ud569\ub2c8\ub2e4.</p><div class="layer-list">${project.flux.layers.map(layerView).join("")}</div><div class="button-row"><button id="loadCopy" class="ghost-button" type="button">\ubb38\uad6c \ubd88\ub7ec\uc624\uae30</button><button id="resetLayout" class="ghost-button" type="button">\ub808\uc774\uc544\uc6c3 \ucd08\uae30\ud654</button></div></aside></div>`;
+    return `<div class="step-title"><div><span class="badge">3\ub2e8\uacc4</span><h2>\uc774\ubbf8\uc9c0 \uc0dd\uc131</h2></div><div class="button-row"><button id="generateFlux" class="primary-button" ${project.flux.used || project.flux.status === "loading" ? "disabled" : ""} type="button">${generateLabel}</button><button id="downloadFlux" class="ghost-button" type="button">PNG \ub2e4\uc6b4\ub85c\ub4dc</button></div></div>
+    <div class="canvas-workspace"><div class="canvas-wrap"><canvas id="cardCanvas" width="1080" height="1920"></canvas></div><aside class="card">${fluxStatusView()}<p class="notice">Flux \ubc29\uc2dd\uc740 2\ub2e8\uacc4\uc5d0\uc11c \ub9cc\ub4e0 \uae00\uc790 \uc5c6\ub294 \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 \ud504\ub86c\ud504\ud2b8\ub97c \uc0ac\uc6a9\ud569\ub2c8\ub2e4. \uc774\ubbf8\uc9c0 \uc548\uc5d0 \ud55c\uae00 \ubb38\uad6c\ub97c \ub123\uc9c0 \uc54a\uace0, \ud544\uc694\ud55c \ubb38\uad6c\ub294 \uc678\ubd80 \ud3b8\uc9d1 \ub3c4\uad6c\uc5d0\uc11c \ub530\ub85c \ucd94\uac00\ud558\uc138\uc694.</p><h3>Flux \uc0dd\uc131\uc6a9 \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.fluxPrompt || buildFluxPrompt())}</div><h3>Negative Prompt</h3><div class="prompt-box">${esc(project.copy.negativePrompt || "no text, no letters, no numbers, no logo, no watermark")}</div></aside></div>`;
   }
 
   function fluxStatusView() {
@@ -695,32 +676,10 @@
       waiting: "2\ub2e8\uacc4\uc5d0\uc11c Flux \ud504\ub86c\ud504\ud2b8\ub97c \uba3c\uc800 \uc0dd\uc131\ud558\uc138\uc694.",
       ready: "2\ub2e8\uacc4 Flux \ud504\ub86c\ud504\ud2b8\ub97c \uac00\uc838\uc654\uc2b5\ub2c8\ub2e4. \uc774\ubbf8\uc9c0 \uc0dd\uc131\ud558\uae30\ub97c \ub204\ub974\uc138\uc694.",
       loading: "\uc774\ubbf8\uc9c0 \uc0dd\uc131 \uc911\uc785\ub2c8\ub2e4. \uc7a0\uc2dc\ub9cc \uae30\ub2e4\ub824 \uc8fc\uc138\uc694.",
-      success: "\uc774\ubbf8\uc9c0 \uc0dd\uc131\uc774 \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ubb38\uad6c\ub97c \ubd88\ub7ec\uc640 \ud3b8\uc9d1\ud55c \ub4a4 PNG\ub85c \uc800\uc7a5\ud558\uc138\uc694.",
+      success: "\uc774\ubbf8\uc9c0 \uc0dd\uc131\uc774 \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4. PNG\ub85c \uc800\uc7a5\ud558\uc138\uc694.",
       failed: project.flux.message || "\uc774\ubbf8\uc9c0 \uc0dd\uc131\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. 2\ub2e8\uacc4 \ud504\ub86c\ud504\ud2b8\ub97c \ud655\uc778\ud558\uace0 \ub2e4\uc2dc \uc2dc\ub3c4\ud558\uc138\uc694.",
     };
     return `<div class="generation-status is-${status}" role="status">${messages[status] || messages.ready}</div>`;
-  }
-
-  function layerView(layer) {
-    return `<div class="layer-item ${activeLayerId === layer.id ? "is-active" : ""}" data-layer="${layer.id}">
-      <div class="layer-heading"><strong>${layerName(layer.id)}</strong><span>${activeLayerId === layer.id ? "\uc120\ud0dd\ub428" : "\ud074\ub9ad\ud558\uc5ec \uc120\ud0dd"}</span></div>
-      <label>\uae00\uc528<textarea data-layer-field="text">${esc(layer.text)}</textarea></label>
-      <div class="field-grid two">
-        <label>\ud55c\uae00 \ud3f0\ud2b8<select data-layer-field="fontKo">${fontOptions(FONT_KO_OPTIONS, layer.fontKo || DEFAULT_FONT_KO)}</select></label>
-        <label>\uc601\ubb38 \ud3f0\ud2b8<select data-layer-field="fontEn">${fontOptions(FONT_EN_OPTIONS, layer.fontEn || DEFAULT_FONT_EN)}</select></label>
-        <label>\uae00\uc528 \ud06c\uae30<input type="number" min="12" max="180" step="1" value="${Number(layer.size) || 42}" data-layer-field="size" /></label>
-        <label>\uc0c9\uc0c1<input type="color" value="${layer.color}" data-layer-field="color" /></label>
-      </div>
-      <p class="layer-hint">\uc704\uce58: \uc774 \ub808\uc774\uc5b4\ub97c \uc120\ud0dd\ud55c \ub4a4 \uc67c\ucabd \uce94\ubc84\uc2a4\uc5d0\uc11c \ud074\ub9ad\ud558\uac70\ub098 \ub4dc\ub798\uadf8\ud558\uc138\uc694.</p>
-    </div>`;
-  }
-
-  function layerName(id) {
-    return ({ title: "\uc81c\ubaa9", subtitle: "\ubcf8\ubb38", cta: "\ud589\ub3d9 \uc720\ub3c4 \ubb38\uad6c" })[id] || id;
-  }
-
-  function fontOptions(options, selected) {
-    return options.map((font) => `<option value="${esc(font)}" ${font === selected ? "selected" : ""}>${esc(font)}</option>`).join("");
   }
 
   function gptView() {
@@ -733,7 +692,7 @@
     if (!project.gpt.imageUrl) {
       return `<aside class="preview-card gpt-result-card"><h3>GPT \uc0dd\uc131 \uacb0\uacfc</h3><div class="preview-box">\uc544\uc9c1 \uc0dd\uc131\ub41c \uc774\ubbf8\uc9c0\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.<br>\"\uc774\ubbf8\uc9c0 \uc0dd\uc131\ud558\uae30\"\ub97c \ub204\ub974\uba74 \uc774 \uc601\uc5ed\uc5d0 \uacb0\uacfc\uac00 \ud45c\uc2dc\ub429\ub2c8\ub2e4.</div></aside>`;
     }
-    return `<aside class="preview-card gpt-result-card is-ready"><div class="result-heading"><div><span class="badge">GPT \uacb0\uacfc</span><h3>\uc0dd\uc131\ub41c \uc774\ubbf8\uc9c0</h3></div><button id="downloadGpt" class="ghost-button" type="button">PNG \ub2e4\uc6b4\ub85c\ub4dc</button></div><div class="gpt-image-wrap"><img src="${esc(project.gpt.imageUrl)}" alt="GPT\uc5d0\uc11c \uc0dd\uc131\ud55c \uce74\ub4dc\ub274\uc2a4 \uc774\ubbf8\uc9c0" /></div><p class="notice">GPT \ubc29\uc2dd\uc740 API\uac00 \ubc18\ud658\ud55c \uc774\ubbf8\uc9c0\ub97c \uadf8\ub300\ub85c \ud45c\uc2dc\ud569\ub2c8\ub2e4. \uae00\uc790 \ub808\uc774\uc5b4 \ud3b8\uc9d1\uc740 3\ub2e8\uacc4 Flux \ubc29\uc2dd\uc5d0\uc11c\ub9cc \uc0ac\uc6a9\ud569\ub2c8\ub2e4.</p></aside>`;
+    return `<aside class="preview-card gpt-result-card is-ready"><div class="result-heading"><div><span class="badge">GPT \uacb0\uacfc</span><h3>\uc0dd\uc131\ub41c \uc774\ubbf8\uc9c0</h3></div><button id="downloadGpt" class="ghost-button" type="button">PNG \ub2e4\uc6b4\ub85c\ub4dc</button></div><div class="gpt-image-wrap"><img src="${esc(project.gpt.imageUrl)}" alt="GPT\uc5d0\uc11c \uc0dd\uc131\ud55c \uce74\ub4dc\ub274\uc2a4 \uc774\ubbf8\uc9c0" /></div><p class="notice">GPT \ubc29\uc2dd\uc740 API\uac00 \ubc18\ud658\ud55c \uc774\ubbf8\uc9c0\ub97c \uadf8\ub300\ub85c \ud45c\uc2dc\ud569\ub2c8\ub2e4.</p></aside>`;
   }
 
   function gptStatusView() {
@@ -750,7 +709,7 @@
   }
 
   function finalView() {
-    return `<div class="step-title"><div><span class="badge">5\ub2e8\uacc4</span><h2>\ube44\uad50\ud558\uace0 \uc644\uc131</h2></div></div><div class="compare-grid">${resultCard("flux", "\ubc30\uacbd \uc0dd\uc131+\uae00 \uc9c1\uc811 \ubc30\uce58", project.flux.finalImage || project.flux.imageUrl)}${resultCard("gpt", "GPT \uc774\ubbf8\uc9c0 \uacb0\uacfc", project.gpt.finalImage || project.gpt.imageUrl)}</div><section class="card" style="margin-top:18px">${field("final", "reflection", "\uc65c \uc774 \uacb0\uacfc\ubb3c\uc744 \uc120\ud0dd\ud588\ub098\uc694?", true)}<div class="button-row"><button id="downloadFinal" class="primary-button" type="button">\ucd5c\uc885 PNG \ub2e4\uc6b4\ub85c\ub4dc</button><button id="submitProject" class="ghost-button" type="button">\uacb0\uacfc\ubb3c \uc81c\ucd9c</button></div></section>`;
+    return `<div class="step-title"><div><span class="badge">5\ub2e8\uacc4</span><h2>\ube44\uad50\ud558\uace0 \uc644\uc131</h2></div></div><div class="compare-grid">${resultCard("flux", "Flux \uc774\ubbf8\uc9c0 \uacb0\uacfc", project.flux.finalImage || project.flux.imageUrl)}${resultCard("gpt", "GPT \uc774\ubbf8\uc9c0 \uacb0\uacfc", project.gpt.finalImage || project.gpt.imageUrl)}</div><section class="card" style="margin-top:18px">${field("final", "reflection", "\uc65c \uc774 \uacb0\uacfc\ubb3c\uc744 \uc120\ud0dd\ud588\ub098\uc694?", true)}<div class="button-row"><button id="downloadFinal" class="primary-button" type="button">\ucd5c\uc885 PNG \ub2e4\uc6b4\ub85c\ub4dc</button><button id="submitProject" class="ghost-button" type="button">\uacb0\uacfc\ubb3c \uc81c\ucd9c</button></div></section>`;
   }
 
   function resultCard(method, title, image) {
@@ -784,8 +743,6 @@
     dom.main.querySelector("#resetProject")?.addEventListener("click", resetProject);
     dom.main.querySelector("#generateFlux")?.addEventListener("click", generateFlux);
     dom.main.querySelector("#generateGpt")?.addEventListener("click", generateGpt);
-    dom.main.querySelector("#loadCopy")?.addEventListener("click", loadCopy);
-    dom.main.querySelector("#resetLayout")?.addEventListener("click", resetLayout);
     dom.main.querySelector("#downloadFlux")?.addEventListener("click", () => download(project.flux.finalImage || canvasData(), "flux-card-news.png"));
     dom.main.querySelector("#downloadGpt")?.addEventListener("click", () => download(project.gpt.imageUrl, "gpt-card-news.png"));
     dom.main.querySelector("#downloadFinal")?.addEventListener("click", downloadFinal);
@@ -795,76 +752,6 @@
       save();
       render();
     }));
-    dom.main.querySelectorAll("[data-layer-field]").forEach((input) => input.addEventListener("input", () => {
-      const layer = project.flux.layers.find((item) => item.id === input.closest("[data-layer]").dataset.layer);
-      activeLayerId = layer.id;
-      layer[input.dataset.layerField] = input.type === "number" ? Number(input.value) : input.value;
-      debounceSave();
-      drawCanvas();
-      markActiveLayer();
-    }));
-    dom.main.querySelectorAll("[data-layer]").forEach((item) => item.addEventListener("click", () => {
-      activeLayerId = item.dataset.layer;
-      markActiveLayer();
-    }));
-    const canvas = dom.main.querySelector("#cardCanvas");
-    if (canvas) {
-      canvas.addEventListener("pointerdown", (event) => {
-        if (!project.flux.imageUrl) return;
-        draggingLayerId = activeLayerId || project.flux.layers[0]?.id || "";
-        canvas.setPointerCapture?.(event.pointerId);
-        moveLayerToPointer(event, draggingLayerId);
-      });
-      canvas.addEventListener("pointermove", (event) => {
-        if (!draggingLayerId || !project.flux.imageUrl) return;
-        moveLayerToPointer(event, draggingLayerId);
-      });
-      canvas.addEventListener("pointerup", (event) => {
-        if (draggingLayerId) {
-          moveLayerToPointer(event, draggingLayerId);
-          save(false);
-        }
-        draggingLayerId = "";
-      });
-      canvas.addEventListener("pointercancel", () => {
-        draggingLayerId = "";
-      });
-    }
-  }
-
-  function markActiveLayer() {
-    dom.main.querySelectorAll("[data-layer]").forEach((item) => {
-      item.classList.toggle("is-active", item.dataset.layer === activeLayerId);
-      const label = item.querySelector(".layer-heading span");
-      if (label) label.textContent = item.dataset.layer === activeLayerId ? "\uc120\ud0dd\ub428" : "\ud074\ub9ad\ud558\uc5ec \uc120\ud0dd";
-    });
-  }
-
-  function moveLayerToPointer(event, layerId) {
-    const canvas = event.currentTarget;
-    const layer = project.flux.layers.find((item) => item.id === layerId);
-    if (!canvas || !layer) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = ((event.clientX - rect.left) / rect.width) * 1080;
-    const y = ((event.clientY - rect.top) / rect.height) * 1920;
-    layer.x = Math.round(clamp(x, 20, 1000));
-    layer.y = Math.round(clamp(y, 40, 1840));
-    activeLayerId = layer.id;
-    syncLayerPositionControls(layer);
-    drawCanvas();
-    debounceSave();
-    markActiveLayer();
-  }
-
-  function syncLayerPositionControls(layer) {
-    const item = dom.main.querySelector(`[data-layer="${layer.id}"]`);
-    if (!item) return;
-    item.dataset.x = layer.x;
-    item.dataset.y = layer.y;
-  }
-
-  function clamp(value, min, max) {
-    return Math.min(max, Math.max(min, Number(value) || min));
   }
 
   async function generateCopy() {
@@ -891,7 +778,6 @@
     }
     project.copy = { ...project.copy, ...data.copy };
     project.copy.promptStatus = "done";
-    loadCopy();
     save();
     render();
   }
@@ -1079,19 +965,6 @@
     }
   }
 
-  function loadCopy() {
-    project.flux.layers[0].text = project.copy.title || project.planning.topic;
-    project.flux.layers[1].text = project.copy.subtitle || project.planning.message;
-    project.flux.layers[2].text = project.copy.cta || "\uc790\uc138\ud788 \ubcf4\uae30";
-  }
-
-  function resetLayout() {
-    project.flux.layers = structuredClone(DEFAULT_PROJECT.flux.layers);
-    loadCopy();
-    save(false);
-    render();
-  }
-
   function nextPaint() {
     return new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
   }
@@ -1219,12 +1092,10 @@
       image.onload = () => {
         ctx.clearRect(0, 0, 1080, 1920);
         drawCoverImage(ctx, image, 1080, 1920);
-        drawTextLayers(ctx);
         project.flux.finalImage = canvas.toDataURL("image/png");
       };
       image.onerror = () => {
         drawFallbackBackground(ctx);
-        drawTextLayers(ctx);
         project.flux.finalImage = canvas.toDataURL("image/png");
       };
       image.src = project.flux.imageUrl;
@@ -1299,22 +1170,6 @@
     const x = (targetWidth - width) / 2;
     const y = (targetHeight - height) / 2;
     ctx.drawImage(image, x, y, width, height);
-  }
-
-  function drawTextLayers(ctx) {
-    project.flux.layers.forEach((layer) => {
-      if (!layer.text) return;
-      const size = Number(layer.size) || 42;
-      ctx.font = `900 ${size}px ${fontStack(layer)}`;
-      ctx.fillStyle = layer.color;
-      wrap(ctx, layer.text, layer.x, layer.y, 820, size * 1.25);
-    });
-  }
-
-  function fontStack(layer) {
-    const ko = layer.fontKo || DEFAULT_FONT_KO;
-    const en = layer.fontEn || DEFAULT_FONT_EN;
-    return `"${ko}", "${en}", "Malgun Gothic", Arial, sans-serif`;
   }
 
   function wrap(ctx, text, x, y, max, lineHeight) {
