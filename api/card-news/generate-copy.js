@@ -84,11 +84,13 @@ async function callOpenAiPromptDesigner(metaPrompt, generationMode) {
             content: [
               "You are an expert AI image prompt designer for short-form content and card-news production.",
               "Create high-quality prompts for image generation models from the user's planning information.",
+              "Reflect content purpose, target audience, mobile screen structure, visual composition, image style, and generation constraints.",
               "Do not create fake dates, places, prices, logos, organizations, or facts.",
+              "Always return both IMAGE PROMPT and NEGATIVE PROMPT content.",
               "Return JSON only. Do not include markdown.",
               generationMode === "flux"
-                ? 'For flux mode, return {"mode":"flux","prompt":"...","negativePrompt":"no text,\\nno letters,\\nno numbers,\\nno logo,\\nno watermark"}.'
-                : 'For gpt_integrated mode, return {"mode":"gpt_integrated","prompt":"..."}.',
+                ? 'For flux mode, return {"mode":"flux","prompt":"IMAGE PROMPT:\\n...","negativePrompt":"NEGATIVE PROMPT:\\nno text,\\nno letters,\\nno numbers,\\nno logo,\\nno watermark,\\nno fake information,\\nno unreadable characters,\\nno cluttered layout"}.'
+                : 'For gpt_integrated mode, return {"mode":"gpt_integrated","prompt":"IMAGE PROMPT:\\n...","negativePrompt":"NEGATIVE PROMPT:\\nDo not create:\\n- incorrect Korean text\\n- fake dates or information\\n- unnecessary logos\\n- unreadable typography\\n- excessive decorative elements"}.',
             ].join("\n"),
           },
           { role: "user", content: metaPrompt },
@@ -117,10 +119,14 @@ function parseGeneratedPrompt(content, generationMode) {
     return {
       mode: "flux",
       prompt: ensureFluxNoText(prompt),
-      negativePrompt: cleanText(parsed.negativePrompt || "no text,\nno letters,\nno numbers,\nno logo,\nno watermark", 800),
+      negativePrompt: ensureFluxNegative(parsed.negativePrompt),
     };
   }
-  return { mode: "gpt_integrated", prompt: ensureGptTextLayout(prompt) };
+  return {
+    mode: "gpt_integrated",
+    prompt: ensureGptTextLayout(prompt),
+    negativePrompt: cleanText(parsed.negativePrompt || gptNegativeDefault(), 1000),
+  };
 }
 
 function buildCopy(planning, design, generated, metaPrompt) {
@@ -135,7 +141,7 @@ function buildCopy(planning, design, generated, metaPrompt) {
     generationMode: generated.mode || design.generationMode,
   };
   if (generated.mode === "gpt_integrated") {
-    return { ...base, gptPrompt: generated.prompt, fluxPrompt: "", negativePrompt: "" };
+    return { ...base, gptPrompt: generated.prompt, fluxPrompt: "", negativePrompt: generated.negativePrompt || gptNegativeDefault() };
   }
   return { ...base, fluxPrompt: generated.prompt, negativePrompt: generated.negativePrompt, gptPrompt: "" };
 }
@@ -148,6 +154,8 @@ function buildMetaPrompt(planning, design) {
         "\uc81c\ubaa9 \uc704\uce58, \ubcf8\ubb38 \uc704\uce58, CTA \uc704\uce58\ub97c \uc9c0\uc815",
         "\ud14d\uc2a4\ud2b8 \uc704\uacc4\uc640 \ubaa8\ubc14\uc77c \uac00\ub3c5\uc131 \uace0\ub824",
         "\ud55c\uad6d\uc5b4 \ud14d\uc2a4\ud2b8 \ud3ec\ud568 \uc694\uccad",
+        "\uc790\uc5f0\uc5b4 \ud615\ud0dc\uc758 negative prompt \uc0dd\uc131",
+        "Do not create incorrect Korean text, fake dates or information, unnecessary logos, unreadable typography, excessive decorative elements.",
       ]
     : [
         "\uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 \uc601\ubb38 \uc911\uc2ec \uc0c1\uc138 \ud504\ub86c\ud504\ud2b8 \uc791\uc131",
@@ -186,7 +194,7 @@ function buildMetaPrompt(planning, design) {
     "",
     design.generationMode === "flux"
       ? "JSON\ub9cc \ubc18\ud658: {\"mode\":\"flux\",\"prompt\":\"IMAGE PROMPT:\\n...\",\"negativePrompt\":\"no text,\\nno letters,\\nno numbers,\\nno logo,\\nno watermark\"}"
-      : "JSON\ub9cc \ubc18\ud658: {\"mode\":\"gpt_integrated\",\"prompt\":\"IMAGE PROMPT:\\n...\"}",
+      : "JSON\ub9cc \ubc18\ud658: {\"mode\":\"gpt_integrated\",\"prompt\":\"IMAGE PROMPT:\\n...\",\"negativePrompt\":\"NEGATIVE PROMPT:\\nDo not create:\\n- incorrect Korean text\\n- fake dates or information\\n- unnecessary logos\\n- unreadable typography\\n- excessive decorative elements\"}",
   ].filter(Boolean).join("\n");
 }
 
@@ -197,11 +205,22 @@ function ensureFluxNoText(prompt) {
     : `${text}\n\nStrict condition: no text, no letters, no numbers, no logo, no watermark, do not include written information inside the image.`;
 }
 
+function ensureFluxNegative(value) {
+  const text = cleanText(value || "", 1000);
+  const required = ["no text", "no letters", "no numbers", "no logo", "no watermark", "no fake information", "no unreadable characters", "no cluttered layout"];
+  const merged = ["NEGATIVE PROMPT:", text, ...required.filter((item) => !text.toLowerCase().includes(item))].filter(Boolean).join("\n");
+  return cleanText(merged, 1200);
+}
+
 function ensureGptTextLayout(prompt) {
   const text = cleanText(prompt, 7000);
   return /title|CTA|text/i.test(text)
     ? text
     : `${text}\n\nInclude clear Korean title area, body text area, and CTA area with strong mobile readability.`;
+}
+
+function gptNegativeDefault() {
+  return "NEGATIVE PROMPT:\nDo not create:\n- incorrect Korean text\n- fake dates or information\n- unnecessary logos\n- unreadable typography\n- excessive decorative elements";
 }
 
 function safeProviderError(value) {

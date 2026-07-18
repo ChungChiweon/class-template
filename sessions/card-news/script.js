@@ -151,7 +151,7 @@
     currentStep: 0,
     planning: { selectedExampleId: "", sourceLabel: "", sourceUrl: "", topic: "", audience: "", purpose: "", message: "", coreMessage: "", facts: "", requiredFacts: [], mood: "" },
     prompt: { generationMode: "flux", role: "\uce74\ub4dc\ub274\uc2a4 \uae30\ud68d\uc790", task: "\uc9c0\uc5ed \ud589\uc0ac \ud64d\ubcf4\uc6a9 \uc20f\ud3fc \uce74\ub4dc\ub274\uc2a4 \uc81c\uc791", audience: "", context: "", format: "9:16 \uc138\ub85c\ud615 \ubaa8\ubc14\uc77c \uce74\ub4dc\ub274\uc2a4", style: "\uce5c\uadfc\ud558\uace0 \ucc3d\uc758\uc801\uc778 \ud64d\ubcf4 \uc2a4\ud0c0\uc77c", rules: fluxRules() },
-    copy: { title: "", subtitle: "", cta: "", fluxPrompt: "", gptPrompt: "", negativePrompt: "", metaPrompt: "", generationMode: "flux" },
+    copy: { title: "", subtitle: "", cta: "", fluxPrompt: "", gptPrompt: "", negativePrompt: "", metaPrompt: "", generationMode: "flux", promptStatus: "" },
     flux: { used: false, imageUrl: "", finalImage: "", layers: [{ id: "title", text: "", x: 80, y: 120, size: 58, color: "#0f172a" }, { id: "subtitle", text: "", x: 80, y: 420, size: 36, color: "#1e293b" }, { id: "cta", text: "", x: 80, y: 820, size: 30, color: "#ffffff" }] },
     gpt: { used: false, imageUrl: "" },
     final: { selected: "", reflection: "", submittedAt: "" },
@@ -402,7 +402,7 @@
   function promptView() {
     ensurePromptDefaults();
     const mode = project.prompt.generationMode || "flux";
-    return `<div class="step-title"><div><span class="badge">2\ub2e8\uacc4</span><h2>\ud504\ub86c\ud504\ud2b8 \uc124\uacc4</h2></div><button id="generateCopy" class="primary-button" type="button">\u2728 AI \ud504\ub86c\ud504\ud2b8 \uc0dd\uc131</button></div>
+    return `<div class="step-title"><div><span class="badge">2\ub2e8\uacc4</span><h2>\ud504\ub86c\ud504\ud2b8 \uc124\uacc4</h2></div><button id="generateCopy" class="primary-button" type="button">${promptGenerateButtonLabel()}</button></div>
     <div class="layout"><section class="card field-grid">
       ${generationModeView(mode)}
       <div class="prompt-rule-note">\uc0dd\uc131 \uaddc\uce59\uc740 \uc774\ubbf8\uc9c0 \uc0dd\uc131 AI\uac00 \uc9c0\ucf1c\uc57c \ud560 \uc870\uac74\uc774\uba70, \ub3d9\uc2dc\uc5d0 AI\uc5d0\uac8c \uc804\ub2ec\ud558\ub294 \ud504\ub86c\ud504\ud2b8 \uc124\uacc4 \uae30\uc900\uc785\ub2c8\ub2e4.</div>
@@ -415,7 +415,7 @@
       ${field("copy", "subtitle", "\ubcf4\uc870 \ubb38\uad6c")}
       ${field("copy", "cta", "\ud589\ub3d9 \uc720\ub3c4 \ubb38\uad6c")}
       ${promptResultView(mode)}
-      <button id="copyPrompt" class="ghost-button" type="button">\ud504\ub86c\ud504\ud2b8 \ubcf5\uc0ac</button>
+      <button id="copyPrompt" class="ghost-button" type="button">\uc804\uccb4 \ud504\ub86c\ud504\ud2b8 \ubcf5\uc0ac</button>
       <p class="notice">API\uac00 \uc2e4\ud328\ud558\uba74 \uc704 \ubc84\ud2bc\uc73c\ub85c \ubcf5\uc0ac\ud55c \ub0b4\uc6a9\uc744 ChatGPT\ub098 Gemini\uc5d0 \ubd99\uc5ec\ub123\uc5b4 \uac19\uc740 \uc804\ubb38 \ud504\ub86c\ud504\ud2b8\ub97c \ub9cc\ub4e4 \uc218 \uc788\uc2b5\ub2c8\ub2e4.</p>
     </aside></div>${promptTheoryView()}`;
   }
@@ -441,6 +441,30 @@
   }
 
   function promptResultView(mode) {
+    const promptKey = mode === "gpt_integrated" ? "gptPrompt" : "fluxPrompt";
+    const promptLabel = mode === "gpt_integrated" ? "GPT \ud1b5\ud569 \uc81c\uc791\uc6a9 \ud504\ub86c\ud504\ud2b8" : "Flux \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 \ud504\ub86c\ud504\ud2b8";
+    const defaultNegative = mode === "gpt_integrated" ? gptNegativeDefault() : fluxNegativeDefault();
+    const promptValue = project.copy[promptKey] || "";
+    const negativeValue = project.copy.negativePrompt || defaultNegative;
+    return `<h3>${promptLabel}</h3><textarea class="prompt-editor" data-copy-prompt="${promptKey}" placeholder="\uc544\uc9c1 \uc0dd\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.">${esc(promptValue)}</textarea>
+      <h3>Negative Prompt</h3><textarea class="prompt-editor prompt-editor-small" data-copy-prompt="negativePrompt">${esc(negativeValue)}</textarea>`;
+  }
+
+  function promptGenerateButtonLabel() {
+    if (project.copy.promptStatus === "done") return "\u2713 \ud504\ub86c\ud504\ud2b8 \uc0dd\uc131 \uc644\ub8cc";
+    if (project.copy.promptStatus === "error") return "\u26a0 \uc0dd\uc131 \uc2e4\ud328";
+    return "\u2728 AI \ud504\ub86c\ud504\ud2b8 \uc0dd\uc131";
+  }
+
+  function fluxNegativeDefault() {
+    return "no text,\nno letters,\nno numbers,\nno logo,\nno watermark,\nno fake information,\nno unreadable characters,\nno cluttered layout";
+  }
+
+  function gptNegativeDefault() {
+    return "Do not create:\n- incorrect Korean text\n- fake dates or information\n- unnecessary logos\n- unreadable typography\n- excessive decorative elements";
+  }
+
+  function oldPromptResultView(mode) {
     if (mode === "gpt_integrated") {
       return `<h3>GPT \ud1b5\ud569 \uc81c\uc791\uc6a9 \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.gptPrompt || "\uc544\uc9c1 \uc0dd\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.")}</div>`;
     }
@@ -630,6 +654,11 @@
     dom.main.querySelectorAll("[data-field]").forEach((input) => input.addEventListener("input", () => {
       const [group, key] = input.dataset.field.split(".");
       project[group][key] = input.value;
+      if (group === "prompt") project.copy.promptStatus = "";
+      debounceSave();
+    }));
+    dom.main.querySelectorAll("[data-copy-prompt]").forEach((input) => input.addEventListener("input", () => {
+      project.copy[input.dataset.copyPrompt] = input.value;
       debounceSave();
     }));
     dom.main.querySelectorAll("[data-example-select]").forEach((button) => button.addEventListener("click", () => selectTopicExample(button.dataset.exampleSelect)));
@@ -660,11 +689,26 @@
   async function generateCopy() {
     ensurePromptDefaults();
     const button = dom.main.querySelector("#generateCopy");
-    if (button) button.disabled = true;
-    const data = await post("/api/card-news/generate-copy", { ...project, planning: project.planning, promptDesign: project.prompt, generationMode: project.prompt.generationMode });
-    if (button) button.disabled = false;
-    if (!data) return;
+    if (button) {
+      button.disabled = true;
+      button.textContent = "\u23f3 AI \ud504\ub86c\ud504\ud2b8 \uc0dd\uc131 \uc911...";
+    }
+    let data = null;
+    try {
+      data = await post("/api/card-news/generate-copy", { ...project, planning: project.planning, promptDesign: project.prompt, generationMode: project.prompt.generationMode });
+    } finally {
+      if (button) button.disabled = false;
+    }
+    if (!data) {
+      project.copy.promptStatus = "error";
+      project.copy.metaPrompt = project.copy.metaPrompt || buildStandalonePromptRequest();
+      dom.saveStatus.textContent = "\uc0dd\uc131 \uc2e4\ud328. \uc804\uccb4 \ud504\ub86c\ud504\ud2b8 \ubcf5\uc0ac\ub85c \uc678\ubd80 AI\uc5d0 \ubd99\uc5ec\ub123\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4.";
+      save(false);
+      render();
+      return;
+    }
     project.copy = { ...project.copy, ...data.copy };
+    project.copy.promptStatus = "done";
     loadCopy();
     save();
     render();
@@ -672,10 +716,10 @@
 
   async function copyGeneratedPrompt() {
     ensurePromptDefaults();
-    const text = project.copy.metaPrompt || buildStandalonePromptRequest();
+    const text = buildFullGeneratedPrompt();
     try {
       await navigator.clipboard.writeText(text);
-      dom.saveStatus.textContent = "\ud504\ub86c\ud504\ud2b8\ub97c \ubcf5\uc0ac\ud588\uc2b5\ub2c8\ub2e4.";
+      dom.saveStatus.textContent = "\uc804\uccb4 \ud504\ub86c\ud504\ud2b8\ub97c \ubcf5\uc0ac\ud588\uc2b5\ub2c8\ub2e4.";
     } catch {
       alert(text);
     }
@@ -748,12 +792,15 @@
     project.prompt.style = project.prompt.style || project.planning.mood || "\uce5c\uadfc\ud558\uace0 \ucc3d\uc758\uc801\uc778 \ud64d\ubcf4 \uc2a4\ud0c0\uc77c";
     project.prompt.rules = project.prompt.rules || (project.prompt.generationMode === "gpt_integrated" ? gptIntegratedRules() : fluxRules());
     project.copy.generationMode = project.copy.generationMode || project.prompt.generationMode;
+    project.copy.negativePrompt = project.copy.negativePrompt || (project.prompt.generationMode === "gpt_integrated" ? gptNegativeDefault() : fluxNegativeDefault());
   }
 
   function setGenerationMode(mode) {
     project.prompt.generationMode = mode === "gpt_integrated" ? "gpt_integrated" : "flux";
     project.copy.generationMode = project.prompt.generationMode;
     project.prompt.rules = project.prompt.generationMode === "gpt_integrated" ? gptIntegratedRules() : fluxRules();
+    project.copy.promptStatus = "";
+    project.copy.negativePrompt = project.prompt.generationMode === "gpt_integrated" ? gptNegativeDefault() : fluxNegativeDefault();
     save(false);
     render();
   }
@@ -800,6 +847,17 @@
       modeInstruction,
       "\ud655\uc778\ub418\uc9c0 \uc54a\uc740 \ub0a0\uc9dc, \uc7a5\uc18c, \ube44\uc6a9, \uc2e0\uccad \ubc29\ubc95, \ub85c\uace0, \uc0ac\uc2e4\uc740 \uc784\uc758\ub85c \ub9cc\ub4e4\uc9c0 \ub9c8.",
     ].filter(Boolean).join("\n");
+  }
+
+  function buildFullGeneratedPrompt() {
+    ensurePromptDefaults();
+    const mode = project.prompt.generationMode || "flux";
+    const imagePrompt = mode === "gpt_integrated" ? project.copy.gptPrompt : project.copy.fluxPrompt;
+    const negativePrompt = project.copy.negativePrompt || (mode === "gpt_integrated" ? gptNegativeDefault() : fluxNegativeDefault());
+    if (imagePrompt || negativePrompt) {
+      return `IMAGE PROMPT:\n\n${imagePrompt || "\uc544\uc9c1 \uc774\ubbf8\uc9c0 \ud504\ub86c\ud504\ud2b8\uac00 \uc0dd\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4."}\n\nNEGATIVE PROMPT:\n\n${negativePrompt}`;
+    }
+    return buildStandalonePromptRequest();
   }
 
   function buildGptPrompt() {

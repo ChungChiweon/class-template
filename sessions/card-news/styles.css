@@ -686,6 +686,21 @@ textarea {
   font-size: 13px;
 }
 
+.prompt-editor {
+  min-height: 220px;
+  max-height: 420px;
+  overflow: auto;
+  border-radius: 18px;
+  background: #f8fbff;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.prompt-editor-small {
+  min-height: 150px;
+}
+
 .notice {
   border-radius: 16px;
   padding: 14px;
