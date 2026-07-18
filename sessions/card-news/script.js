@@ -170,6 +170,7 @@
   const project = load();
   let saveTimer = null;
   let isRemoteLoaded = false;
+  let userNavigatedBeforeRemoteRestore = false;
 
   function tenantId() {
     return window.LoreAXTenant?.resolveTenantId?.() || "default";
@@ -227,11 +228,10 @@
     project.updatedAt = new Date().toISOString();
     project.tenantId = tenantId();
     project.anonymousStudentId = studentId();
-    localStorage.setItem(storageKey(), JSON.stringify(project));
-    dom.saveStatus.textContent = LABELS.savedLocal;
+    persistProjectLocally();
     window.LoreAXUsage?.trackActivitySave?.(COURSE_ID, { step: STEPS[project.currentStep].id });
     if (remote) {
-      fetch("/api/card-news/save-project", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(project) })
+      fetch("/api/card-news/save-project", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(compactProjectForLocalStorage(project, false)) })
         .then((response) => response.json())
         .then((data) => {
           dom.saveStatus.textContent = data.ok ? LABELS.savedServer : LABELS.serverFallback;
@@ -762,6 +762,40 @@
     }
   }
 
+  function persistProjectLocally() {
+    try {
+      localStorage.setItem(storageKey(), JSON.stringify(project));
+      dom.saveStatus.textContent = LABELS.savedLocal;
+      return;
+    } catch {
+      // Canvas-composited images can exceed browser localStorage quota.
+    }
+    try {
+      localStorage.setItem(storageKey(), JSON.stringify(compactProjectForLocalStorage(project, false)));
+      dom.saveStatus.textContent = "\uc774\ubbf8\uc9c0\ub294 \uc11c\ubc84 \uc800\uc7a5\uc744 \uc0ac\uc6a9\ud558\uace0, \uc785\ub825\uac12\uc740 \ub85c\uceec\uc5d0 \uc800\uc7a5\ud588\uc2b5\ub2c8\ub2e4.";
+      return;
+    } catch {
+      // If the generated image itself is too large, keep text/project fields only.
+    }
+    try {
+      localStorage.setItem(storageKey(), JSON.stringify(compactProjectForLocalStorage(project, true)));
+      dom.saveStatus.textContent = "\ub85c\uceec \uc6a9\ub7c9 \ubd80\uc871\uc73c\ub85c \uc774\ubbf8\uc9c0\ub97c \uc81c\uc678\ud558\uace0 \uc785\ub825\uac12\ub9cc \uc800\uc7a5\ud588\uc2b5\ub2c8\ub2e4.";
+    } catch {
+      dom.saveStatus.textContent = "\ub85c\uceec \uc800\uc7a5 \uc6a9\ub7c9\uc774 \ubd80\uc871\ud569\ub2c8\ub2e4. \ub2e8\uacc4 \uc774\ub3d9\uc740 \uc720\uc9c0\ub429\ub2c8\ub2e4.";
+    }
+  }
+
+  function compactProjectForLocalStorage(source, stripGeneratedImages) {
+    const compact = structuredClone(source);
+    if (compact.flux) compact.flux.finalImage = "";
+    if (compact.gpt) compact.gpt.finalImage = "";
+    if (stripGeneratedImages) {
+      if (compact.flux) compact.flux.imageUrl = "";
+      if (compact.gpt) compact.gpt.imageUrl = "";
+    }
+    return compact;
+  }
+
   async function generateFlux() {
     if (project.flux.used) return;
     project.flux.status = "loading";
@@ -1176,6 +1210,7 @@
       const data = await response.json();
       const remote = data.project?.project_data;
       if (!remote) return;
+      if (userNavigatedBeforeRemoteRestore) return;
       const localTime = new Date(project.updatedAt || 0).getTime();
       const remoteTime = new Date(data.project?.updated_at || remote.updatedAt || 0).getTime();
       if (remoteTime >= localTime) {
@@ -1191,11 +1226,13 @@
   dom.stepper.addEventListener("click", (event) => {
     const button = event.target.closest("[data-step]");
     if (!button) return;
+    userNavigatedBeforeRemoteRestore = true;
     project.currentStep = Number(button.dataset.step);
     save(false);
     render();
   });
   dom.prev.addEventListener("click", () => {
+    userNavigatedBeforeRemoteRestore = true;
     project.currentStep = Math.max(0, project.currentStep - 1);
     save();
     render();
@@ -1203,6 +1240,7 @@
   dom.save.addEventListener("click", () => save());
   dom.next.addEventListener("click", () => {
     if (project.currentStep === 4) return submit();
+    userNavigatedBeforeRemoteRestore = true;
     project.currentStep = Math.min(STEPS.length - 1, project.currentStep + 1);
     save();
     render();
