@@ -1,6 +1,6 @@
 const COURSE_ID = "cardNews";
 const PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhneHVtand2ZmVxdWpxd2l4bWl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4MDMyMTMsImV4cCI6MjA5OTM3OTIxM30.7SOhCZnzpjpqIqfoCZD9J6_Y8fiZc4_qfZ2ybsVg9fc";
-const MAX_BODY_BYTES = 2_000_000;
+const MAX_BODY_BYTES = 6_000_000;
 const LIMIT_MESSAGE = "\uc774 \uc0dd\uc131 \ubc29\uc2dd\uc740 \uc774\ubbf8 \uc0ac\uc6a9\ud588\uc2b5\ub2c8\ub2e4.";
 
 const ACTIVE_TENANTS = new Set(["default", "academy-a", "academy-b"]);
@@ -90,6 +90,14 @@ function supabaseEnv() {
     url: safeString(process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || "https://hgxumjwvfequjqwixmit.supabase.co", 260).replace(/\/$/, ""),
     key: safeString(process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || PUBLIC_SUPABASE_ANON_KEY, 1600),
   };
+}
+
+function providerMode() {
+  return safeString(process.env.CARDNEWS_PROVIDER_MODE || "mock", 40).toLowerCase();
+}
+
+function isLiveProviderMode() {
+  return !["mock", "test", "local", "off"].includes(providerMode());
 }
 
 async function supabaseFetch(path, options = {}) {
@@ -268,7 +276,7 @@ function sanitizeProjectData(source = {}) {
     prompt: pickStrings(source.prompt, ["role", "task", "style", "rules"], 4000),
     copy: pickStrings(source.copy, ["title", "subtitle", "cta", "fluxPrompt", "gptPrompt"], 5000),
     flux: {
-      ...pickStrings(source.flux, ["imageUrl", "finalImage"], 1_200_000),
+      ...pickStrings(source.flux, ["imageUrl", "finalImage"], 4_000_000),
       used: Boolean(source.flux?.used),
       generationUsed: Boolean(source.flux?.generationUsed),
       layers: Array.isArray(source.flux?.layers) ? source.flux.layers.slice(0, 8).map((layer) => ({
@@ -281,12 +289,12 @@ function sanitizeProjectData(source = {}) {
       })) : [],
     },
     gpt: {
-      ...pickStrings(source.gpt, ["imageUrl"], 1_200_000),
+      ...pickStrings(source.gpt, ["imageUrl"], 4_000_000),
       used: Boolean(source.gpt?.used),
       generationUsed: Boolean(source.gpt?.generationUsed),
     },
     final: {
-      ...pickStrings(source.final, ["selected", "selectedMethod", "finalImageUrl", "reflection", "submittedAt"], 1_200_000),
+      ...pickStrings(source.final, ["selected", "selectedMethod", "finalImageUrl", "reflection", "submittedAt"], 4_000_000),
     },
     status: ["draft", "submitted"].includes(source.status) ? source.status : "draft",
     submittedAt: safeString(source.submittedAt, 40),
@@ -348,6 +356,8 @@ module.exports = {
   hasGenerationSuccess,
   limitResponse,
   methodNotAllowed,
+  isLiveProviderMode,
+  providerMode,
   readBody,
   recordGenerationSuccess,
   recordSubmit,
