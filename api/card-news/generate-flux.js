@@ -1,14 +1,43 @@
+const {
+  cleanText,
+  contextFrom,
+  endJson,
+  hasGenerationSuccess,
+  limitResponse,
+  methodNotAllowed,
+  recordGenerationSuccess,
+  requestJson,
+  setCors,
+} = require("./_shared");
+
 module.exports = async function handler(req, res) {
   setCors(res);
   if (req.method === "OPTIONS") return endJson(res, 204, {});
-  if (req.method !== "POST") return endJson(res, 405, { success: false, message: "POST only" });
-  const body = readBody(req);
-  const topic = safe(body.planning?.topic || "News card");
-  const mood = safe(body.planning?.mood || "bright and reliable");
+  if (req.method !== "POST") return methodNotAllowed(res);
+
+  const body = requestJson(req);
+  if (body.__error) return endJson(res, body.statusCode, { success: false, message: body.message });
+
+  const context = contextFrom(body, req);
+  if (!context.ok) return endJson(res, context.statusCode, { success: false, message: context.error });
+
+  const feature = "flux_generation";
+  if (await hasGenerationSuccess(context, feature)) return limitResponse(res);
+
+  const planning = body.planning || {};
+  const topic = cleanText(planning.topic || "\ub274\uc2a4\uce74\ub4dc", 120);
+  const mood = cleanText(planning.mood || "\ubc1d\uace0 \uc2e0\ub8b0\uac10 \uc788\ub294", 120);
+  const imageUrl = svgDataUrl(topic, mood, false);
+  const flux = { ...(body.flux || {}), used: true, generationUsed: true, imageUrl };
+
+  const saveResult = await recordGenerationSuccess(context, feature, "flux", { ...body, flux, currentStep: body.currentStep ?? 2 });
   return endJson(res, 200, {
     success: true,
     provider: "mock-flux",
-    imageUrl: svgDataUrl(topic, mood, false),
+    mode: process.env.CARDNEWS_PROVIDER_MODE || "mock",
+    imageUrl,
+    saved: saveResult.ok,
+    storage: saveResult.source,
   });
 };
 
@@ -28,30 +57,6 @@ function svgDataUrl(topic, mood, withText) {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
-function safe(value) {
-  return String(value || "").trim().slice(0, 80);
-}
-
 function escapeXml(value) {
-  return safe(value).replace(/[<>&"']/g, (char) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&apos;" })[char]);
-}
-
-function readBody(req) {
-  try {
-    return typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
-  } catch {
-    return {};
-  }
-}
-
-function setCors(res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-}
-
-function endJson(res, statusCode, payload) {
-  res.statusCode = statusCode;
-  res.setHeader("Content-Type", "application/json; charset=utf-8");
-  res.end(JSON.stringify(payload));
+  return cleanText(value, 120).replace(/[<>&"']/g, (char) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&apos;" })[char]);
 }

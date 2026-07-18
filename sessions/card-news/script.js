@@ -1,16 +1,28 @@
 (function () {
   const COURSE_ID = "cardNews";
   const STEPS = [
-    { id: "plan", title: "Topic plan" },
-    { id: "prompt", title: "Prompt design" },
-    { id: "flux", title: "Flux workflow" },
-    { id: "gpt", title: "GPT workflow" },
-    { id: "final", title: "Compare and submit" },
+    { id: "plan", title: "\uc8fc\uc81c\u00b7\uae30\ud68d" },
+    { id: "prompt", title: "\ud504\ub86c\ud504\ud2b8 \uc124\uacc4" },
+    { id: "flux", title: "Flux \uc81c\uc791" },
+    { id: "gpt", title: "GPT \ud1b5\ud569 \uc81c\uc791" },
+    { id: "final", title: "\ube44\uad50\u00b7\uc644\uc131" },
   ];
+  const LABELS = {
+    savedLocal: "\ub85c\uceec \uc800\uc7a5\ub428",
+    savedServer: "\uc11c\ubc84 \uc800\uc7a5\ub428",
+    saving: "\uc800\uc7a5 \uc911...",
+    serverFallback: "\uc11c\ubc84 \uc800\uc7a5 \ub300\uae30",
+    steps: "\ub2e8\uacc4",
+    submit: "\uc81c\ucd9c\ud558\uae30",
+    saveContinue: "\uc800\uc7a5\ud558\uace0 \ub2e4\uc74c \ub2e8\uacc4",
+    mockNotice: "\ud604\uc7ac \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc740 \ud14c\uc2a4\ud2b8 \ubaa8\ub4dc\uc785\ub2c8\ub2e4.",
+    limit: "\uc774 \uc0dd\uc131 \ubc29\uc2dd\uc740 \uc774\ubbf8 \uc0ac\uc6a9\ud588\uc2b5\ub2c8\ub2e4.",
+  };
   const DEFAULT_PROJECT = {
+    projectId: "",
     currentStep: 0,
     planning: { topic: "", audience: "", purpose: "", message: "", facts: "", mood: "" },
-    prompt: { role: "news card designer", task: "make one square news card", style: "clean school-friendly editorial design", rules: "use only provided facts" },
+    prompt: { role: "\ub274\uc2a4\uce74\ub4dc \ub514\uc790\uc774\ub108", task: "\uc815\uc0ac\uac01\ud615 \ub274\uc2a4\uce74\ub4dc 1\uc7a5 \uc81c\uc791", style: "\ud559\uc0dd\uc774 \uc77d\uae30 \uc26c\uc6b4 \uae54\ub054\ud55c \uc2a4\ud0c0\uc77c", rules: "\ud655\uc778\ud55c \uc0ac\uc2e4\ub9cc \uc0ac\uc6a9" },
     copy: { title: "", subtitle: "", cta: "", fluxPrompt: "", gptPrompt: "" },
     flux: { used: false, imageUrl: "", finalImage: "", layers: [{ id: "title", text: "", x: 80, y: 120, size: 58, color: "#0f172a" }, { id: "subtitle", text: "", x: 80, y: 420, size: 36, color: "#1e293b" }, { id: "cta", text: "", x: 80, y: 820, size: 30, color: "#ffffff" }] },
     gpt: { used: false, imageUrl: "" },
@@ -29,6 +41,7 @@
 
   const project = load();
   let saveTimer = null;
+  let isRemoteLoaded = false;
 
   function tenantId() {
     return window.LoreAXTenant?.resolveTenantId?.() || "default";
@@ -38,17 +51,36 @@
     return window.LoreAXUsage?.getAnonymousStudentId?.() || "anonymous";
   }
 
+  function projectIdKey() {
+    return `loreax:cardNewsProjectId:${tenantId()}:${studentId()}`;
+  }
+
   function storageKey() {
+    return `loreax:cardNewsProject:${tenantId()}:${studentId()}:${project.projectId || readProjectId()}`;
+  }
+
+  function legacyStorageKey() {
     return `loreax:cardNewsProject:${tenantId()}:${studentId()}`;
   }
 
+  function readProjectId() {
+    const existing = localStorage.getItem(projectIdKey());
+    if (existing && /^[a-zA-Z0-9_-]{8,100}$/.test(existing)) return existing;
+    const id = crypto.randomUUID ? crypto.randomUUID() : `cardnews_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+    localStorage.setItem(projectIdKey(), id);
+    return id;
+  }
+
   function load() {
+    const projectId = readProjectId();
     try {
-      const raw = localStorage.getItem(`loreax:cardNewsProject:${window.LoreAXTenant?.resolveTenantId?.() || "default"}:${window.LoreAXUsage?.getAnonymousStudentId?.() || "anonymous"}`);
-      if (!raw) return structuredClone(DEFAULT_PROJECT);
-      return merge(structuredClone(DEFAULT_PROJECT), JSON.parse(raw));
+      const scopedKey = `loreax:cardNewsProject:${window.LoreAXTenant?.resolveTenantId?.() || "default"}:${window.LoreAXUsage?.getAnonymousStudentId?.() || "anonymous"}:${projectId}`;
+      const legacyKey = `loreax:cardNewsProject:${window.LoreAXTenant?.resolveTenantId?.() || "default"}:${window.LoreAXUsage?.getAnonymousStudentId?.() || "anonymous"}`;
+      const raw = localStorage.getItem(scopedKey) || localStorage.getItem(legacyKey);
+      if (!raw) return { ...structuredClone(DEFAULT_PROJECT), projectId };
+      return merge(structuredClone(DEFAULT_PROJECT), { ...JSON.parse(raw), projectId });
     } catch {
-      return structuredClone(DEFAULT_PROJECT);
+      return { ...structuredClone(DEFAULT_PROJECT), projectId };
     }
   }
 
@@ -58,23 +90,32 @@
       out[key] = { ...base[key], ...(data?.[key] || {}) };
     });
     if (!Array.isArray(out.flux.layers)) out.flux.layers = base.flux.layers;
+    out.projectId = out.projectId || readProjectId();
     return out;
   }
 
   function save(remote = true) {
+    project.projectId = project.projectId || readProjectId();
     project.updatedAt = new Date().toISOString();
     project.tenantId = tenantId();
     project.anonymousStudentId = studentId();
     localStorage.setItem(storageKey(), JSON.stringify(project));
-    dom.saveStatus.textContent = "Saved locally";
+    dom.saveStatus.textContent = LABELS.savedLocal;
     window.LoreAXUsage?.trackActivitySave?.(COURSE_ID, { step: STEPS[project.currentStep].id });
     if (remote) {
-      fetch("/api/card-news/save-project", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(project) }).catch(() => {});
+      fetch("/api/card-news/save-project", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(project) })
+        .then((response) => response.json())
+        .then((data) => {
+          dom.saveStatus.textContent = data.ok ? LABELS.savedServer : LABELS.serverFallback;
+        })
+        .catch(() => {
+          dom.saveStatus.textContent = LABELS.savedLocal;
+        });
     }
   }
 
   function debounceSave() {
-    dom.saveStatus.textContent = "Saving...";
+    dom.saveStatus.textContent = LABELS.saving;
     clearTimeout(saveTimer);
     saveTimer = setTimeout(save, 400);
   }
@@ -90,9 +131,9 @@
   }
 
   function render() {
-    dom.stepStatus.textContent = `${project.currentStep + 1} / 5 steps`;
+    dom.stepStatus.textContent = `${project.currentStep + 1} / 5 ${LABELS.steps}`;
     dom.prev.disabled = project.currentStep === 0;
-    dom.next.textContent = project.currentStep === 4 ? "Submit result" : "Save and continue";
+    dom.next.textContent = project.currentStep === 4 ? LABELS.submit : LABELS.saveContinue;
     dom.stepper.innerHTML = STEPS.map((step, index) => `<button class="step-chip ${index === project.currentStep ? "is-active" : ""} ${complete(index) ? "is-done" : ""}" data-step="${index}" type="button"><span>${index + 1}</span><strong>${esc(step.title)}</strong></button>`).join("");
     dom.main.innerHTML = [planView, promptView, fluxView, gptView, finalView][project.currentStep]();
     bind();
@@ -108,35 +149,35 @@
   }
 
   function planView() {
-    return `<div class="step-title"><div><span class="badge">Step 1</span><h2>Topic and plan</h2></div></div>
+    return `<div class="step-title"><div><span class="badge">1\ub2e8\uacc4</span><h2>\uc8fc\uc81c\uc640 \uae30\ud68d</h2></div><span class="mock-badge">${LABELS.mockNotice}</span></div>
     <div class="layout"><section class="card field-grid">
-      <div class="topic-presets">${["School event", "Club recruitment", "Environment campaign", "Local tourism", "Shop promotion", "Safety notice"].map((x) => `<button class="preset-button" data-topic="${x}" type="button">${x}</button>`).join("")}</div>
-      ${field("planning", "topic", "Topic")}
-      <div class="field-grid two">${field("planning", "audience", "Audience")}${field("planning", "purpose", "Purpose")}</div>
-      ${field("planning", "message", "Core message")}
-      ${field("planning", "facts", "Required facts", true)}
-      ${field("planning", "mood", "Mood")}
-    </section><aside class="preview-card"><h3>Plan summary</h3><div class="preview-box">${esc(summary())}</div><p class="notice">Use only facts you have checked. Do not invent dates, places, prices, or names.</p></aside></div>`;
+      <div class="topic-presets">${["\ud559\uad50 \ud589\uc0ac", "\ub3d9\uc544\ub9ac \ud64d\ubcf4", "\ud658\uacbd \ucea0\ud398\uc778", "\uc9c0\uc5ed \uad00\uad11", "\uac00\uac8c \ud64d\ubcf4", "\uc548\uc804 \uc548\ub0b4"].map((x) => `<button class="preset-button" data-topic="${x}" type="button">${x}</button>`).join("")}</div>
+      ${field("planning", "topic", "\uc8fc\uc81c")}
+      <div class="field-grid two">${field("planning", "audience", "\ub300\uc0c1")}${field("planning", "purpose", "\ubaa9\uc801")}</div>
+      ${field("planning", "message", "\ud575\uc2ec \uba54\uc2dc\uc9c0")}
+      ${field("planning", "facts", "\ubc18\ub4dc\uc2dc \ub123\uc744 \ud655\uc778\ub41c \uc0ac\uc2e4", true)}
+      ${field("planning", "mood", "\ubd84\uc704\uae30")}
+    </section><aside class="preview-card"><h3>\uae30\ud68d \uc694\uc57d</h3><div class="preview-box">${esc(summary())}</div><p class="notice">\ud655\uc778\ud55c \uc0ac\uc2e4\ub9cc \uc0ac\uc6a9\ud558\uc138\uc694. \ub0a0\uc9dc, \uc7a5\uc18c, \uac00\uaca9, \uc774\ub984\uc744 \uc784\uc758\ub85c \ub9cc\ub4e4\uba74 \uc548 \ub429\ub2c8\ub2e4.</p></aside></div>`;
   }
 
   function promptView() {
-    return `<div class="step-title"><div><span class="badge">Step 2</span><h2>Prompt design</h2></div><button id="generateCopy" class="primary-button" type="button">Build copy and prompts</button></div>
+    return `<div class="step-title"><div><span class="badge">2\ub2e8\uacc4</span><h2>\ud504\ub86c\ud504\ud2b8 \uc124\uacc4</h2></div><button id="generateCopy" class="primary-button" type="button">\ubb38\uad6c\uc640 \ud504\ub86c\ud504\ud2b8 \ub9cc\ub4e4\uae30</button></div>
     <div class="layout"><section class="card field-grid">
-      <div class="field-grid two">${field("prompt", "role", "Role")}${field("prompt", "task", "Task")}</div>
-      ${field("prompt", "style", "Visual style")}
-      ${field("prompt", "rules", "Output rules", true)}
+      <div class="field-grid two">${field("prompt", "role", "\uc5ed\ud560")}${field("prompt", "task", "\uc791\uc5c5")}</div>
+      ${field("prompt", "style", "\uc2dc\uac01 \uc2a4\ud0c0\uc77c")}
+      ${field("prompt", "rules", "\uc0dd\uc131 \uaddc\uce59", true)}
     </section><aside class="preview-card field-grid">
-      ${field("copy", "title", "Title")}
-      ${field("copy", "subtitle", "Subtitle")}
-      ${field("copy", "cta", "CTA")}
-      <h3>Flux prompt</h3><div class="prompt-box">${esc(project.copy.fluxPrompt || "Not generated yet.")}</div>
-      <h3>GPT prompt</h3><div class="prompt-box">${esc(project.copy.gptPrompt || "Not generated yet.")}</div>
+      ${field("copy", "title", "\uc81c\ubaa9")}
+      ${field("copy", "subtitle", "\ubcf4\uc870 \ubb38\uad6c")}
+      ${field("copy", "cta", "\ud589\ub3d9 \uc720\ub3c4 \ubb38\uad6c")}
+      <h3>Flux \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.fluxPrompt || "\uc544\uc9c1 \uc0dd\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.")}</div>
+      <h3>GPT \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.gptPrompt || "\uc544\uc9c1 \uc0dd\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.")}</div>
     </aside></div>`;
   }
 
   function fluxView() {
-    return `<div class="step-title"><div><span class="badge">Step 3</span><h2>Flux-style workflow</h2></div><div class="button-row"><button id="generateFlux" class="primary-button" ${project.flux.used ? "disabled" : ""} type="button">Generate background</button><button id="downloadFlux" class="ghost-button" type="button">Download PNG</button></div></div>
-    <div class="canvas-workspace"><div class="canvas-wrap"><canvas id="cardCanvas" width="1080" height="1080"></canvas></div><aside class="card"><p class="notice">This workflow creates a no-text background first, then overlays editable text.</p><div class="layer-list">${project.flux.layers.map(layerView).join("")}</div><div class="button-row"><button id="loadCopy" class="ghost-button" type="button">Load copy</button><button id="resetLayout" class="ghost-button" type="button">Reset layout</button></div></aside></div>`;
+    return `<div class="step-title"><div><span class="badge">3\ub2e8\uacc4</span><h2>Flux \uc81c\uc791</h2></div><div class="button-row"><button id="generateFlux" class="primary-button" ${project.flux.used ? "disabled" : ""} type="button">\ubc30\uacbd \uc0dd\uc131</button><button id="downloadFlux" class="ghost-button" type="button">PNG \ub2e4\uc6b4\ub85c\ub4dc</button></div></div>
+    <div class="canvas-workspace"><div class="canvas-wrap"><canvas id="cardCanvas" width="1080" height="1080"></canvas></div><aside class="card"><p class="notice">\uc774 \ubc29\uc2dd\uc740 \uae00\uc790 \uc5c6\ub294 \ubc30\uacbd\uc744 \uba3c\uc800 \ub9cc\ub4e0 \ub4a4, \ud3b8\uc9d1 \uac00\ub2a5\ud55c \ubb38\uad6c\ub97c \uc62c\ub824 \uc644\uc131\ud569\ub2c8\ub2e4.</p><div class="layer-list">${project.flux.layers.map(layerView).join("")}</div><div class="button-row"><button id="loadCopy" class="ghost-button" type="button">\ubb38\uad6c \ubd88\ub7ec\uc624\uae30</button><button id="resetLayout" class="ghost-button" type="button">\ub808\uc774\uc544\uc6c3 \ucd08\uae30\ud654</button></div></aside></div>`;
   }
 
   function layerView(layer) {
@@ -144,16 +185,16 @@
   }
 
   function gptView() {
-    return `<div class="step-title"><div><span class="badge">Step 4</span><h2>GPT integrated workflow</h2></div><button id="generateGpt" class="primary-button" ${project.gpt.used ? "disabled" : ""} type="button">Generate GPT card</button></div>
-    <div class="layout"><section class="card"><h3>Fixed plan</h3><div class="preview-box">${esc(summary())}</div><h3>Integrated prompt</h3><div class="prompt-box">${esc(project.copy.gptPrompt || buildGptPrompt())}</div></section><aside class="preview-card">${project.gpt.imageUrl ? `<img class="result-image" src="${esc(project.gpt.imageUrl)}" alt="GPT result" />` : `<div class="preview-box">No result yet.</div>`}</aside></div>`;
+    return `<div class="step-title"><div><span class="badge">4\ub2e8\uacc4</span><h2>GPT \ud1b5\ud569 \uc81c\uc791</h2></div><button id="generateGpt" class="primary-button" ${project.gpt.used ? "disabled" : ""} type="button">GPT \uce74\ub4dc \uc0dd\uc131</button></div>
+    <div class="layout"><section class="card"><h3>\ud655\uc815\ub41c \uae30\ud68d</h3><div class="preview-box">${esc(summary())}</div><h3>\ud1b5\ud569 \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.gptPrompt || buildGptPrompt())}</div></section><aside class="preview-card">${project.gpt.imageUrl ? `<img class="result-image" src="${esc(project.gpt.imageUrl)}" alt="GPT \uc0dd\uc131 \uacb0\uacfc" />` : `<div class="preview-box">\uc544\uc9c1 \uacb0\uacfc\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.</div>`}</aside></div>`;
   }
 
   function finalView() {
-    return `<div class="step-title"><div><span class="badge">Step 5</span><h2>Compare and submit</h2></div></div><div class="compare-grid">${resultCard("flux", "Flux + overlay", project.flux.finalImage || project.flux.imageUrl)}${resultCard("gpt", "GPT integrated", project.gpt.imageUrl)}</div><section class="card" style="margin-top:18px">${field("final", "reflection", "Why did you choose this result?", true)}<div class="button-row"><button id="downloadFinal" class="primary-button" type="button">Download final PNG</button><button id="submitProject" class="ghost-button" type="button">Submit result</button></div></section>`;
+    return `<div class="step-title"><div><span class="badge">5\ub2e8\uacc4</span><h2>\ube44\uad50\ud558\uace0 \uc644\uc131</h2></div></div><div class="compare-grid">${resultCard("flux", "Flux + \ubb38\uad6c \ud3b8\uc9d1", project.flux.finalImage || project.flux.imageUrl)}${resultCard("gpt", "GPT \ud1b5\ud569 \uc81c\uc791", project.gpt.imageUrl)}</div><section class="card" style="margin-top:18px">${field("final", "reflection", "\uc65c \uc774 \uacb0\uacfc\ubb3c\uc744 \uc120\ud0dd\ud588\ub098\uc694?", true)}<div class="button-row"><button id="downloadFinal" class="primary-button" type="button">\ucd5c\uc885 PNG \ub2e4\uc6b4\ub85c\ub4dc</button><button id="submitProject" class="ghost-button" type="button">\uacb0\uacfc\ubb3c \uc81c\ucd9c</button></div></section>`;
   }
 
   function resultCard(method, title, image) {
-    return `<article class="result-card ${project.final.selected === method ? "is-selected" : ""}"><h3>${title}</h3>${image ? `<img src="${esc(image)}" alt="${title}" />` : `<div class="preview-box">No result</div>`}<button class="ghost-button" data-select="${method}" ${image ? "" : "disabled"} type="button">Select this</button></article>`;
+    return `<article class="result-card ${project.final.selected === method ? "is-selected" : ""}"><h3>${title}</h3>${image ? `<img src="${esc(image)}" alt="${title}" />` : `<div class="preview-box">\uacb0\uacfc \uc5c6\uc74c</div>`}<button class="ghost-button" data-select="${method}" ${image ? "" : "disabled"} type="button">\uc774 \uacb0\uacfc \uc120\ud0dd</button></article>`;
   }
 
   function bind() {
@@ -189,7 +230,7 @@
   }
 
   async function generateCopy() {
-    const data = await post("/api/card-news/generate-copy", { planning: project.planning, promptDesign: project.prompt });
+    const data = await post("/api/card-news/generate-copy", { ...project, planning: project.planning, promptDesign: project.prompt });
     if (!data) return;
     project.copy = { ...project.copy, ...data.copy };
     loadCopy();
@@ -200,7 +241,7 @@
   async function generateFlux() {
     if (project.flux.used) return;
     window.LoreAXUsage?.trackAiGenerate?.(COURSE_ID, "flux_generation", { provider: "flux" });
-    const data = await post("/api/card-news/generate-flux", { planning: project.planning, prompt: project.copy.fluxPrompt });
+    const data = await post("/api/card-news/generate-flux", { ...project, planning: project.planning, prompt: project.copy.fluxPrompt, idempotencyKey: `${project.projectId}:flux_generation` });
     if (!data) return window.LoreAXUsage?.trackAiGenerateResult?.(COURSE_ID, false, { provider: "flux" });
     project.flux.imageUrl = data.imageUrl;
     project.flux.used = true;
@@ -212,7 +253,7 @@
   async function generateGpt() {
     if (project.gpt.used) return;
     window.LoreAXUsage?.trackAiGenerate?.(COURSE_ID, "gpt_integrated_generation", { provider: "gpt" });
-    const data = await post("/api/card-news/generate-gpt", { planning: project.planning, copy: project.copy, prompt: project.copy.gptPrompt });
+    const data = await post("/api/card-news/generate-gpt", { ...project, planning: project.planning, copy: project.copy, prompt: project.copy.gptPrompt, idempotencyKey: `${project.projectId}:gpt_integrated_generation` });
     if (!data) return window.LoreAXUsage?.trackAiGenerateResult?.(COURSE_ID, false, { provider: "gpt" });
     project.gpt.imageUrl = data.imageUrl;
     project.gpt.used = true;
@@ -223,12 +264,12 @@
 
   async function post(url, body) {
     try {
-      const response = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...body, tenantId: tenantId(), anonymousStudentId: studentId() }) });
+      const response = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...body, projectId: project.projectId || readProjectId(), tenantId: tenantId(), anonymousStudentId: studentId(), currentStep: project.currentStep }) });
       const data = await response.json();
-      if (!response.ok || data.success === false) throw new Error(data.message || "Request failed");
+      if (!response.ok || data.success === false) throw new Error(data.message || (data.code === "CARDNEWS_GENERATION_LIMIT" ? LABELS.limit : "\uc694\uccad\uc744 \ucc98\ub9ac\ud558\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4."));
       return data;
     } catch (error) {
-      alert(error.message || "Request failed");
+      alert(error.message || "\uc694\uccad\uc744 \ucc98\ub9ac\ud558\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4.");
       return null;
     }
   }
@@ -236,7 +277,7 @@
   function loadCopy() {
     project.flux.layers[0].text = project.copy.title || project.planning.topic;
     project.flux.layers[1].text = project.copy.subtitle || project.planning.message;
-    project.flux.layers[2].text = project.copy.cta || "Learn more";
+    project.flux.layers[2].text = project.copy.cta || "\uc790\uc138\ud788 \ubcf4\uae30";
   }
 
   function resetLayout() {
@@ -251,7 +292,7 @@
   }
 
   function summary() {
-    return `Topic: ${project.planning.topic || "-"}\nAudience: ${project.planning.audience || "-"}\nPurpose: ${project.planning.purpose || "-"}\nMessage: ${project.planning.message || "-"}\nFacts: ${project.planning.facts || "-"}\nMood: ${project.planning.mood || "-"}`;
+    return `\uc8fc\uc81c: ${project.planning.topic || "-"}\n\ub300\uc0c1: ${project.planning.audience || "-"}\n\ubaa9\uc801: ${project.planning.purpose || "-"}\n\ud575\uc2ec \uba54\uc2dc\uc9c0: ${project.planning.message || "-"}\n\ud655\uc778\ub41c \uc0ac\uc2e4: ${project.planning.facts || "-"}\n\ubd84\uc704\uae30: ${project.planning.mood || "-"}`;
   }
 
   function drawCanvas() {
@@ -303,7 +344,7 @@
 
   function downloadFinal() {
     const image = project.final.selected === "gpt" ? project.gpt.imageUrl : project.flux.finalImage || canvasData();
-    if (!image) return alert("Select a final result first.");
+    if (!image) return alert("\ucd5c\uc885 \uacb0\uacfc\ubb3c\uc744 \uba3c\uc800 \uc120\ud0dd\ud558\uc138\uc694.");
     download(image, "loreax-card-news-final.png");
   }
 
@@ -316,13 +357,53 @@
   }
 
   function submit() {
-    if (!project.final.selected) return alert("Select a final result first.");
-    if (!project.final.reflection) return alert("Write a short reflection first.");
+    if (!project.final.selected) return alert("\ucd5c\uc885 \uacb0\uacfc\ubb3c\uc744 \uba3c\uc800 \uc120\ud0dd\ud558\uc138\uc694.");
+    if (!project.final.reflection) return alert("\uc120\ud0dd \uc774\uc720\ub97c \uc9e7\uac8c \uc791\uc131\ud558\uc138\uc694.");
     project.final.submittedAt = new Date().toISOString();
     save();
     window.LoreAXUsage?.trackReportSubmit?.(COURSE_ID, { selectedMethod: project.final.selected });
     fetch("/api/card-news/submit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(project) }).catch(() => {});
-    alert("Submitted.");
+    alert("\uc81c\ucd9c\ub418\uc5c8\uc2b5\ub2c8\ub2e4.");
+  }
+
+  function localizeShell() {
+    document.title = "AI \ub274\uc2a4\uce74\ub4dc \uc81c\uc791 \ud504\ub85c\uc81d\ud2b8 | LoreAX Class";
+    const back = document.querySelector(".back-link");
+    if (back) back.textContent = "\uc218\uc5c5 \ud3ec\ud138\ub85c \ub3cc\uc544\uac00\uae30";
+    const eyebrow = document.querySelector(".eyebrow");
+    if (eyebrow) eyebrow.textContent = "90\ubd84 \uc218\uc5c5 \ud504\ub85c\uc81d\ud2b8";
+    const title = document.querySelector(".hero h1");
+    if (title) title.textContent = "AI \ub274\uc2a4\uce74\ub4dc \uc81c\uc791";
+    const desc = document.querySelector(".hero p");
+    if (desc) desc.textContent = "\ud558\ub098\uc758 \uba54\uc2dc\uc9c0\ub97c \uae30\ud68d\ud558\uace0, \ud504\ub86c\ud504\ud2b8\ub97c \uc124\uacc4\ud55c \ub4a4 Flux \ubc29\uc2dd\uacfc GPT \ud1b5\ud569 \ubc29\uc2dd\uc744 \ube44\uad50\ud574 \ucd5c\uc885 \ub274\uc2a4\uce74\ub4dc PNG 1\uc7a5\uc744 \uc81c\ucd9c\ud569\ub2c8\ub2e4.";
+    const small = document.querySelector(".status-card small");
+    if (small) small.textContent = "Flux 1\ud68c \u00b7 GPT 1\ud68c";
+    if (dom.saveStatus) dom.saveStatus.textContent = LABELS.savedLocal;
+    if (dom.stepper) dom.stepper.setAttribute("aria-label", "\ub274\uc2a4\uce74\ub4dc \uc81c\uc791 \ub2e8\uacc4");
+    if (dom.prev) dom.prev.textContent = "\uc774\uc804";
+    if (dom.save) dom.save.textContent = "\uc784\uc2dc \uc800\uc7a5";
+  }
+
+  async function restoreFromServer() {
+    if (isRemoteLoaded) return;
+    isRemoteLoaded = true;
+    try {
+      const params = new URLSearchParams({ tenantId: tenantId(), anonymousStudentId: studentId(), projectId: project.projectId || readProjectId() });
+      const response = await fetch(`/api/card-news/save-project?${params}`);
+      if (!response.ok) return;
+      const data = await response.json();
+      const remote = data.project?.project_data;
+      if (!remote) return;
+      const localTime = new Date(project.updatedAt || 0).getTime();
+      const remoteTime = new Date(data.project?.updated_at || remote.updatedAt || 0).getTime();
+      if (remoteTime >= localTime) {
+        Object.assign(project, merge(structuredClone(DEFAULT_PROJECT), { ...remote, projectId: project.projectId }));
+        localStorage.setItem(storageKey(), JSON.stringify(project));
+        render();
+      }
+    } catch {
+      // localStorage fallback stays active.
+    }
   }
 
   dom.stepper.addEventListener("click", (event) => {
@@ -345,8 +426,10 @@
     render();
   });
 
+  localizeShell();
   window.LoreAXTenant?.applyTenantBranding?.();
   window.LoreAXTenant?.applyTenantLinks?.();
   window.LoreAXUsage?.trackCourseOpen?.(COURSE_ID, { page: "card-news" });
   render();
+  restoreFromServer();
 })();
