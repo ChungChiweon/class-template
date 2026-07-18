@@ -1129,9 +1129,25 @@
       image.src = project.flux.imageUrl;
       return;
     }
-    drawFallbackBackground(ctx);
-    drawTextLayers(ctx);
-    project.flux.finalImage = canvas.toDataURL("image/png");
+    drawEmptyCanvas(ctx);
+    project.flux.finalImage = "";
+  }
+
+  function drawEmptyCanvas(ctx) {
+    ctx.clearRect(0, 0, 1080, 1920);
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, 1080, 1920);
+    ctx.strokeStyle = "#d8e6ff";
+    ctx.lineWidth = 6;
+    roundRect(ctx, 70, 70, 940, 1780, 56);
+    ctx.stroke();
+    ctx.fillStyle = "#64748b";
+    ctx.font = "800 42px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("이미지 생성 전", 540, 900);
+    ctx.font = "700 30px Arial";
+    ctx.fillText("2단계 프롬프트를 확인한 뒤 이미지 생성하기를 누르세요.", 540, 970);
+    ctx.textAlign = "left";
   }
 
   function drawFallbackBackground(ctx) {
@@ -1210,6 +1226,7 @@
   }
 
   function canvasData() {
+    if (!project.flux.imageUrl) return "";
     drawCanvas();
     return document.querySelector("#cardCanvas")?.toDataURL("image/png") || "";
   }
