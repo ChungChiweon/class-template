@@ -123,7 +123,14 @@ async function callOpenAiPromptDesigner(metaPrompt, generationMode) {
               "Always return both IMAGE PROMPT and NEGATIVE PROMPT content.",
               "Return JSON only. Do not include markdown.",
               generationMode === "flux"
-                ? 'For flux mode, return {"mode":"flux","prompt":"IMAGE PROMPT:\\n...","negativePrompt":"NEGATIVE PROMPT:\\nno text,\\nno letters,\\nno numbers,\\nno logo,\\nno watermark,\\nno fake information,\\nno unreadable characters,\\nno cluttered layout"}.'
+                ? [
+                    'For flux mode, return {"mode":"flux","prompt":"IMAGE PROMPT:\\n...","negativePrompt":"NEGATIVE PROMPT:\\nno readable text,\\nno letters,\\nno numbers,\\nno logo,\\nno watermark,\\nno fake brand name,\\nno incorrect information,\\nno distorted faces,\\nno cluttered composition"}.',
+                    "Flux mode is for a meaningful text-free card-news background image, not an empty abstract background.",
+                    "The IMAGE PROMPT must follow this order: 1) Main Subject, 2) Scene / Action, 3) Visual Elements, 4) Style, 5) Composition, 6) Text Safe Area.",
+                    "Always include concrete people, real actions, relevant places, and related objects when appropriate.",
+                    "Prefer visualizable phrases such as students participating in an art workshop, families exploring an exhibition, people creating crafts together.",
+                    "Avoid vague-only phrases such as cultural richness, community spirit, creative atmosphere unless they are supported by concrete visible subjects.",
+                  ].join("\n")
                 : 'For gpt_integrated mode, create a complete 9:16 Korean card-news image prompt for GPT image generation. It may include readable Korean title/body/CTA text requested by the user. Return {"mode":"gpt_integrated","prompt":"IMAGE PROMPT:\\n...","negativePrompt":"NEGATIVE PROMPT:\\nDo not create:\\n- broken or unreadable Korean text\\n- fake dates or information\\n- unnecessary logos\\n- excessive decorative elements"}.',
             ].join("\n"),
           },
@@ -233,7 +240,7 @@ function buildCopy(planning, copyText, design, generated, metaPrompt) {
 }
 
 function buildMetaPrompt(planning, contentInfo, copyText, design) {
-  const modeLabel = design.generationMode === "gpt_integrated" ? "GPT \ud1b5\ud569 \uce74\ub4dc \uc81c\uc791" : "Flux \uc774\ubbf8\uc9c0 \uc0dd\uc131 + \ud14d\uc2a4\ud2b8 \uc624\ubc84\ub808\uc774";
+  const modeLabel = design.generationMode === "gpt_integrated" ? "GPT \ud1b5\ud569 \uce74\ub4dc \uc81c\uc791" : "Flux \uc758\ubbf8 \uc788\ub294 \uae00\uc790 \uc5c6\ub294 \uc774\ubbf8\uc9c0 \uc0dd\uc131";
   const modeRules = design.generationMode === "gpt_integrated"
     ? [
         "GPT \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 9:16 \uc644\uc131\ud615 \uce74\ub4dc\ub274\uc2a4 \uc81c\uc791 \ubaa9\uc801",
@@ -244,13 +251,21 @@ function buildMetaPrompt(planning, contentInfo, copyText, design) {
         "Do not create broken Korean text, fake dates or information, unnecessary logos, unreadable typography, excessive decorative elements.",
       ]
     : [
-        "\uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 \uc601\ubb38 \uc911\uc2ec \uc0c1\uc138 \ud504\ub86c\ud504\ud2b8 \uc791\uc131",
-        "\ud14d\uc2a4\ud2b8 \uc5c6\ub294 \uc774\ubbf8\uc9c0 \uc0dd\uc131 \ubaa9\uc801",
-        "9:16 vertical composition",
-        "leave clear empty space for text overlay",
-        "describe subject, composition, lighting, color, style",
-        "do not include written information inside image",
-        "negative prompt \uc0dd\uc131",
+        "\ud14d\uc2a4\ud2b8\uac00 \uc5c6\uc9c0\ub9cc \uc8fc\uc81c\uac00 \ubcf4\uc774\ub294 \uce74\ub4dc\ub274\uc2a4 \ubc30\uacbd \uc774\ubbf8\uc9c0 \uc0dd\uc131 \ubaa9\uc801",
+        "\ube48 \ubc30\uacbd\uc774 \uc544\ub2c8\ub77c \uc8fc\uc81c\uc640 \uad00\ub828\ub41c \uad6c\uccb4\uc801\uc778 \uc0ac\ub78c, \ud589\ub3d9, \uacf5\uac04, \uc18c\ud488\uc744 \ubc18\ub4dc\uc2dc \ud3ec\ud568",
+        "Prompt order: Main Subject -> Scene / Action -> Visual Elements -> Style -> Composition -> Text Safe Area -> Negative Prompt",
+        "Main Subject: identify the concrete subject related to the topic",
+        "Scene / Action: show people doing a real activity in a relevant place",
+        "Visual Elements: include related objects, tools, props, environment details",
+        "Style: describe photo / illustration / graphic style, lighting, color, mood",
+        "Composition: 9:16 vertical card-news composition with the main scene clearly visible",
+        "Text Safe Area: Reserve a clean area for text overlay while maintaining a rich visual scene. Do not empty the whole image.",
+        "Avoid vague-only abstract phrases. Convert abstract ideas into visible people, actions, places, and objects.",
+        "For culture/education topics, prefer students, families, classrooms, workshops, creative activities, exhibition spaces, and art materials when relevant.",
+        "For tourism topics, prefer landmarks, travelers, local scenery, cultural experiences.",
+        "For promotion topics, prefer products, customers, business scenes.",
+        "For career topics, prefer students, career exploration, professional environments.",
+        "Negative prompt \uc0dd\uc131",
       ];
   return [
     "\ub108\ub294 AI \uc774\ubbf8\uc9c0 \uc0dd\uc131 \ud504\ub86c\ud504\ud2b8 \uc124\uacc4 \uc804\ubb38\uac00\uc774\uba70, \uc20f\ud3fc \ucf58\ud150\uce20\uc640 \uce74\ub4dc\ub274\uc2a4 \uc81c\uc791 \uc804\ubb38\uac00\uc774\ub2e4.",
@@ -291,7 +306,7 @@ function buildMetaPrompt(planning, contentInfo, copyText, design) {
     ...modeRules,
     "",
     design.generationMode === "flux"
-      ? "JSON\ub9cc \ubc18\ud658: {\"mode\":\"flux\",\"prompt\":\"IMAGE PROMPT:\\n...\",\"negativePrompt\":\"no text,\\nno letters,\\nno numbers,\\nno logo,\\nno watermark\"}"
+      ? "JSON\ub9cc \ubc18\ud658: {\"mode\":\"flux\",\"prompt\":\"IMAGE PROMPT:\\nMain Subject: ...\\nScene / Action: ...\\nVisual Elements: ...\\nStyle: ...\\nComposition: ...\\nText Safe Area: ...\",\"negativePrompt\":\"no readable text,\\nno letters,\\nno numbers,\\nno logo,\\nno watermark,\\nno fake brand name,\\nno incorrect information,\\nno distorted faces,\\nno cluttered composition\"}"
       : "JSON\ub9cc \ubc18\ud658: {\"mode\":\"gpt_integrated\",\"prompt\":\"IMAGE PROMPT:\\n...\",\"negativePrompt\":\"NEGATIVE PROMPT:\\nDo not create:\\n- broken or unreadable Korean text\\n- fake dates or information\\n- unnecessary logos\\n- excessive decorative elements\"}",
   ].filter(Boolean).join("\n");
 }
@@ -322,14 +337,18 @@ function buildCopyTextPrompt(planning, contentInfo) {
 
 function ensureFluxNoText(prompt) {
   const text = cleanText(prompt, 7000);
-  return /no text|without text|text-free/i.test(text)
-    ? text
-    : `${text}\n\nStrict condition: no text, no letters, no numbers, no logo, no watermark, do not include written information inside the image.`;
+  const safeArea = /Text Safe Area|text overlay|safe area/i.test(text)
+    ? ""
+    : "\n\nText Safe Area: Reserve a clean area for text overlay while maintaining a rich visual scene. Do not empty the whole image.";
+  const noReadableText = /no readable text|without readable text|text-free/i.test(text)
+    ? ""
+    : "\n\nStrict condition: no readable text, no letters, no numbers, no logo, no watermark.";
+  return `${text}${safeArea}${noReadableText}`;
 }
 
 function ensureFluxNegative(value) {
   const text = cleanText(value || "", 1000);
-  const required = ["no text", "no letters", "no numbers", "no logo", "no watermark", "no fake information", "no unreadable characters", "no cluttered layout"];
+  const required = ["no readable text", "no letters", "no numbers", "no logo", "no watermark", "no fake brand name", "no incorrect information", "no distorted faces", "no cluttered composition"];
   const merged = ["NEGATIVE PROMPT:", text, ...required.filter((item) => !text.toLowerCase().includes(item))].filter(Boolean).join("\n");
   return cleanText(merged, 1200);
 }

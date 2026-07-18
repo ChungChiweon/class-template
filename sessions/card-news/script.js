@@ -480,7 +480,7 @@
   }
 
   function fluxNegativeDefault() {
-    return "no text,\nno letters,\nno numbers,\nno logo,\nno watermark,\nno fake information,\nno unreadable characters,\nno cluttered layout";
+    return "no readable text,\nno letters,\nno numbers,\nno logo,\nno watermark,\nno fake brand name,\nno incorrect information,\nno distorted faces,\nno cluttered composition";
   }
 
   function gptNegativeDefault() {
@@ -492,7 +492,7 @@
       return `<h3>GPT \ud1b5\ud569 \uc81c\uc791\uc6a9 \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.gptPrompt || "\uc544\uc9c1 \uc0dd\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.")}</div>`;
     }
     return `<h3>Flux \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.fluxPrompt || "\uc544\uc9c1 \uc0dd\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.")}</div>
-      <h3>Negative Prompt</h3><div class="prompt-box">${esc(project.copy.negativePrompt || "no text,\nno letters,\nno numbers,\nno logo,\nno watermark")}</div>`;
+      <h3>Negative Prompt</h3><div class="prompt-box">${esc(project.copy.negativePrompt || fluxNegativeDefault())}</div>`;
   }
 
   function promptTheoryView() {
@@ -666,7 +666,7 @@
   function fluxView() {
     const generateLabel = project.flux.used ? "\uc774\ubbf8\uc9c0 \uc0dd\uc131 \uc644\ub8cc" : project.flux.status === "loading" ? "\uc774\ubbf8\uc9c0 \uc0dd\uc131 \uc911..." : "\uc774\ubbf8\uc9c0 \uc0dd\uc131\ud558\uae30";
     return `<div class="step-title"><div><span class="badge">3\ub2e8\uacc4</span><h2>\uc774\ubbf8\uc9c0 \uc0dd\uc131</h2></div><div class="button-row"><button id="generateFlux" class="primary-button" ${project.flux.used || project.flux.status === "loading" ? "disabled" : ""} type="button">${generateLabel}</button><button id="downloadFlux" class="ghost-button" type="button">PNG \ub2e4\uc6b4\ub85c\ub4dc</button></div></div>
-    <div class="canvas-workspace"><div class="canvas-wrap"><canvas id="cardCanvas" width="1080" height="1920"></canvas></div><aside class="card">${fluxStatusView()}<p class="notice">Flux \ubc29\uc2dd\uc740 2\ub2e8\uacc4\uc5d0\uc11c \ub9cc\ub4e0 \uae00\uc790 \uc5c6\ub294 \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 \ud504\ub86c\ud504\ud2b8\ub97c \uc0ac\uc6a9\ud569\ub2c8\ub2e4. \uc774\ubbf8\uc9c0 \uc548\uc5d0 \ud55c\uae00 \ubb38\uad6c\ub97c \ub123\uc9c0 \uc54a\uace0, \ud544\uc694\ud55c \ubb38\uad6c\ub294 \uc678\ubd80 \ud3b8\uc9d1 \ub3c4\uad6c\uc5d0\uc11c \ub530\ub85c \ucd94\uac00\ud558\uc138\uc694.</p><h3>Flux \uc0dd\uc131\uc6a9 \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.fluxPrompt || buildFluxPrompt())}</div><h3>Negative Prompt</h3><div class="prompt-box">${esc(project.copy.negativePrompt || "no text, no letters, no numbers, no logo, no watermark")}</div></aside></div>`;
+    <div class="canvas-workspace"><div class="canvas-wrap"><canvas id="cardCanvas" width="1080" height="1920"></canvas></div><aside class="card">${fluxStatusView()}<p class="notice">Flux \ubc29\uc2dd\uc740 2\ub2e8\uacc4\uc5d0\uc11c \ub9cc\ub4e0 \uae00\uc790 \uc5c6\ub294 \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 \ud504\ub86c\ud504\ud2b8\ub97c \uc0ac\uc6a9\ud569\ub2c8\ub2e4. \ube48 \ubc30\uacbd\uc774 \uc544\ub2c8\ub77c \uc8fc\uc81c\uac00 \ubcf4\uc774\ub294 \uc7a5\uba74\uc744 \uc0dd\uc131\ud558\uace0, \ud544\uc694\ud55c \ubb38\uad6c\ub294 \uc678\ubd80 \ud3b8\uc9d1 \ub3c4\uad6c\uc5d0\uc11c \ub530\ub85c \ucd94\uac00\ud558\uc138\uc694.</p><h3>Flux \uc0dd\uc131\uc6a9 \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.fluxPrompt || buildFluxPrompt())}</div><h3>Negative Prompt</h3><div class="prompt-box">${esc(project.copy.negativePrompt || fluxNegativeDefault())}</div></aside></div>`;
   }
 
   function fluxStatusView() {
@@ -970,7 +970,7 @@
   }
 
   function fluxRules() {
-    return "\ud655\uc778\ub41c \uc815\ubcf4\ub9cc \uc0ac\uc6a9\ud55c\ub2e4.\n\uc774\ubbf8\uc9c0 \uc548\uc5d0\ub294 \uae00\uc790, \uc22b\uc790, \ub85c\uace0\ub97c \ub123\uc9c0 \uc54a\ub294\ub2e4.\n\ucd5c\uc885 \ubb38\uad6c\ub97c \ucd94\uac00\ud560 \uc218 \uc788\ub3c4\ub85d \ucda9\ubd84\ud55c \ube48 \uacf5\uac04\uc744 \ud655\ubcf4\ud55c\ub2e4.\n9:16 \uc138\ub85c\ud615 \ubaa8\ubc14\uc77c \uce74\ub4dc\ub274\uc2a4 \uad6c\ub3c4\ub97c \uc720\uc9c0\ud55c\ub2e4.\n\ud575\uc2ec \uc774\ubbf8\uc9c0\ub294 \uc911\uc559 \uc548\uc804 \uc601\uc5ed\uc5d0 \ubc30\uce58\ud55c\ub2e4.\n\ubcf5\uc7a1\ud55c \ubc30\uacbd\ubcf4\ub2e4 \ud14d\uc2a4\ud2b8\uac00 \uc798 \ubcf4\uc774\ub294 \uad6c\uc131\uc744 \uc6b0\uc120\ud55c\ub2e4.";
+    return "\ud655\uc778\ub41c \uc815\ubcf4\ub9cc \uc0ac\uc6a9\ud55c\ub2e4.\n\ube48 \ubc30\uacbd\uc774 \uc544\ub2c8\ub77c \uc8fc\uc81c\uac00 \ubcf4\uc774\ub294 \uc758\ubbf8 \uc788\ub294 \uc7a5\uba74\uc744 \ub9cc\ub4e0\ub2e4.\n\uc8fc\uc81c\uc640 \uad00\ub828\ub41c \uc0ac\ub78c, \uc2e4\uc81c \ud589\ub3d9, \uacf5\uac04, \uc18c\ud488\uc744 \ud3ec\ud568\ud55c\ub2e4.\n\ucd94\uc0c1\uc801 \ub3c4\ud615\ubcf4\ub2e4 \uc2dc\uac01\uc801\uc73c\ub85c \uc774\ud574\ub418\ub294 \uc7a5\uba74\uc744 \uc6b0\uc120\ud55c\ub2e4.\n9:16 \uc138\ub85c\ud615 \ubaa8\ubc14\uc77c \uce74\ub4dc\ub274\uc2a4 \uad6c\ub3c4\ub97c \uc720\uc9c0\ud55c\ub2e4.\n\ud14d\uc2a4\ud2b8 \uc624\ubc84\ub808\uc774 \uc601\uc5ed\uc740 \uc0c1\ub2e8 \ub610\ub294 \ud558\ub2e8 \uc77c\ubd80\uc5d0\ub9cc \ud655\ubcf4\ud558\uace0, \uc774\ubbf8\uc9c0 \uc804\uccb4\ub97c \ube44\uc6b0\uc9c0 \uc54a\ub294\ub2e4.\n\uc774\ubbf8\uc9c0 \uc548\uc5d0 \uc77d\ud790 \uc218 \uc788\ub294 \uae00\uc790, \uc22b\uc790, \ub85c\uace0\ub294 \ub123\uc9c0 \uc54a\ub294\ub2e4.";
   }
 
   function gptIntegratedRules() {
@@ -1020,10 +1020,10 @@
 
   function buildStandalonePromptRequest() {
     ensurePromptDefaults();
-    const mode = project.prompt.generationMode === "gpt_integrated" ? "GPT \ud1b5\ud569 \uce74\ub4dc \uc81c\uc791" : "Flux \uc774\ubbf8\uc9c0 \uc0dd\uc131 + \ud14d\uc2a4\ud2b8 \uc624\ubc84\ub808\uc774";
+    const mode = project.prompt.generationMode === "gpt_integrated" ? "GPT \ud1b5\ud569 \uce74\ub4dc \uc81c\uc791" : "Flux \uc758\ubbf8 \uc788\ub294 \uae00\uc790 \uc5c6\ub294 \uc774\ubbf8\uc9c0 \uc0dd\uc131";
     const modeInstruction = project.prompt.generationMode === "gpt_integrated"
       ? "GPT \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 9:16 \uce74\ub4dc\ub274\uc2a4 \uc2dc\uac01 \ubc30\uacbd IMAGE PROMPT\ub97c \uc791\uc131\ud574 \uc918. \ud55c\uae00 \uc81c\ubaa9\u00b7\ubcf8\ubb38\u00b7CTA\ub294 \uc774\ud6c4 HTML/canvas\uc5d0\uc11c \uc62c\ub9b4 \uac83\uc774\ubbc0\ub85c, \uc774\ubbf8\uc9c0 \uc548\uc5d0 \ubb38\uc790\ub97c \uadf8\ub9ac\uc9c0 \ub9d0\uace0 \ud14d\uc2a4\ud2b8 \uc548\uc804 \uc601\uc5ed\ub9cc \ud655\ubcf4\ud574 \uc918."
-      : "\ud14d\uc2a4\ud2b8 \uc5c6\ub294 Flux \uc774\ubbf8\uc9c0\ub97c \uc704\ud55c IMAGE PROMPT\uc640 NEGATIVE PROMPT\ub97c \uc791\uc131\ud574 \uc918. 9:16 vertical composition, clear empty space for text overlay, no text, no letters, no numbers, no logo, no watermark \uc870\uac74\uc744 \ubc18\ub4dc\uc2dc \ubc18\uc601\ud574 \uc918.";
+      : "Flux\uc6a9 \uae00\uc790 \uc5c6\ub294 \uce74\ub4dc\ub274\uc2a4 \ubc30\uacbd IMAGE PROMPT\uc640 NEGATIVE PROMPT\ub97c \uc791\uc131\ud574 \uc918. \ube48 \ubc30\uacbd\uc774 \uc544\ub2c8\ub77c Main Subject, Scene / Action, Visual Elements, Style, Composition, Text Safe Area \uc21c\uc11c\ub85c \uad6c\uccb4\uc801\uc778 \uc0ac\ub78c\u00b7\ud589\ub3d9\u00b7\uacf5\uac04\u00b7\uc18c\ud488\uc774 \ubcf4\uc774\ub294 \uc7a5\uba74\uc744 \uc124\uacc4\ud574 \uc918. Text Safe Area\ub294 \uc7a5\uba74\uc744 \ube44\uc6b0\uc9c0 \uc54a\uace0 \uc0c1\ub2e8 \ub610\ub294 \ud558\ub2e8 \uc77c\ubd80\uc5d0\ub9cc \ud655\ubcf4\ud574 \uc918. Negative prompt\uc5d0\ub294 no readable text, no letters, no numbers, no logo, no watermark\ub97c \ud3ec\ud568\ud574 \uc918.";
     return [
       "\ub108\ub294 AI \uc774\ubbf8\uc9c0 \uc0dd\uc131 \ud504\ub86c\ud504\ud2b8 \uc124\uacc4 \uc804\ubb38\uac00\uc774\uba70, \uc20f\ud3fc \ucf58\ud150\uce20\uc640 \uce74\ub4dc\ub274\uc2a4 \uc81c\uc791 \uc804\ubb38\uac00\uc774\ub2e4.",
       "",
@@ -1076,7 +1076,7 @@
   }
 
   function buildGptPrompt() {
-    return project.copy.gptPrompt || `Create a 9:16 vertical card news visual background with no text. Leave clear areas for title, subtitle, and CTA overlays. Topic: ${project.planning.topic}. Mood: ${project.planning.mood}. Do not render Korean letters, numbers, logos, dates, prices, or fake information inside the image.`;
+    return project.copy.gptPrompt || `Create a 9:16 vertical card news image for GPT image generation. Topic: ${project.planning.topic}. Include a clear mobile card-news composition, readable Korean title/body/CTA if requested, and avoid fake dates, prices, logos, or unsupported information. Mood: ${project.planning.mood}.`;
   }
 
   function summary() {
