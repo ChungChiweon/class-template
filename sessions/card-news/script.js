@@ -152,7 +152,7 @@
     planning: { selectedExampleId: "", sourceLabel: "", sourceUrl: "", topic: "", audience: "", purpose: "", message: "", coreMessage: "", facts: "", requiredFacts: [], mood: "" },
     prompt: { generationMode: "flux", role: "\uce74\ub4dc\ub274\uc2a4 \uae30\ud68d\uc790", task: "\uc9c0\uc5ed \ud589\uc0ac \ud64d\ubcf4\uc6a9 \uc20f\ud3fc \uce74\ub4dc\ub274\uc2a4 \uc81c\uc791", audience: "", context: "", format: "9:16 \uc138\ub85c\ud615 \ubaa8\ubc14\uc77c \uce74\ub4dc\ub274\uc2a4", style: "\uce5c\uadfc\ud558\uace0 \ucc3d\uc758\uc801\uc778 \ud64d\ubcf4 \uc2a4\ud0c0\uc77c", rules: fluxRules() },
     copy: { title: "", subtitle: "", cta: "", fluxPrompt: "", gptPrompt: "", negativePrompt: "", metaPrompt: "", generationMode: "flux", promptStatus: "" },
-    flux: { used: false, imageUrl: "", finalImage: "", layers: [{ id: "title", text: "", x: 80, y: 120, size: 58, color: "#0f172a" }, { id: "subtitle", text: "", x: 80, y: 420, size: 36, color: "#1e293b" }, { id: "cta", text: "", x: 80, y: 820, size: 30, color: "#ffffff" }] },
+    flux: { used: false, imageUrl: "", finalImage: "", status: "", message: "", layers: [{ id: "title", text: "", x: 80, y: 120, size: 58, color: "#0f172a" }, { id: "subtitle", text: "", x: 80, y: 420, size: 36, color: "#1e293b" }, { id: "cta", text: "", x: 80, y: 820, size: 30, color: "#ffffff" }] },
     gpt: { used: false, imageUrl: "" },
     final: { selected: "", reflection: "", submittedAt: "" },
   };
@@ -630,7 +630,20 @@
 
   function fluxView() {
     return `<div class="step-title"><div><span class="badge">3\ub2e8\uacc4</span><h2>\uc774\ubbf8\uc9c0 \uc0dd\uc131+\uae00 \ubc30\uce58</h2></div><div class="button-row"><button id="generateFlux" class="primary-button" ${project.flux.used ? "disabled" : ""} type="button">\uc774\ubbf8\uc9c0 \uc0dd\uc131\ud558\uae30</button><button id="downloadFlux" class="ghost-button" type="button">PNG \ub2e4\uc6b4\ub85c\ub4dc</button></div></div>
-    <div class="canvas-workspace"><div class="canvas-wrap"><canvas id="cardCanvas" width="1080" height="1080"></canvas></div><aside class="card"><p class="notice">\uc774 \ubc29\uc2dd\uc740 \uae00\uc790 \uc5c6\ub294 \ubc30\uacbd\uc744 \uba3c\uc800 \ub9cc\ub4e0 \ub4a4, \ud3b8\uc9d1 \uac00\ub2a5\ud55c \ubb38\uad6c\ub97c \uc62c\ub824 \uc644\uc131\ud569\ub2c8\ub2e4.</p><div class="layer-list">${project.flux.layers.map(layerView).join("")}</div><div class="button-row"><button id="loadCopy" class="ghost-button" type="button">\ubb38\uad6c \ubd88\ub7ec\uc624\uae30</button><button id="resetLayout" class="ghost-button" type="button">\ub808\uc774\uc544\uc6c3 \ucd08\uae30\ud654</button></div></aside></div>`;
+    <div class="canvas-workspace"><div class="canvas-wrap"><canvas id="cardCanvas" width="1080" height="1080"></canvas></div><aside class="card">${fluxStatusView()}<p class="notice">\uc774 \ubc29\uc2dd\uc740 2\ub2e8\uacc4\uc5d0\uc11c \ub9cc\ub4e0 Flux \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 \ud504\ub86c\ud504\ud2b8\ub97c \uc0ac\uc6a9\ud574 \uc774\ubbf8\uc9c0\ub97c \uba3c\uc800 \ub9cc\ub4e0 \ub4a4, \ud3b8\uc9d1 \uac00\ub2a5\ud55c \ubb38\uad6c\ub97c \uc62c\ub824 \uc644\uc131\ud569\ub2c8\ub2e4.</p><div class="layer-list">${project.flux.layers.map(layerView).join("")}</div><div class="button-row"><button id="loadCopy" class="ghost-button" type="button">\ubb38\uad6c \ubd88\ub7ec\uc624\uae30</button><button id="resetLayout" class="ghost-button" type="button">\ub808\uc774\uc544\uc6c3 \ucd08\uae30\ud654</button></div></aside></div>`;
+  }
+
+  function fluxStatusView() {
+    const hasPrompt = Boolean(project.copy.fluxPrompt);
+    const status = project.flux.status || (project.flux.used ? "success" : hasPrompt ? "ready" : "waiting");
+    const messages = {
+      waiting: "2\ub2e8\uacc4\uc5d0\uc11c Flux \ud504\ub86c\ud504\ud2b8\ub97c \uba3c\uc800 \uc0dd\uc131\ud558\uc138\uc694.",
+      ready: "2\ub2e8\uacc4 Flux \ud504\ub86c\ud504\ud2b8\ub97c \uac00\uc838\uc654\uc2b5\ub2c8\ub2e4. \uc774\ubbf8\uc9c0 \uc0dd\uc131\ud558\uae30\ub97c \ub204\ub974\uc138\uc694.",
+      loading: "\uc774\ubbf8\uc9c0 \uc0dd\uc131 \uc911\uc785\ub2c8\ub2e4. \uc7a0\uc2dc\ub9cc \uae30\ub2e4\ub824 \uc8fc\uc138\uc694.",
+      success: "\uc774\ubbf8\uc9c0 \uc0dd\uc131\uc774 \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ubb38\uad6c\ub97c \ubd88\ub7ec\uc640 \ud3b8\uc9d1\ud55c \ub4a4 PNG\ub85c \uc800\uc7a5\ud558\uc138\uc694.",
+      failed: project.flux.message || "\uc774\ubbf8\uc9c0 \uc0dd\uc131\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. 2\ub2e8\uacc4 \ud504\ub86c\ud504\ud2b8\ub97c \ud655\uc778\ud558\uace0 \ub2e4\uc2dc \uc2dc\ub3c4\ud558\uc138\uc694.",
+    };
+    return `<div class="generation-status is-${status}" role="status">${messages[status] || messages.ready}</div>`;
   }
 
   function layerView(layer) {
@@ -727,23 +740,40 @@
 
   async function generateFlux() {
     if (project.flux.used) return;
+    project.flux.status = "loading";
+    project.flux.message = "";
+    save(false);
     const button = dom.main.querySelector("#generateFlux");
+    const status = dom.main.querySelector(".generation-status");
     if (button) {
       button.disabled = true;
       button.textContent = "\uc774\ubbf8\uc9c0 \uc0dd\uc131 \uc911...";
+    }
+    if (status) {
+      status.className = "generation-status is-loading";
+      status.textContent = "\uc774\ubbf8\uc9c0 \uc0dd\uc131 \uc911\uc785\ub2c8\ub2e4. \uc7a0\uc2dc\ub9cc \uae30\ub2e4\ub824 \uc8fc\uc138\uc694.";
     }
     window.LoreAXUsage?.trackAiGenerate?.(COURSE_ID, "flux_generation", { provider: "flux" });
     const data = await post("/api/card-news/generate-flux", { ...project, planning: project.planning, prompt: project.copy.fluxPrompt, idempotencyKey: `${project.projectId}:flux_generation` });
     if (!data) {
       window.LoreAXUsage?.trackAiGenerateResult?.(COURSE_ID, false, { provider: "flux" });
+      project.flux.status = "failed";
+      project.flux.message = "\uc774\ubbf8\uc9c0 \uc0dd\uc131\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. 2\ub2e8\uacc4 \ud504\ub86c\ud504\ud2b8\ub97c \ud655\uc778\ud558\uace0 \ub2e4\uc2dc \uc2dc\ub3c4\ud558\uc138\uc694.";
+      save(false);
       if (button) {
         button.disabled = false;
         button.textContent = "\uc774\ubbf8\uc9c0 \uc0dd\uc131\ud558\uae30";
+      }
+      if (status) {
+        status.className = "generation-status is-failed";
+        status.textContent = project.flux.message;
       }
       return;
     }
     project.flux.imageUrl = data.imageUrl;
     project.flux.used = true;
+    project.flux.status = "success";
+    project.flux.message = "";
     window.LoreAXUsage?.trackAiGenerateResult?.(COURSE_ID, true, { provider: "flux" });
     save();
     render();
