@@ -2083,6 +2083,21 @@ applyHotelPromptWorkflow();
 })();
 
 const LESSON_STORAGE_KEY = "selectedLessonId";
+
+function getStoredLessonId() {
+  try {
+    const queryLessonId = new URLSearchParams(window.location.search).get("lesson");
+    if (lessons[queryLessonId]) {
+      window.localStorage.setItem(LESSON_STORAGE_KEY, queryLessonId);
+      return queryLessonId;
+    }
+    const storedLessonId = window.localStorage.getItem(LESSON_STORAGE_KEY);
+    return lessons[storedLessonId] ? storedLessonId : "hotelPromo";
+  } catch {
+    return "hotelPromo";
+  }
+}
+
 let currentLessonId = getStoredLessonId();
 let lessonData = lessons[currentLessonId];
 
@@ -3087,20 +3102,6 @@ function getStoredMode() {
     return storedMode === "teacher" ? "teacher" : "student";
   } catch {
     return "student";
-  }
-}
-
-function getStoredLessonId() {
-  try {
-    const queryLessonId = new URLSearchParams(window.location.search).get("lesson");
-    if (lessons[queryLessonId]) {
-      window.localStorage.setItem(LESSON_STORAGE_KEY, queryLessonId);
-      return queryLessonId;
-    }
-    const storedLessonId = window.localStorage.getItem(LESSON_STORAGE_KEY);
-    return lessons[storedLessonId] ? storedLessonId : "hotelPromo";
-  } catch {
-    return "hotelPromo";
   }
 }
 
