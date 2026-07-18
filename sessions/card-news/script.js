@@ -696,7 +696,7 @@
     if (!project.gpt.imageUrl) {
       return `<aside class="preview-card gpt-result-card"><h3>GPT \uc0dd\uc131 \uacb0\uacfc</h3><div class="preview-box">\uc544\uc9c1 \uc0dd\uc131\ub41c \uc774\ubbf8\uc9c0\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.<br>\"\uc774\ubbf8\uc9c0 \uc0dd\uc131\ud558\uae30\"\ub97c \ub204\ub974\uba74 \uc774 \uc601\uc5ed\uc5d0 \uacb0\uacfc\uac00 \ud45c\uc2dc\ub429\ub2c8\ub2e4.</div></aside>`;
     }
-    return `<aside class="preview-card gpt-result-card is-ready"><div class="result-heading"><div><span class="badge">GPT \uacb0\uacfc</span><h3>\uc0dd\uc131\ub41c \uc774\ubbf8\uc9c0</h3></div><button id="downloadGpt" class="ghost-button" type="button">PNG \ub2e4\uc6b4\ub85c\ub4dc</button></div><div class="gpt-canvas-wrap"><canvas id="gptCanvas" width="1080" height="1920"></canvas></div><p class="notice">GPT \uc774\ubbf8\uc9c0 \uc0dd\uc131 \uacb0\uacfc\ub9cc \ud45c\uc2dc\ud569\ub2c8\ub2e4. \uae00\uc790 \ub808\uc774\uc5b4 \ud3b8\uc9d1\uc740 3\ub2e8\uacc4 Flux \ubc29\uc2dd\uc5d0\uc11c\ub9cc \uc0ac\uc6a9\ud569\ub2c8\ub2e4.</p></aside>`;
+    return `<aside class="preview-card gpt-result-card is-ready"><div class="result-heading"><div><span class="badge">GPT \uacb0\uacfc</span><h3>\uc0dd\uc131\ub41c \uc774\ubbf8\uc9c0</h3></div><button id="downloadGpt" class="ghost-button" type="button">PNG \ub2e4\uc6b4\ub85c\ub4dc</button></div><div class="gpt-image-wrap"><img src="${esc(project.gpt.imageUrl)}" alt="GPT\uc5d0\uc11c \uc0dd\uc131\ud55c \uce74\ub4dc\ub274\uc2a4 \uc774\ubbf8\uc9c0" /></div><p class="notice">GPT \ubc29\uc2dd\uc740 API\uac00 \ubc18\ud658\ud55c \uc774\ubbf8\uc9c0\ub97c \uadf8\ub300\ub85c \ud45c\uc2dc\ud569\ub2c8\ub2e4. \uae00\uc790 \ub808\uc774\uc5b4 \ud3b8\uc9d1\uc740 3\ub2e8\uacc4 Flux \ubc29\uc2dd\uc5d0\uc11c\ub9cc \uc0ac\uc6a9\ud569\ub2c8\ub2e4.</p></aside>`;
   }
 
   function gptStatusView() {
@@ -750,7 +750,7 @@
     dom.main.querySelector("#loadCopy")?.addEventListener("click", loadCopy);
     dom.main.querySelector("#resetLayout")?.addEventListener("click", resetLayout);
     dom.main.querySelector("#downloadFlux")?.addEventListener("click", () => download(project.flux.finalImage || canvasData(), "flux-card-news.png"));
-    dom.main.querySelector("#downloadGpt")?.addEventListener("click", () => download(project.gpt.finalImage || gptCanvasData() || project.gpt.imageUrl, "gpt-card-news.png"));
+    dom.main.querySelector("#downloadGpt")?.addEventListener("click", () => download(project.gpt.imageUrl, "gpt-card-news.png"));
     dom.main.querySelector("#downloadFinal")?.addEventListener("click", downloadFinal);
     dom.main.querySelector("#submitProject")?.addEventListener("click", submit);
     dom.main.querySelectorAll("[data-select]").forEach((button) => button.addEventListener("click", () => {
@@ -1311,12 +1311,11 @@
   }
 
   function gptCanvasData() {
-    drawGptCanvas();
-    return document.querySelector("#gptCanvas")?.toDataURL("image/png") || "";
+    return project.gpt.imageUrl || "";
   }
 
   function downloadFinal() {
-    const image = project.final.selected === "gpt" ? project.gpt.finalImage || gptCanvasData() || project.gpt.imageUrl : project.flux.finalImage || canvasData();
+    const image = project.final.selected === "gpt" ? project.gpt.imageUrl : project.flux.finalImage || canvasData();
     if (!image) return alert("\ucd5c\uc885 \uacb0\uacfc\ubb3c\uc744 \uba3c\uc800 \uc120\ud0dd\ud558\uc138\uc694.");
     download(image, "loreax-card-news-final.png");
   }

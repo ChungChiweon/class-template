@@ -926,18 +926,22 @@ textarea {
   box-shadow: 0 14px 40px rgba(15, 35, 70, 0.16);
 }
 
-.gpt-canvas-wrap {
+.gpt-canvas-wrap,
+.gpt-image-wrap {
   display: grid;
   place-items: center;
   max-width: 100%;
   overflow: hidden;
 }
 
-#gptCanvas {
+#gptCanvas,
+.gpt-image-wrap img {
   width: min(100%, 360px);
   aspect-ratio: 9 / 16;
   border-radius: 18px;
   background: #eef3fb;
+  object-fit: contain;
+  display: block;
   box-shadow: 0 14px 40px rgba(15, 35, 70, 0.16);
 }
 

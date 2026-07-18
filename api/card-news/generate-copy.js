@@ -124,7 +124,7 @@ async function callOpenAiPromptDesigner(metaPrompt, generationMode) {
               "Return JSON only. Do not include markdown.",
               generationMode === "flux"
                 ? 'For flux mode, return {"mode":"flux","prompt":"IMAGE PROMPT:\\n...","negativePrompt":"NEGATIVE PROMPT:\\nno text,\\nno letters,\\nno numbers,\\nno logo,\\nno watermark,\\nno fake information,\\nno unreadable characters,\\nno cluttered layout"}.'
-                : 'For gpt_integrated mode, create a 9:16 visual background prompt for GPT image generation. Text will be overlaid later in HTML/canvas, so do not ask the image model to draw Korean text. Return {"mode":"gpt_integrated","prompt":"IMAGE PROMPT:\\n...","negativePrompt":"NEGATIVE PROMPT:\\nDo not create:\\n- Korean letters or text inside the image\\n- fake dates or information\\n- unnecessary logos\\n- unreadable typography\\n- excessive decorative elements"}.',
+                : 'For gpt_integrated mode, create a complete 9:16 Korean card-news image prompt for GPT image generation. It may include readable Korean title/body/CTA text requested by the user. Return {"mode":"gpt_integrated","prompt":"IMAGE PROMPT:\\n...","negativePrompt":"NEGATIVE PROMPT:\\nDo not create:\\n- broken or unreadable Korean text\\n- fake dates or information\\n- unnecessary logos\\n- excessive decorative elements"}.',
             ].join("\n"),
           },
           { role: "user", content: metaPrompt },
@@ -210,7 +210,7 @@ function parseGeneratedPrompt(content, generationMode) {
   }
   return {
     mode: "gpt_integrated",
-    prompt: ensureGptTextLayout(prompt),
+    prompt: ensureGptIntegratedPrompt(prompt),
     negativePrompt: cleanText(parsed.negativePrompt || gptNegativeDefault(), 1000),
   };
 }
@@ -236,12 +236,12 @@ function buildMetaPrompt(planning, contentInfo, copyText, design) {
   const modeLabel = design.generationMode === "gpt_integrated" ? "GPT \ud1b5\ud569 \uce74\ub4dc \uc81c\uc791" : "Flux \uc774\ubbf8\uc9c0 \uc0dd\uc131 + \ud14d\uc2a4\ud2b8 \uc624\ubc84\ub808\uc774";
   const modeRules = design.generationMode === "gpt_integrated"
     ? [
-        "GPT \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 9:16 \uc2dc\uac01 \ubc30\uacbd \uc81c\uc791 \ubaa9\uc801",
-        "\uc81c\ubaa9, \ubcf8\ubb38, CTA\ub294 \uc774\ud6c4 HTML/canvas\uc5d0\uc11c \uc62c\ub824 \ud45c\uc2dc\ud568",
-        "\uc774\ubbf8\uc9c0 \uc548\uc5d0 \ud55c\uae00, \uc601\ubb38, \uc22b\uc790\ub97c \uc9c1\uc811 \uadf8\ub9ac\uc9c0 \uc54a\uc74c",
-        "\ud14d\uc2a4\ud2b8 \uc624\ubc84\ub808\uc774\ub97c \uc704\ud55c \uc548\uc804 \uc601\uc5ed \ud655\ubcf4",
+        "GPT \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 9:16 \uc644\uc131\ud615 \uce74\ub4dc\ub274\uc2a4 \uc81c\uc791 \ubaa9\uc801",
+        "\uc81c\ubaa9, \ubcf8\ubb38, CTA \ud14d\uc2a4\ud2b8\ub97c \uc774\ubbf8\uc9c0 \uc548\uc5d0 \uc77d\uae30 \uc27d\uac8c \ubc30\uce58",
+        "\ud55c\uae00 \ud0c0\uc774\ud3ec\uadf8\ub798\ud53c\ub97c \ud06c\uace0 \ub2e8\uc21c\ud558\uac8c \uc0ac\uc6a9",
+        "\ud14d\uc2a4\ud2b8\uac00 \uc798\ub9ac\uc9c0 \uc54a\ub3c4\ub85d \uc5ec\ubc31\uacfc \uc548\uc804 \uc601\uc5ed \ud655\ubcf4",
         "\uc790\uc5f0\uc5b4 \ud615\ud0dc\uc758 negative prompt \uc0dd\uc131",
-        "Do not create Korean letters, fake dates or information, unnecessary logos, unreadable typography, excessive decorative elements.",
+        "Do not create broken Korean text, fake dates or information, unnecessary logos, unreadable typography, excessive decorative elements.",
       ]
     : [
         "\uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 \uc601\ubb38 \uc911\uc2ec \uc0c1\uc138 \ud504\ub86c\ud504\ud2b8 \uc791\uc131",
@@ -292,7 +292,7 @@ function buildMetaPrompt(planning, contentInfo, copyText, design) {
     "",
     design.generationMode === "flux"
       ? "JSON\ub9cc \ubc18\ud658: {\"mode\":\"flux\",\"prompt\":\"IMAGE PROMPT:\\n...\",\"negativePrompt\":\"no text,\\nno letters,\\nno numbers,\\nno logo,\\nno watermark\"}"
-      : "JSON\ub9cc \ubc18\ud658: {\"mode\":\"gpt_integrated\",\"prompt\":\"IMAGE PROMPT:\\n...\",\"negativePrompt\":\"NEGATIVE PROMPT:\\nDo not create:\\n- Korean letters or text inside the image\\n- fake dates or information\\n- unnecessary logos\\n- unreadable typography\\n- excessive decorative elements\"}",
+      : "JSON\ub9cc \ubc18\ud658: {\"mode\":\"gpt_integrated\",\"prompt\":\"IMAGE PROMPT:\\n...\",\"negativePrompt\":\"NEGATIVE PROMPT:\\nDo not create:\\n- broken or unreadable Korean text\\n- fake dates or information\\n- unnecessary logos\\n- excessive decorative elements\"}",
   ].filter(Boolean).join("\n");
 }
 
@@ -334,15 +334,15 @@ function ensureFluxNegative(value) {
   return cleanText(merged, 1200);
 }
 
-function ensureGptTextLayout(prompt) {
+function ensureGptIntegratedPrompt(prompt) {
   const text = cleanText(prompt, 7000);
-  return /no text|without text|text overlay|safe area/i.test(text)
+  return /Korean|한글|title|제목|CTA|card-news|카드뉴스/i.test(text)
     ? text
-    : `${text}\n\nCreate a clean 9:16 card-news visual background with clear safe areas for title, body, and CTA overlays. Do not draw Korean letters, English letters, numbers, logos, dates, prices, or fake information inside the image.`;
+    : `${text}\n\nCreate a complete 9:16 Korean card-news image with readable title, short body text, and CTA text. Keep Korean typography large, simple, and legible.`;
 }
 
 function gptNegativeDefault() {
-  return "NEGATIVE PROMPT:\nDo not create:\n- Korean letters or text inside the image\n- fake dates or information\n- unnecessary logos\n- unreadable typography\n- excessive decorative elements";
+  return "NEGATIVE PROMPT:\nDo not create:\n- broken or unreadable Korean text\n- fake dates or information\n- unnecessary logos\n- excessive decorative elements";
 }
 
 function safeProviderError(value) {

@@ -32,15 +32,13 @@ module.exports = async function handler(req, res) {
 
   const copy = body.copy || {};
   const planning = body.planning || {};
-  const title = cleanText(copy.title || planning.topic || "\ub274\uc2a4\uce74\ub4dc", 120);
-  const subtitle = cleanText(copy.subtitle || planning.message || "", 180);
-  const cta = cleanText(copy.cta || "\uc790\uc138\ud788 \ubcf4\uae30", 80);
+  const promptUsed = extractImagePrompt(body.prompt || copy.gptPrompt || buildOpenAiImagePrompt(planning, copy));
   let imageUrl;
   let provider = "mock-gpt-image";
   let mode = providerMode();
   if (isLiveProviderMode()) {
     try {
-      imageUrl = await callOpenAiImage(buildOpenAiImagePrompt(planning, copy, body.prompt));
+      imageUrl = await callOpenAiImage(promptUsed);
       provider = OPENAI_IMAGE_MODEL;
     } catch (error) {
       return endJson(res, 502, { success: false, provider: OPENAI_IMAGE_MODEL, mode, message: safeProviderError(error?.message) });
@@ -56,6 +54,7 @@ module.exports = async function handler(req, res) {
     provider,
     mode,
     imageUrl,
+    promptUsed: body.debugPrompt === true ? promptUsed : undefined,
     saved: saveResult.ok,
     storage: saveResult.source,
   });
@@ -115,6 +114,14 @@ function buildOpenAiImagePrompt(planning = {}, copy = {}, studentPrompt = "") {
     `Required facts: ${cleanText(planning.facts || "", 1200)}`,
     "Use no written information in the image itself. Generate background and visual elements only.",
   ].join("\n");
+}
+
+function extractImagePrompt(value) {
+  const raw = cleanText(value || "", 6000);
+  if (!raw) return "";
+  const withoutFence = raw.replace(/^```(?:text|markdown)?\s*/i, "").replace(/```$/i, "").trim();
+  const imageMatch = withoutFence.match(/IMAGE PROMPT\s*:?\s*([\s\S]*?)(?:\n\s*NEGATIVE PROMPT\s*:|$)/i);
+  return cleanText((imageMatch ? imageMatch[1] : withoutFence).trim(), 4000);
 }
 
 function safeProviderError(value) {
