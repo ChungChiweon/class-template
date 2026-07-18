@@ -1,4 +1,4 @@
-const CACHE_NAME = "loreax-class-erp-v70";
+const CACHE_NAME = "loreax-class-erp-v71";
 
 const CORE_ASSETS = [
   "./",
@@ -116,6 +116,7 @@ const CORE_ASSETS = [
   "./sessions/card-news/script.js?v=card-news-8",
   "./sessions/card-news/script.js?v=card-news-9",
   "./sessions/card-news/script.js?v=card-news-10",
+  "./sessions/card-news/script.js?v=card-news-11",
   "./present/index.html",
   "./present/styles.css",
   "./present/script.js",

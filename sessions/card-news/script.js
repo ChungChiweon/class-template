@@ -3,8 +3,8 @@
   const STEPS = [
     { id: "plan", title: "\uc8fc\uc81c\u00b7\uae30\ud68d" },
     { id: "prompt", title: "\ud504\ub86c\ud504\ud2b8 \uc124\uacc4" },
-    { id: "flux", title: "Flux \uc81c\uc791" },
-    { id: "gpt", title: "GPT \ud1b5\ud569 \uc81c\uc791" },
+    { id: "flux", title: "\ubc30\uacbd \uc0dd\uc131+\uae00 \ubc30\uce58" },
+    { id: "gpt", title: "\ud55c \ubc88\uc5d0 \uc790\ub3d9 \uc81c\uc791" },
     { id: "final", title: "\ube44\uad50\u00b7\uc644\uc131" },
   ];
   const GIMPO_TOPIC_EXAMPLES = [
@@ -405,7 +405,7 @@
   }
 
   function fluxView() {
-    return `<div class="step-title"><div><span class="badge">3\ub2e8\uacc4</span><h2>Flux \uc81c\uc791</h2></div><div class="button-row"><button id="generateFlux" class="primary-button" ${project.flux.used ? "disabled" : ""} type="button">\ubc30\uacbd \uc0dd\uc131</button><button id="downloadFlux" class="ghost-button" type="button">PNG \ub2e4\uc6b4\ub85c\ub4dc</button></div></div>
+    return `<div class="step-title"><div><span class="badge">3\ub2e8\uacc4</span><h2>\ubc30\uacbd \uc0dd\uc131+\uae00 \ubc30\uce58</h2></div><div class="button-row"><button id="generateFlux" class="primary-button" ${project.flux.used ? "disabled" : ""} type="button">\uae00\uc790 \uc5c6\ub294 \ubc30\uacbd \uc0dd\uc131</button><button id="downloadFlux" class="ghost-button" type="button">PNG \ub2e4\uc6b4\ub85c\ub4dc</button></div></div>
     <div class="canvas-workspace"><div class="canvas-wrap"><canvas id="cardCanvas" width="1080" height="1080"></canvas></div><aside class="card"><p class="notice">\uc774 \ubc29\uc2dd\uc740 \uae00\uc790 \uc5c6\ub294 \ubc30\uacbd\uc744 \uba3c\uc800 \ub9cc\ub4e0 \ub4a4, \ud3b8\uc9d1 \uac00\ub2a5\ud55c \ubb38\uad6c\ub97c \uc62c\ub824 \uc644\uc131\ud569\ub2c8\ub2e4.</p><div class="layer-list">${project.flux.layers.map(layerView).join("")}</div><div class="button-row"><button id="loadCopy" class="ghost-button" type="button">\ubb38\uad6c \ubd88\ub7ec\uc624\uae30</button><button id="resetLayout" class="ghost-button" type="button">\ub808\uc774\uc544\uc6c3 \ucd08\uae30\ud654</button></div></aside></div>`;
   }
 
@@ -414,12 +414,12 @@
   }
 
   function gptView() {
-    return `<div class="step-title"><div><span class="badge">4\ub2e8\uacc4</span><h2>GPT \ud1b5\ud569 \uc81c\uc791</h2></div><button id="generateGpt" class="primary-button" ${project.gpt.used ? "disabled" : ""} type="button">GPT \uce74\ub4dc \uc0dd\uc131</button></div>
+    return `<div class="step-title"><div><span class="badge">4\ub2e8\uacc4</span><h2>\uc774\ubbf8\uc9c0+\uae00 \ud55c \ubc88\uc5d0 \uc790\ub3d9 \uc81c\uc791</h2></div><button id="generateGpt" class="primary-button" ${project.gpt.used ? "disabled" : ""} type="button">\uce74\ub4dc \ud55c \ubc88\uc5d0 \uc0dd\uc131</button></div>
     <div class="layout"><section class="card"><h3>\ud655\uc815\ub41c \uae30\ud68d</h3><div class="preview-box">${esc(summary())}</div><h3>\ud1b5\ud569 \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.gptPrompt || buildGptPrompt())}</div></section><aside class="preview-card">${project.gpt.imageUrl ? `<img class="result-image" src="${esc(project.gpt.imageUrl)}" alt="GPT \uc0dd\uc131 \uacb0\uacfc" />` : `<div class="preview-box">\uc544\uc9c1 \uacb0\uacfc\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.</div>`}</aside></div>`;
   }
 
   function finalView() {
-    return `<div class="step-title"><div><span class="badge">5\ub2e8\uacc4</span><h2>\ube44\uad50\ud558\uace0 \uc644\uc131</h2></div></div><div class="compare-grid">${resultCard("flux", "Flux + \ubb38\uad6c \ud3b8\uc9d1", project.flux.finalImage || project.flux.imageUrl)}${resultCard("gpt", "GPT \ud1b5\ud569 \uc81c\uc791", project.gpt.imageUrl)}</div><section class="card" style="margin-top:18px">${field("final", "reflection", "\uc65c \uc774 \uacb0\uacfc\ubb3c\uc744 \uc120\ud0dd\ud588\ub098\uc694?", true)}<div class="button-row"><button id="downloadFinal" class="primary-button" type="button">\ucd5c\uc885 PNG \ub2e4\uc6b4\ub85c\ub4dc</button><button id="submitProject" class="ghost-button" type="button">\uacb0\uacfc\ubb3c \uc81c\ucd9c</button></div></section>`;
+    return `<div class="step-title"><div><span class="badge">5\ub2e8\uacc4</span><h2>\ube44\uad50\ud558\uace0 \uc644\uc131</h2></div></div><div class="compare-grid">${resultCard("flux", "\ubc30\uacbd \uc0dd\uc131+\uae00 \uc9c1\uc811 \ubc30\uce58", project.flux.finalImage || project.flux.imageUrl)}${resultCard("gpt", "\uc774\ubbf8\uc9c0+\uae00 \uc790\ub3d9 \uc81c\uc791", project.gpt.imageUrl)}</div><section class="card" style="margin-top:18px">${field("final", "reflection", "\uc65c \uc774 \uacb0\uacfc\ubb3c\uc744 \uc120\ud0dd\ud588\ub098\uc694?", true)}<div class="button-row"><button id="downloadFinal" class="primary-button" type="button">\ucd5c\uc885 PNG \ub2e4\uc6b4\ub85c\ub4dc</button><button id="submitProject" class="ghost-button" type="button">\uacb0\uacfc\ubb3c \uc81c\ucd9c</button></div></section>`;
   }
 
   function resultCard(method, title, image) {
@@ -611,7 +611,7 @@
     const title = document.querySelector(".hero h1");
     if (title) title.textContent = "AI \ub274\uc2a4\uce74\ub4dc \uc81c\uc791";
     const desc = document.querySelector(".hero p");
-    if (desc) desc.textContent = "\ud558\ub098\uc758 \uba54\uc2dc\uc9c0\ub97c \uae30\ud68d\ud558\uace0, \ud504\ub86c\ud504\ud2b8\ub97c \uc124\uacc4\ud55c \ub4a4 Flux \ubc29\uc2dd\uacfc GPT \ud1b5\ud569 \ubc29\uc2dd\uc744 \ube44\uad50\ud574 \ucd5c\uc885 \ub274\uc2a4\uce74\ub4dc PNG 1\uc7a5\uc744 \uc81c\ucd9c\ud569\ub2c8\ub2e4.";
+    if (desc) desc.textContent = "\ud558\ub098\uc758 \uba54\uc2dc\uc9c0\ub97c \uae30\ud68d\ud558\uace0, \uae00\uc790 \uc5c6\ub294 \ubc30\uacbd\uc5d0 \ubb38\uad6c\ub97c \uc9c1\uc811 \ubc30\uce58\ud558\ub294 \ubc29\uc2dd\uacfc \uc774\ubbf8\uc9c0+\uae00\uc744 \ud55c \ubc88\uc5d0 \uc0dd\uc131\ud558\ub294 \ubc29\uc2dd\uc744 \ube44\uad50\ud574 \ucd5c\uc885 \ub274\uc2a4\uce74\ub4dc PNG 1\uc7a5\uc744 \uc81c\ucd9c\ud569\ub2c8\ub2e4.";
     const small = document.querySelector(".status-card small");
     if (small) small.textContent = "Flux 1\ud68c \u00b7 GPT 1\ud68c";
     if (dom.saveStatus) dom.saveStatus.textContent = LABELS.savedLocal;
