@@ -713,7 +713,7 @@
   }
 
   function finalView() {
-    return `<div class="step-title"><div><span class="badge">5\ub2e8\uacc4</span><h2>\ube44\uad50\ud558\uace0 \uc644\uc131</h2></div></div><div class="compare-grid">${resultCard("flux", "\ubc30\uacbd \uc0dd\uc131+\uae00 \uc9c1\uc811 \ubc30\uce58", project.flux.finalImage || project.flux.imageUrl)}${resultCard("gpt", "GPT \uc774\ubbf8\uc9c0+\uae00 \ubc30\uce58", project.gpt.finalImage || project.gpt.imageUrl)}</div><section class="card" style="margin-top:18px">${field("final", "reflection", "\uc65c \uc774 \uacb0\uacfc\ubb3c\uc744 \uc120\ud0dd\ud588\ub098\uc694?", true)}<div class="button-row"><button id="downloadFinal" class="primary-button" type="button">\ucd5c\uc885 PNG \ub2e4\uc6b4\ub85c\ub4dc</button><button id="submitProject" class="ghost-button" type="button">\uacb0\uacfc\ubb3c \uc81c\ucd9c</button></div></section>`;
+    return `<div class="step-title"><div><span class="badge">5\ub2e8\uacc4</span><h2>\ube44\uad50\ud558\uace0 \uc644\uc131</h2></div></div><div class="compare-grid">${resultCard("flux", "\ubc30\uacbd \uc0dd\uc131+\uae00 \uc9c1\uc811 \ubc30\uce58", project.flux.finalImage || project.flux.imageUrl)}${resultCard("gpt", "GPT \uc774\ubbf8\uc9c0 \uacb0\uacfc", project.gpt.finalImage || project.gpt.imageUrl)}</div><section class="card" style="margin-top:18px">${field("final", "reflection", "\uc65c \uc774 \uacb0\uacfc\ubb3c\uc744 \uc120\ud0dd\ud588\ub098\uc694?", true)}<div class="button-row"><button id="downloadFinal" class="primary-button" type="button">\ucd5c\uc885 PNG \ub2e4\uc6b4\ub85c\ub4dc</button><button id="submitProject" class="ghost-button" type="button">\uacb0\uacfc\ubb3c \uc81c\ucd9c</button></div></section>`;
   }
 
   function resultCard(method, title, image) {
@@ -1135,19 +1135,44 @@
   }
 
   function drawFallbackBackground(ctx) {
-    ctx.clearRect(0, 0, 1080, 1080);
+    ctx.clearRect(0, 0, 1080, 1920);
     const gradient = ctx.createLinearGradient(0, 0, 1080, 1920);
-    gradient.addColorStop(0, "#eaf3ff");
-    gradient.addColorStop(0.6, "#ffffff");
-    gradient.addColorStop(1, "#dffbf2");
+    gradient.addColorStop(0, "#eef6ff");
+    gradient.addColorStop(0.55, "#ffffff");
+    gradient.addColorStop(1, "#e8fff8");
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 1080, 1920);
-    ctx.fillStyle = "rgba(36,87,214,.18)";
+    ctx.fillStyle = "rgba(124, 58, 237, 0.12)";
     ctx.beginPath();
-    ctx.arc(860, 200, 260, 0, Math.PI * 2);
+    ctx.arc(860, 250, 260, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = "#102a66";
-    ctx.fillRect(0, 1500, 1080, 320);
+    ctx.fillStyle = "rgba(20, 184, 166, 0.15)";
+    ctx.beginPath();
+    ctx.arc(130, 1640, 330, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "rgba(255, 255, 255, 0.72)";
+    roundRect(ctx, 90, 130, 900, 1660, 62);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(216, 230, 255, 0.9)";
+    ctx.lineWidth = 3;
+    roundRect(ctx, 150, 220, 780, 430, 42);
+    ctx.stroke();
+    ctx.fillStyle = "rgba(36, 87, 214, 0.18)";
+    ctx.beginPath();
+    ctx.arc(310, 420, 92, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "rgba(20, 184, 166, 0.22)";
+    ctx.beginPath();
+    ctx.arc(470, 350, 52, 0, Math.PI * 2);
+    ctx.fill();
+    const panel = ctx.createLinearGradient(150, 1210, 930, 1600);
+    panel.addColorStop(0, "#2457d6");
+    panel.addColorStop(1, "#14b8a6");
+    ctx.fillStyle = panel;
+    ctx.globalAlpha = 0.88;
+    roundRect(ctx, 150, 1210, 780, 390, 46);
+    ctx.fill();
+    ctx.globalAlpha = 1;
   }
 
   function drawCoverImage(ctx, image, targetWidth, targetHeight) {
@@ -1213,11 +1238,42 @@
 
   function drawGptFallback(ctx) {
     const gradient = ctx.createLinearGradient(0, 0, 1080, 1920);
-    gradient.addColorStop(0, "#eaf3ff");
-    gradient.addColorStop(0.55, "#ffffff");
-    gradient.addColorStop(1, "#dcfce7");
+    gradient.addColorStop(0, "#eef6ff");
+    gradient.addColorStop(0.52, "#ffffff");
+    gradient.addColorStop(1, "#e8fff8");
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 1080, 1920);
+    ctx.fillStyle = "rgba(124, 58, 237, 0.14)";
+    ctx.beginPath();
+    ctx.arc(860, 245, 250, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "rgba(20, 184, 166, 0.16)";
+    ctx.beginPath();
+    ctx.arc(145, 1610, 320, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "rgba(255, 255, 255, 0.74)";
+    roundRect(ctx, 96, 142, 888, 1636, 58);
+    ctx.fill();
+    ctx.strokeStyle = "#d9e6ff";
+    ctx.lineWidth = 3;
+    roundRect(ctx, 150, 214, 780, 430, 44);
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(36, 87, 214, 0.24)";
+    ctx.lineWidth = 20;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(205, 542);
+    ctx.bezierCurveTo(320, 408, 480, 402, 580, 508);
+    ctx.bezierCurveTo(680, 612, 814, 532, 888, 414);
+    ctx.stroke();
+    const panel = ctx.createLinearGradient(150, 735, 930, 1105);
+    panel.addColorStop(0, "#1d4ed8");
+    panel.addColorStop(1, "#7c3aed");
+    ctx.fillStyle = panel;
+    ctx.globalAlpha = 0.9;
+    roundRect(ctx, 150, 735, 780, 370, 44);
+    ctx.fill();
+    ctx.globalAlpha = 1;
   }
 
   function drawReadableOverlay(ctx) {

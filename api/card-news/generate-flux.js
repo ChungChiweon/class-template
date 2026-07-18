@@ -44,7 +44,7 @@ module.exports = async function handler(req, res) {
       return endJson(res, 502, { success: false, provider: `nvidia-${NVIDIA_FLUX_MODEL}`, mode, message: safeProviderError(error?.message) });
     }
   } else {
-    imageUrl = svgDataUrl(topic, mood, false);
+    imageUrl = svgDataUrl();
   }
   const flux = { ...(body.flux || {}), used: true, generationUsed: true, imageUrl };
 
@@ -134,22 +134,26 @@ function safeProviderError(value) {
     .slice(0, 240);
 }
 
-function svgDataUrl(topic, mood, withText) {
+function svgDataUrl() {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eaf3ff"/><stop offset=".55" stop-color="#ffffff"/><stop offset="1" stop-color="#dcfce7"/></linearGradient>
-    <radialGradient id="r" cx=".8" cy=".2" r=".5"><stop offset="0" stop-color="#7c3aed" stop-opacity=".28"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#edf6ff"/><stop offset=".55" stop-color="#ffffff"/><stop offset="1" stop-color="#eafff8"/></linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2457d6"/><stop offset="1" stop-color="#14b8a6"/></linearGradient>
+    <filter id="s" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="22" stdDeviation="28" flood-color="#102a66" flood-opacity=".16"/></filter>
   </defs>
   <rect width="1080" height="1920" fill="url(#g)"/>
-  <rect width="1080" height="1920" fill="url(#r)"/>
-  <circle cx="145" cy="1650" r="280" fill="#14b8a6" opacity=".18"/>
-  <rect x="70" y="1280" width="940" height="360" rx="42" fill="#102a66" opacity=".08"/>
-  <path d="M760 180 C930 260 1010 480 950 720 C875 980 610 900 650 620 C675 420 610 285 760 180Z" fill="#2457d6" opacity=".18"/>
-  ${withText ? `<text x="84" y="170" font-family="Arial" font-size="64" font-weight="800" fill="#0f172a">${escapeXml(topic)}</text><text x="84" y="260" font-family="Arial" font-size="32" fill="#334155">${escapeXml(mood)}</text>` : ""}
+  <circle cx="860" cy="250" r="260" fill="#7c3aed" opacity=".14"/>
+  <circle cx="125" cy="1640" r="330" fill="#14b8a6" opacity=".15"/>
+  <rect x="90" y="130" width="900" height="1660" rx="62" fill="#ffffff" opacity=".72" filter="url(#s)"/>
+  <rect x="150" y="220" width="780" height="430" rx="42" fill="#f8fbff" stroke="#d8e6ff" stroke-width="3"/>
+  <circle cx="310" cy="420" r="92" fill="#2457d6" opacity=".2"/>
+  <circle cx="470" cy="350" r="52" fill="#14b8a6" opacity=".28"/>
+  <path d="M600 510 C660 330 820 305 892 455 C808 495 748 552 600 510Z" fill="#7c3aed" opacity=".2"/>
+  <rect x="150" y="1210" width="780" height="390" rx="46" fill="url(#card)" opacity=".88"/>
+  <rect x="220" y="1300" width="280" height="48" rx="24" fill="#ffffff" opacity=".24"/>
+  <rect x="220" y="1384" width="570" height="34" rx="17" fill="#ffffff" opacity=".16"/>
+  <rect x="220" y="1448" width="430" height="34" rx="17" fill="#ffffff" opacity=".16"/>
+  <circle cx="815" cy="1438" r="72" fill="#ffffff" opacity=".17"/>
 </svg>`;
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-}
-
-function escapeXml(value) {
-  return cleanText(value, 120).replace(/[<>&"']/g, (char) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&apos;" })[char]);
 }

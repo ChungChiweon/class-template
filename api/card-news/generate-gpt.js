@@ -46,7 +46,7 @@ module.exports = async function handler(req, res) {
       return endJson(res, 502, { success: false, provider: OPENAI_IMAGE_MODEL, mode, message: safeProviderError(error?.message) });
     }
   } else {
-    imageUrl = svgDataUrl(title, subtitle, cta);
+    imageUrl = svgDataUrl();
   }
   const gpt = { ...(body.gpt || {}), used: true, generationUsed: true, imageUrl };
 
@@ -125,21 +125,30 @@ function safeProviderError(value) {
     .slice(0, 240);
 }
 
-function svgDataUrl(title, subtitle, cta) {
+function svgDataUrl() {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
-  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#102a66"/><stop offset="1" stop-color="#2457d6"/></linearGradient></defs>
-  <rect width="1080" height="1920" fill="url(#g)"/>
-  <circle cx="860" cy="260" r="220" fill="#7c3aed" opacity=".45"/>
-  <circle cx="170" cy="1620" r="270" fill="#14b8a6" opacity=".45"/>
-  <rect x="86" y="160" width="908" height="1480" rx="54" fill="#ffffff" opacity=".94"/>
-  <text x="140" y="330" font-family="Arial" font-size="76" font-weight="900" fill="#0f172a">${escapeXml(title)}</text>
-  <text x="140" y="500" font-family="Arial" font-size="40" font-weight="700" fill="#334155">${escapeXml(subtitle)}</text>
-  <rect x="140" y="1370" width="620" height="96" rx="48" fill="#2457d6"/>
-  <text x="178" y="1432" font-family="Arial" font-size="34" font-weight="800" fill="#ffffff">${escapeXml(cta)}</text>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eef6ff"/><stop offset=".52" stop-color="#ffffff"/><stop offset="1" stop-color="#e8fff8"/></linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1d4ed8"/><stop offset="1" stop-color="#7c3aed"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="24" stdDeviation="28" flood-color="#102a66" flood-opacity=".18"/></filter>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#bg)"/>
+  <circle cx="860" cy="245" r="250" fill="#7c3aed" opacity=".14"/>
+  <circle cx="145" cy="1610" r="320" fill="#14b8a6" opacity=".16"/>
+  <rect x="96" y="142" width="888" height="1636" rx="58" fill="#ffffff" opacity=".74" filter="url(#shadow)"/>
+  <rect x="150" y="214" width="780" height="430" rx="44" fill="#f8fbff" stroke="#d9e6ff" stroke-width="3"/>
+  <path d="M205 542 C320 408 480 402 580 508 C680 612 814 532 888 414" fill="none" stroke="#2457d6" stroke-width="20" stroke-linecap="round" opacity=".24"/>
+  <circle cx="292" cy="390" r="76" fill="#14b8a6" opacity=".22"/>
+  <circle cx="740" cy="330" r="108" fill="#7c3aed" opacity=".2"/>
+  <rect x="150" y="735" width="780" height="370" rx="44" fill="url(#panel)" opacity=".9"/>
+  <rect x="212" y="805" width="250" height="44" rx="22" fill="#ffffff" opacity=".28"/>
+  <rect x="212" y="882" width="585" height="34" rx="17" fill="#ffffff" opacity=".18"/>
+  <rect x="212" y="944" width="452" height="34" rx="17" fill="#ffffff" opacity=".18"/>
+  <circle cx="820" cy="945" r="58" fill="#ffffff" opacity=".2"/>
+  <rect x="150" y="1200" width="360" height="350" rx="42" fill="#e8f2ff"/>
+  <rect x="570" y="1200" width="360" height="350" rx="42" fill="#ecfdf5"/>
+  <path d="M236 1452 L320 1310 L420 1452Z" fill="#2457d6" opacity=".34"/>
+  <path d="M642 1460 C720 1330 804 1330 880 1460Z" fill="#14b8a6" opacity=".34"/>
 </svg>`;
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-}
-
-function escapeXml(value) {
-  return cleanText(value, 160).replace(/[<>&"']/g, (char) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&apos;" })[char]);
 }
