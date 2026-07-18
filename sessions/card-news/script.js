@@ -269,13 +269,13 @@
   function planView() {
     return `<div class="step-title"><div><span class="badge">1\ub2e8\uacc4</span><h2>\uc8fc\uc81c\uc640 \uae30\ud68d</h2></div><span class="mock-badge">${LABELS.mockNotice}</span></div>
     <div class="layout"><section class="card field-grid">
-      ${planningTheoryView()}
       ${topicExamplesView()}
       ${field("planning", "topic", "\uc8fc\uc81c")}
       <div class="field-grid two">${field("planning", "audience", "\ub300\uc0c1")}${field("planning", "purpose", "\ubaa9\uc801")}</div>
       ${field("planning", "message", "\ud575\uc2ec \uba54\uc2dc\uc9c0")}
       ${field("planning", "facts", "\ubc18\ub4dc\uc2dc \ub123\uc744 \ud655\uc778\ub41c \uc0ac\uc2e4", true)}
       ${field("planning", "mood", "\ubd84\uc704\uae30")}
+      ${planningTheoryView()}
     </section><aside class="preview-card"><h3>\uae30\ud68d \uc694\uc57d</h3><div class="preview-box">${esc(summary())}</div><p class="notice">\ud655\uc778\ud55c \uc0ac\uc2e4\ub9cc \uc0ac\uc6a9\ud558\uc138\uc694. \ub0a0\uc9dc, \uc7a5\uc18c, \uac00\uaca9, \uc774\ub984\uc744 \uc784\uc758\ub85c \ub9cc\ub4e4\uba74 \uc548 \ub429\ub2c8\ub2e4.</p></aside></div>`;
   }
 
@@ -311,11 +311,11 @@
         source: "Strong, E. K. (1925). Theories of Selling.",
       },
     ];
-    return `<section class="planning-theory-panel" aria-label="\ucf58\ud150\uce20 \uae30\ud68d \uc774\ub860">
-      <div class="planning-theory-title"><span aria-hidden="true">\ud83d\udcd8</span><h3>\ubc30\uc6b0\uae30 | AI \uc2dc\ub300 \ucf58\ud150\uce20 \uae30\ud68d\uc758 \uc2dc\uc791: \uc88b\uc740 \uc8fc\uc81c \ub9cc\ub4e4\uae30</h3></div>
+    return `<details class="planning-theory-panel" aria-label="\ucf58\ud150\uce20 \uae30\ud68d \uc774\ub860">
+      <summary class="planning-theory-title"><span aria-hidden="true">\ud83d\udcd8</span><h3>\ubc30\uc6b0\uae30 | AI \uc2dc\ub300 \ucf58\ud150\uce20 \uae30\ud68d\uc758 \uc2dc\uc791: \uc88b\uc740 \uc8fc\uc81c \ub9cc\ub4e4\uae30</h3><i aria-hidden="true">\u203a</i></summary>
       <div class="planning-theory-list">${items.map(theoryAccordion).join("")}</div>
       <div class="planning-checklist"><strong>\uae30\ud68d \uccb4\ud06c\ub9ac\uc2a4\ud2b8</strong><ul><li>\ub300\uc0c1(Target Audience)</li><li>\ubaa9\uc801(Objective)</li><li>\ud575\uc2ec \uba54\uc2dc\uc9c0(Core Message)</li><li>\ud544\uc218 \uc815\ubcf4(Facts)</li></ul></div>
-    </section>`;
+    </details>`;
   }
 
   function theoryAccordion(item) {
