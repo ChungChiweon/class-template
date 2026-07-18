@@ -484,7 +484,7 @@
   }
 
   function gptNegativeDefault() {
-    return "Do not create:\n- Korean letters or text inside the image\n- fake dates or information\n- unnecessary logos\n- unreadable typography\n- excessive decorative elements";
+    return "Do not create:\n- broken or unreadable Korean text\n- fake dates or information\n- unnecessary logos\n- unreadable typography\n- excessive decorative elements\n- overcrowded layout";
   }
 
   function oldPromptResultView(mode) {
@@ -974,7 +974,7 @@
   }
 
   function gptIntegratedRules() {
-    return "\ud655\uc778\ub41c \uc815\ubcf4\ub9cc \uc0ac\uc6a9\ud55c\ub2e4.\nGPT \uc774\ubbf8\uc9c0\ub294 \ubc30\uacbd\uacfc \uc2dc\uac01 \uc694\uc18c\ub97c \uc81c\uc791\ud558\uace0, \ud55c\uae00 \uc81c\ubaa9\u00b7\ubcf8\ubb38\u00b7CTA\ub294 \ud654\uba74\uc5d0\uc11c \uc624\ubc84\ub808\uc774\ud55c\ub2e4.\n9:16 \ubaa8\ubc14\uc77c \ud654\uba74\uc5d0 \ucd5c\uc801\ud654\ud55c\ub2e4.\n\uc81c\ubaa9, \ubcf8\ubb38, \ud589\ub3d9 \uc720\ub3c4 \ubb38\uad6c\uac00 \uc62c\ub77c\uac08 \uc548\uc804 \uc601\uc5ed\uc744 \ud655\ubcf4\ud55c\ub2e4.\n\uc774\ubbf8\uc9c0 \uc548\uc5d0 \ud55c\uae00, \uc601\ubb38, \uc22b\uc790, \ub85c\uace0\ub97c \uc9c1\uc811 \uadf8\ub9ac\uc9c0 \uc54a\ub294\ub2e4.\n\uacfc\uc7a5\ub418\uac70\ub098 \uc874\uc7ac\ud558\uc9c0 \uc54a\ub294 \uc815\ubcf4\ub294 \uc0dd\uc131\ud558\uc9c0 \uc54a\ub294\ub2e4.";
+    return "\ud655\uc778\ub41c \uc815\ubcf4\ub9cc \uc0ac\uc6a9\ud55c\ub2e4.\nGPT \uc774\ubbf8\uc9c0\ub294 \ud55c\uae00 \uc81c\ubaa9, \ubcf8\ubb38, \ud655\uc778\ud560 \uc815\ubcf4, \uacf5\uc2dd \ucd9c\ucc98, CTA\uac00 \ud3ec\ud568\ub41c \uc644\uc131\ud615 \uce74\ub4dc\ub274\uc2a4\ub85c \uc81c\uc791\ud55c\ub2e4.\n9:16 \ubaa8\ubc14\uc77c \ud654\uba74\uc5d0 \ucd5c\uc801\ud654\ud558\uace0, \ud55c\uae00\uc740 \ud06c\uace0 \uc120\uba85\ud558\uac8c \ud45c\ud604\ud55c\ub2e4.\n\uc815\ubcf4 \ubc15\uc2a4\ub294 1~2\uac1c\ub85c \uc815\ub9ac\ud558\uace0, \ud558\ub2e8\uc5d0 \uba85\ud655\ud55c CTA \ubc84\ud2bc\uc744 \ubc30\uce58\ud55c\ub2e4.\n\ud654\uba74\uc5d0 \ub123\uc744 \ubb38\uad6c\ub294 \uc0ac\uc6a9\uc790\uac00 \uc81c\uacf5\ud55c \uc81c\ubaa9, \ubcf8\ubb38, CTA \uc911\uc2ec\uc73c\ub85c \uc0ac\uc6a9\ud55c\ub2e4.\n\ud655\uc778\ub418\uc9c0 \uc54a\uc740 \ub0a0\uc9dc, \uc7a5\uc18c, \uac00\uaca9, \uc77c\uc815, \uae30\uad00\uba85\uc740 \uc784\uc758\ub85c \uc0dd\uc131\ud558\uc9c0 \uc54a\ub294\ub2e4.\n\uae00\uc790 \uc5c6\ub294 \ubc30\uacbd, \ub098\uc911\uc5d0 \uc624\ubc84\ub808\uc774, HTML/canvas\ub85c \ubb38\uad6c \ucd94\uac00 \uac19\uc740 \uc9c0\uc2dc\ub294 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\ub294\ub2e4.";
   }
 
   function ensurePromptDefaults() {
@@ -1022,7 +1022,7 @@
     ensurePromptDefaults();
     const mode = project.prompt.generationMode === "gpt_integrated" ? "GPT \ud1b5\ud569 \uce74\ub4dc \uc81c\uc791" : "Flux \uc758\ubbf8 \uc788\ub294 \uae00\uc790 \uc5c6\ub294 \uc774\ubbf8\uc9c0 \uc0dd\uc131";
     const modeInstruction = project.prompt.generationMode === "gpt_integrated"
-      ? "GPT \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 9:16 \uce74\ub4dc\ub274\uc2a4 \uc2dc\uac01 \ubc30\uacbd IMAGE PROMPT\ub97c \uc791\uc131\ud574 \uc918. \ud55c\uae00 \uc81c\ubaa9\u00b7\ubcf8\ubb38\u00b7CTA\ub294 \uc774\ud6c4 HTML/canvas\uc5d0\uc11c \uc62c\ub9b4 \uac83\uc774\ubbc0\ub85c, \uc774\ubbf8\uc9c0 \uc548\uc5d0 \ubb38\uc790\ub97c \uadf8\ub9ac\uc9c0 \ub9d0\uace0 \ud14d\uc2a4\ud2b8 \uc548\uc804 \uc601\uc5ed\ub9cc \ud655\ubcf4\ud574 \uc918."
+      ? "GPT \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 9:16 \uc644\uc131\ud615 \ud55c\uae00 \uce74\ub4dc\ub274\uc2a4 IMAGE PROMPT\ub97c \uc791\uc131\ud574 \uc918. \uc81c\ubaa9, \ubcf8\ubb38, \ud655\uc778\ud560 \uc815\ubcf4, \uacf5\uc2dd \ucd9c\ucc98, CTA \ubc84\ud2bc\uc774 \uc774\ubbf8\uc9c0 \uc548\uc5d0 \uc77d\uae30 \uc27d\uac8c \ud45c\uc2dc\ub418\ub3c4\ub85d \uc124\uacc4\ud574 \uc918. no text, text-free, safe area, HTML/canvas overlay \uc9c0\uc2dc\ub294 \uc0ac\uc6a9\ud558\uc9c0 \ub9c8."
       : "Flux\uc6a9 \uae00\uc790 \uc5c6\ub294 \uce74\ub4dc\ub274\uc2a4 \ubc30\uacbd IMAGE PROMPT\uc640 NEGATIVE PROMPT\ub97c \uc791\uc131\ud574 \uc918. \ube48 \ubc30\uacbd\uc774 \uc544\ub2c8\ub77c Main Subject, Scene / Action, Visual Elements, Style, Composition, Text Safe Area \uc21c\uc11c\ub85c \uad6c\uccb4\uc801\uc778 \uc0ac\ub78c\u00b7\ud589\ub3d9\u00b7\uacf5\uac04\u00b7\uc18c\ud488\uc774 \ubcf4\uc774\ub294 \uc7a5\uba74\uc744 \uc124\uacc4\ud574 \uc918. Text Safe Area\ub294 \uc7a5\uba74\uc744 \ube44\uc6b0\uc9c0 \uc54a\uace0 \uc0c1\ub2e8 \ub610\ub294 \ud558\ub2e8 \uc77c\ubd80\uc5d0\ub9cc \ud655\ubcf4\ud574 \uc918. Negative prompt\uc5d0\ub294 no readable text, no letters, no numbers, no logo, no watermark\ub97c \ud3ec\ud568\ud574 \uc918.";
     return [
       "\ub108\ub294 AI \uc774\ubbf8\uc9c0 \uc0dd\uc131 \ud504\ub86c\ud504\ud2b8 \uc124\uacc4 \uc804\ubb38\uac00\uc774\uba70, \uc20f\ud3fc \ucf58\ud150\uce20\uc640 \uce74\ub4dc\ub274\uc2a4 \uc81c\uc791 \uc804\ubb38\uac00\uc774\ub2e4.",
@@ -1076,7 +1076,7 @@
   }
 
   function buildGptPrompt() {
-    return project.copy.gptPrompt || `Create a 9:16 vertical card news image for GPT image generation. Topic: ${project.planning.topic}. Include a clear mobile card-news composition, readable Korean title/body/CTA if requested, and avoid fake dates, prices, logos, or unsupported information. Mood: ${project.planning.mood}.`;
+    return project.copy.gptPrompt || `Create one complete 9:16 vertical Korean mobile card-news image. Render the Korean title, short body text, information labels, official source area, and CTA button inside the image. Title: ${project.copyText.title || project.copy.title || project.planning.topic}. Body: ${project.copyText.body || project.copy.subtitle || project.planning.message}. CTA: ${project.copyText.cta || project.copy.cta || "자세히 확인하기"}. Use only confirmed facts: ${project.planning.facts}. Mood: ${project.planning.mood}.`;
   }
 
   function summary() {

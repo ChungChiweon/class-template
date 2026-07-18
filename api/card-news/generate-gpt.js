@@ -32,7 +32,7 @@ module.exports = async function handler(req, res) {
 
   const copy = body.copy || {};
   const planning = body.planning || {};
-  const promptUsed = extractImagePrompt(body.prompt || copy.gptPrompt || buildOpenAiImagePrompt(planning, copy));
+  const promptUsed = buildOpenAiImagePrompt(planning, copy, body.prompt || copy.gptPrompt || "");
   let imageUrl;
   let provider = "mock-gpt-image";
   let mode = providerMode();
@@ -99,29 +99,39 @@ async function callOpenAiImage(prompt) {
 
 function buildOpenAiImagePrompt(planning = {}, copy = {}, studentPrompt = "") {
   return [
-    "Create one 9:16 vertical mobile card news visual background.",
-    "Do not render any text inside the image. No Korean letters, no English letters, no numbers, no logo, no watermark.",
-    "If the visual brief asks for title text, body text, CTA text, typography, or written labels, ignore those text-rendering instructions and keep only the visual design direction.",
-    "Leave clear safe areas for title, subtitle, and CTA text overlays that will be added later in HTML/canvas.",
-    "The image should look premium and polished: high-quality editorial illustration or clean semi-realistic educational promotion visual, balanced margins, contained visual elements, refined lighting, crisp details.",
-    "Keep all important objects fully inside the frame. Do not crop faces, icons, or main objects at the edges.",
-    `Visual brief from prompt design: ${cleanText(studentPrompt || "", 1400)}`,
-    `Topic: ${cleanText(copy.title || planning.topic || "news card", 120)}`,
-    `Core message: ${cleanText(copy.subtitle || planning.message || "", 180)}`,
-    `CTA text to reserve space for, but not draw: ${cleanText(copy.cta || "\uc790\uc138\ud788 \ubcf4\uae30", 80)}`,
+    "Create one complete 9:16 vertical Korean mobile card-news image.",
+    "This is NOT a text-free background. Render the Korean title, short body text, information labels, and CTA inside the card-news image.",
+    "Design it like a polished educational/public information card-news poster for students: clear hierarchy, readable Korean typography, neat information boxes, friendly but professional visual style.",
+    "Use the provided facts only. Do not invent dates, places, prices, schedules, organizations, or unsupported details.",
+    "Use a balanced layout: large title area, short body message, 1-2 information panels, official source/link area if provided, and a clear CTA button at the bottom.",
+    "Keep Korean text large, simple, high contrast, and easy to read on a mobile screen.",
+    "Keep all important objects, text boxes, icons, and characters fully inside the frame. Do not crop faces, icons, or main objects at the edges.",
+    "Avoid cluttered decoration. Use relevant visual elements that support the topic.",
+    "If the visual brief contains older instructions such as no text, text-free, background only, safe area for later overlay, or HTML/canvas overlay, ignore those older instructions.",
+    `Visual brief from prompt design: ${sanitizeGptVisualBrief(studentPrompt)}`,
+    `Korean title to render: ${cleanText(copy.title || planning.topic || "뉴스카드", 120)}`,
+    `Korean body text to render: ${cleanText(copy.subtitle || planning.message || "", 180)}`,
+    `Korean CTA text to render: ${cleanText(copy.cta || "\uc790\uc138\ud788 \ud655\uc778\ud558\uae30", 80)}`,
     `Audience: ${cleanText(planning.audience || "students", 120)}`,
     `Mood: ${cleanText(planning.mood || "bright and reliable", 120)}`,
     `Required facts: ${cleanText(planning.facts || "", 1200)}`,
-    "Use no written information in the image itself. Generate background and visual elements only.",
   ].join("\n");
 }
 
-function extractImagePrompt(value) {
+function sanitizeGptVisualBrief(value) {
   const raw = cleanText(value || "", 6000);
   if (!raw) return "";
   const withoutFence = raw.replace(/^```(?:text|markdown)?\s*/i, "").replace(/```$/i, "").trim();
   const imageMatch = withoutFence.match(/IMAGE PROMPT\s*:?\s*([\s\S]*?)(?:\n\s*NEGATIVE PROMPT\s*:|$)/i);
-  return cleanText((imageMatch ? imageMatch[1] : withoutFence).trim(), 4000);
+  return cleanText((imageMatch ? imageMatch[1] : withoutFence)
+    .replace(/do not render any text[^.\n]*(?:\.|\n)/gi, "")
+    .replace(/no Korean letters[^.\n]*(?:\.|\n)/gi, "")
+    .replace(/no text[^.\n]*(?:\.|\n)/gi, "")
+    .replace(/text-free[^.\n]*(?:\.|\n)/gi, "")
+    .replace(/background only[^.\n]*(?:\.|\n)/gi, "")
+    .replace(/safe areas? for [^.\n]*(?:\.|\n)/gi, "")
+    .replace(/HTML\/canvas overlay[^.\n]*(?:\.|\n)/gi, "")
+    .trim(), 1400);
 }
 
 function safeProviderError(value) {

@@ -131,7 +131,13 @@ async function callOpenAiPromptDesigner(metaPrompt, generationMode) {
                     "Prefer visualizable phrases such as students participating in an art workshop, families exploring an exhibition, people creating crafts together.",
                     "Avoid vague-only phrases such as cultural richness, community spirit, creative atmosphere unless they are supported by concrete visible subjects.",
                   ].join("\n")
-                : 'For gpt_integrated mode, create a complete 9:16 Korean card-news image prompt for GPT image generation. It may include readable Korean title/body/CTA text requested by the user. Return {"mode":"gpt_integrated","prompt":"IMAGE PROMPT:\\n...","negativePrompt":"NEGATIVE PROMPT:\\nDo not create:\\n- broken or unreadable Korean text\\n- fake dates or information\\n- unnecessary logos\\n- excessive decorative elements"}.',
+                : [
+                    'For gpt_integrated mode, create a complete 9:16 Korean card-news image prompt for GPT image generation.',
+                    "It must request a finished card-news image with readable Korean title, short body, information labels, official source area, and CTA button rendered inside the image.",
+                    "Do not say no text, text-free, background only, safe area for later overlay, or HTML/canvas overlay.",
+                    "Use only confirmed facts. Do not invent event dates, places, prices, schedules, organizations, or unsupported details.",
+                    'Return {"mode":"gpt_integrated","prompt":"IMAGE PROMPT:\\n...","negativePrompt":"NEGATIVE PROMPT:\\nDo not create:\\n- broken or unreadable Korean text\\n- fake dates or information\\n- unnecessary logos\\n- excessive decorative elements\\n- overcrowded layout"}.',
+                  ].join("\n"),
             ].join("\n"),
           },
           { role: "user", content: metaPrompt },
@@ -244,11 +250,12 @@ function buildMetaPrompt(planning, contentInfo, copyText, design) {
   const modeRules = design.generationMode === "gpt_integrated"
     ? [
         "GPT \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 9:16 \uc644\uc131\ud615 \uce74\ub4dc\ub274\uc2a4 \uc81c\uc791 \ubaa9\uc801",
-        "\uc81c\ubaa9, \ubcf8\ubb38, CTA \ud14d\uc2a4\ud2b8\ub97c \uc774\ubbf8\uc9c0 \uc548\uc5d0 \uc77d\uae30 \uc27d\uac8c \ubc30\uce58",
+        "\uc81c\ubaa9, \ubcf8\ubb38, \ud655\uc778\ud560 \uc815\ubcf4, \uacf5\uc2dd \ucd9c\ucc98, CTA \ud14d\uc2a4\ud2b8\ub97c \uc774\ubbf8\uc9c0 \uc548\uc5d0 \uc77d\uae30 \uc27d\uac8c \ubc30\uce58",
         "\ud55c\uae00 \ud0c0\uc774\ud3ec\uadf8\ub798\ud53c\ub97c \ud06c\uace0 \ub2e8\uc21c\ud558\uac8c \uc0ac\uc6a9",
-        "\ud14d\uc2a4\ud2b8\uac00 \uc798\ub9ac\uc9c0 \uc54a\ub3c4\ub85d \uc5ec\ubc31\uacfc \uc548\uc804 \uc601\uc5ed \ud655\ubcf4",
+        "\ubaa8\ubc14\uc77c\uc5d0\uc11c \uc77d\ud788\ub294 \ud06c\uae30\uc640 \ub300\ube44, \uc815\ub9ac\ub41c \uc815\ubcf4 \ubc15\uc2a4, \ud558\ub2e8 CTA \ubc84\ud2bc \uad6c\uc870",
+        "\uae00\uc790 \uc5c6\ub294 \ubc30\uacbd, \ub098\uc911\uc5d0 HTML/canvas\ub85c \ubb38\uad6c\ub97c \uc62c\ub9b0\ub2e4\ub294 \uc9c0\uc2dc\ub294 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc74c",
         "\uc790\uc5f0\uc5b4 \ud615\ud0dc\uc758 negative prompt \uc0dd\uc131",
-        "Do not create broken Korean text, fake dates or information, unnecessary logos, unreadable typography, excessive decorative elements.",
+        "Do not create broken Korean text, fake dates or information, unnecessary logos, unreadable typography, excessive decorative elements, overcrowded layout.",
       ]
     : [
         "\ud14d\uc2a4\ud2b8\uac00 \uc5c6\uc9c0\ub9cc \uc8fc\uc81c\uac00 \ubcf4\uc774\ub294 \uce74\ub4dc\ub274\uc2a4 \ubc30\uacbd \uc774\ubbf8\uc9c0 \uc0dd\uc131 \ubaa9\uc801",
@@ -307,7 +314,7 @@ function buildMetaPrompt(planning, contentInfo, copyText, design) {
     "",
     design.generationMode === "flux"
       ? "JSON\ub9cc \ubc18\ud658: {\"mode\":\"flux\",\"prompt\":\"IMAGE PROMPT:\\nMain Subject: ...\\nScene / Action: ...\\nVisual Elements: ...\\nStyle: ...\\nComposition: ...\\nText Safe Area: ...\",\"negativePrompt\":\"no readable text,\\nno letters,\\nno numbers,\\nno logo,\\nno watermark,\\nno fake brand name,\\nno incorrect information,\\nno distorted faces,\\nno cluttered composition\"}"
-      : "JSON\ub9cc \ubc18\ud658: {\"mode\":\"gpt_integrated\",\"prompt\":\"IMAGE PROMPT:\\n...\",\"negativePrompt\":\"NEGATIVE PROMPT:\\nDo not create:\\n- broken or unreadable Korean text\\n- fake dates or information\\n- unnecessary logos\\n- excessive decorative elements\"}",
+      : "JSON\ub9cc \ubc18\ud658: {\"mode\":\"gpt_integrated\",\"prompt\":\"IMAGE PROMPT:\\n...\",\"negativePrompt\":\"NEGATIVE PROMPT:\\nDo not create:\\n- broken or unreadable Korean text\\n- fake dates or information\\n- unnecessary logos\\n- excessive decorative elements\\n- overcrowded layout\"}",
   ].filter(Boolean).join("\n");
 }
 
@@ -355,13 +362,16 @@ function ensureFluxNegative(value) {
 
 function ensureGptIntegratedPrompt(prompt) {
   const text = cleanText(prompt, 7000);
-  return /Korean|한글|title|제목|CTA|card-news|카드뉴스/i.test(text)
-    ? text
-    : `${text}\n\nCreate a complete 9:16 Korean card-news image with readable title, short body text, and CTA text. Keep Korean typography large, simple, and legible.`;
+  const cleaned = text
+    .replace(/(?:no text|text-free|without text|background only|safe areas? for .*overlay|HTML\/canvas overlay|added later in HTML\/canvas)/gi, "")
+    .trim();
+  return /Korean|한글|title|제목|CTA|card-news|카드뉴스/i.test(cleaned)
+    ? cleaned
+    : `${cleaned}\n\nCreate a complete 9:16 Korean card-news image with readable Korean title, short body text, information panels, official source area, and CTA button rendered inside the image.`;
 }
 
 function gptNegativeDefault() {
-  return "NEGATIVE PROMPT:\nDo not create:\n- broken or unreadable Korean text\n- fake dates or information\n- unnecessary logos\n- excessive decorative elements";
+  return "NEGATIVE PROMPT:\nDo not create:\n- broken or unreadable Korean text\n- fake dates or information\n- unnecessary logos\n- excessive decorative elements\n- overcrowded layout";
 }
 
 function safeProviderError(value) {
