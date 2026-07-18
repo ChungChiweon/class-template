@@ -305,16 +305,19 @@
     const link = example.sourceUrl
       ? `<a class="topic-source-link" href="${esc(example.sourceUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(example.sourceLabel)} \uacf5\uc2dd \uc815\ubcf4 \ubcf4\uae30">\uacf5\uc2dd \uc815\ubcf4 \ubcf4\uae30 \u2197</a>`
       : "";
-    return `<article class="topic-example-card ${selected ? "is-selected" : ""}">
-      <div>
-        <h4>${esc(example.label)}</h4>
+    return `<details class="topic-example-card ${selected ? "is-selected" : ""}">
+      <summary class="topic-example-summary">
+        <span>${esc(example.label)}</span>
+        <span class="topic-example-chevron" aria-hidden="true">\u203a</span>
+      </summary>
+      <div class="topic-example-body">
         <p>${esc(example.description || example.sourceLabel || "")}</p>
+        <div class="topic-example-actions">
+          <button class="preset-button" data-example-select="${esc(example.id)}" type="button">${example.id === "custom" ? "\uc9c1\uc811 \uc791\uc131\ud558\uae30" : "\uc8fc\uc81c\ub85c \uc120\ud0dd"}</button>
+          ${link}
+        </div>
       </div>
-      <div class="topic-example-actions">
-        <button class="preset-button" data-example-select="${esc(example.id)}" type="button">${example.id === "custom" ? "\uc9c1\uc811 \uc791\uc131\ud558\uae30" : "\uc8fc\uc81c\ub85c \uc120\ud0dd"}</button>
-        ${link}
-      </div>
-    </article>`;
+    </details>`;
   }
 
   function selectTopicExample(id) {

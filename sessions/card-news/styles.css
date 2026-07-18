@@ -298,14 +298,10 @@ textarea {
 }
 
 .topic-example-card {
-  display: grid;
-  gap: 14px;
-  align-content: space-between;
-  min-height: 156px;
   border: 1px solid var(--border);
   border-radius: 18px;
-  padding: 16px;
   background: #fff;
+  overflow: hidden;
 }
 
 .topic-example-card.is-selected {
@@ -313,9 +309,55 @@ textarea {
   background: var(--primary-soft);
 }
 
-.topic-example-card h4 {
-  margin: 0 0 8px;
-  font-size: 17px;
+.topic-example-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 58px;
+  padding: 0 16px;
+  cursor: pointer;
+  list-style: none;
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.topic-example-summary::-webkit-details-marker {
+  display: none;
+}
+
+.topic-example-summary:hover,
+.topic-example-summary:focus-visible {
+  background: #f8fbff;
+}
+
+.topic-example-chevron {
+  display: inline-grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--primary-dark);
+  font-size: 22px;
+  line-height: 1;
+  transition: transform 0.18s ease;
+}
+
+.topic-example-card[open] .topic-example-chevron {
+  transform: rotate(90deg);
+}
+
+.topic-example-body {
+  display: grid;
+  gap: 14px;
+  padding: 0 16px 16px;
+  border-top: 1px solid rgba(216, 227, 245, 0.7);
+}
+
+.topic-example-body p {
+  margin-top: 14px;
 }
 
 .topic-example-actions {
