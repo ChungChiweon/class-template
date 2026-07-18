@@ -444,7 +444,7 @@
       <h3>AI \uc81c\uc791 \ubc29\uc2dd \uc120\ud0dd</h3>
       <div class="generation-mode-grid">
         <button class="generation-mode-card ${activeFlux}" data-generation-mode="flux" type="button">
-          <strong>Flux \uc774\ubbf8\uc9c0 \uc0dd\uc131 + \ud14d\uc2a4\ud2b8 \uc624\ubc84\ub808\uc774</strong>
+          <strong>GPT 배경 이미지 생성 + 텍스트 별도 편집</strong>
           <span>AI\ub294 \ubc30\uacbd \uc774\ubbf8\uc9c0\uc640 \uc2dc\uac01 \uc694\uc18c\ub97c \uc81c\uc791\ud558\uace0, \ud14d\uc2a4\ud2b8\ub294 \uc774\ud6c4 \ud3b8\uc9d1 \ub2e8\uacc4\uc5d0\uc11c \uc0ac\ub78c\uc774 \ucd94\uac00\ud569\ub2c8\ub2e4.</span>
           <em>\uc774\ubbf8\uc9c0 \ud488\uc9c8 \uc911\uc2ec \u00b7 \ud55c\uae00 \ud14d\uc2a4\ud2b8 \uc624\ub958 \uac10\uc18c \u00b7 \uc9c1\uc811 \ud3b8\uc9d1 \uac00\ub2a5</em>
         </button>
@@ -459,7 +459,7 @@
 
   function promptResultView(mode) {
     const promptKey = mode === "gpt_integrated" ? "gptPrompt" : "fluxPrompt";
-    const promptLabel = mode === "gpt_integrated" ? "GPT \ud1b5\ud569 \uc81c\uc791\uc6a9 \ud504\ub86c\ud504\ud2b8" : "Flux \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 \ud504\ub86c\ud504\ud2b8";
+    const promptLabel = mode === "gpt_integrated" ? "GPT \ud1b5\ud569 \uc81c\uc791\uc6a9 \ud504\ub86c\ud504\ud2b8" : "GPT 배경 이미지 생성용 프롬프트";
     const defaultNegative = mode === "gpt_integrated" ? gptNegativeDefault() : fluxNegativeDefault();
     const promptValue = project.copy[promptKey] || "";
     const negativeValue = project.copy.negativePrompt || defaultNegative;
@@ -491,7 +491,7 @@
     if (mode === "gpt_integrated") {
       return `<h3>GPT \ud1b5\ud569 \uc81c\uc791\uc6a9 \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.gptPrompt || "\uc544\uc9c1 \uc0dd\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.")}</div>`;
     }
-    return `<h3>Flux \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.fluxPrompt || "\uc544\uc9c1 \uc0dd\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.")}</div>
+    return `<h3>GPT 배경 이미지 생성용 프롬프트</h3><div class="prompt-box">${esc(project.copy.fluxPrompt || "\uc544\uc9c1 \uc0dd\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.")}</div>
       <h3>Negative Prompt</h3><div class="prompt-box">${esc(project.copy.negativePrompt || fluxNegativeDefault())}</div>`;
   }
 
@@ -666,15 +666,15 @@
   function fluxView() {
     const generateLabel = project.flux.used ? "\uc774\ubbf8\uc9c0 \uc0dd\uc131 \uc644\ub8cc" : project.flux.status === "loading" ? "\uc774\ubbf8\uc9c0 \uc0dd\uc131 \uc911..." : "\uc774\ubbf8\uc9c0 \uc0dd\uc131\ud558\uae30";
     return `<div class="step-title"><div><span class="badge">3\ub2e8\uacc4</span><h2>\uc774\ubbf8\uc9c0 \uc0dd\uc131</h2></div><div class="button-row"><button id="generateFlux" class="primary-button" ${project.flux.used || project.flux.status === "loading" ? "disabled" : ""} type="button">${generateLabel}</button><button id="downloadFlux" class="ghost-button" type="button">PNG \ub2e4\uc6b4\ub85c\ub4dc</button></div></div>
-    <div class="canvas-workspace"><div class="canvas-wrap"><canvas id="cardCanvas" width="1080" height="1920"></canvas></div><aside class="card">${fluxStatusView()}<p class="notice">Flux \ubc29\uc2dd\uc740 2\ub2e8\uacc4\uc5d0\uc11c \ub9cc\ub4e0 \uae00\uc790 \uc5c6\ub294 \uc774\ubbf8\uc9c0 \uc0dd\uc131\uc6a9 \ud504\ub86c\ud504\ud2b8\ub97c \uc0ac\uc6a9\ud569\ub2c8\ub2e4. \ube48 \ubc30\uacbd\uc774 \uc544\ub2c8\ub77c \uc8fc\uc81c\uac00 \ubcf4\uc774\ub294 \uc7a5\uba74\uc744 \uc0dd\uc131\ud558\uace0, \ud544\uc694\ud55c \ubb38\uad6c\ub294 \uc678\ubd80 \ud3b8\uc9d1 \ub3c4\uad6c\uc5d0\uc11c \ub530\ub85c \ucd94\uac00\ud558\uc138\uc694.</p><h3>Flux \uc0dd\uc131\uc6a9 \ud504\ub86c\ud504\ud2b8</h3><div class="prompt-box">${esc(project.copy.fluxPrompt || buildFluxPrompt())}</div><h3>Negative Prompt</h3><div class="prompt-box">${esc(project.copy.negativePrompt || fluxNegativeDefault())}</div></aside></div>`;
+    <div class="canvas-workspace"><div class="canvas-wrap"><canvas id="cardCanvas" width="1080" height="1920"></canvas></div><aside class="card">${fluxStatusView()}<p class="notice">2단계에서 만든 글자 없는 이미지 생성용 프롬프트를 GPT 이미지 생성으로 처리합니다. 빈 배경이 아니라 주제가 보이는 장면을 생성하고, 필요한 문구는 외부 편집 도구에서 따로 추가하세요.</p><h3>이미지 생성용 프롬프트</h3><div class="prompt-box">${esc(project.copy.fluxPrompt || buildFluxPrompt())}</div><h3>Negative Prompt</h3><div class="prompt-box">${esc(project.copy.negativePrompt || fluxNegativeDefault())}</div></aside></div>`;
   }
 
   function fluxStatusView() {
     const hasPrompt = Boolean(project.copy.fluxPrompt);
     const status = project.flux.status || (project.flux.used ? "success" : hasPrompt ? "ready" : "waiting");
     const messages = {
-      waiting: "2\ub2e8\uacc4\uc5d0\uc11c Flux \ud504\ub86c\ud504\ud2b8\ub97c \uba3c\uc800 \uc0dd\uc131\ud558\uc138\uc694.",
-      ready: "2\ub2e8\uacc4 Flux \ud504\ub86c\ud504\ud2b8\ub97c \uac00\uc838\uc654\uc2b5\ub2c8\ub2e4. \uc774\ubbf8\uc9c0 \uc0dd\uc131\ud558\uae30\ub97c \ub204\ub974\uc138\uc694.",
+      waiting: "2단계에서 이미지 생성용 프롬프트를 먼저 생성하세요.",
+      ready: "2단계 프롬프트를 가져왔습니다. 이미지 생성하기를 누르세요.",
       loading: "\uc774\ubbf8\uc9c0 \uc0dd\uc131 \uc911\uc785\ub2c8\ub2e4. \uc7a0\uc2dc\ub9cc \uae30\ub2e4\ub824 \uc8fc\uc138\uc694.",
       success: "\uc774\ubbf8\uc9c0 \uc0dd\uc131\uc774 \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4. PNG\ub85c \uc800\uc7a5\ud558\uc138\uc694.",
       failed: project.flux.message || "\uc774\ubbf8\uc9c0 \uc0dd\uc131\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. 2\ub2e8\uacc4 \ud504\ub86c\ud504\ud2b8\ub97c \ud655\uc778\ud558\uace0 \ub2e4\uc2dc \uc2dc\ub3c4\ud558\uc138\uc694.",
@@ -709,7 +709,7 @@
   }
 
   function finalView() {
-    return `<div class="step-title"><div><span class="badge">5\ub2e8\uacc4</span><h2>\ube44\uad50\ud558\uace0 \uc644\uc131</h2></div></div><div class="compare-grid">${resultCard("flux", "Flux \uc774\ubbf8\uc9c0 \uacb0\uacfc", project.flux.finalImage || project.flux.imageUrl)}${resultCard("gpt", "GPT \uc774\ubbf8\uc9c0 \uacb0\uacfc", project.gpt.finalImage || project.gpt.imageUrl)}</div><section class="card" style="margin-top:18px">${field("final", "reflection", "\uc65c \uc774 \uacb0\uacfc\ubb3c\uc744 \uc120\ud0dd\ud588\ub098\uc694?", true)}<div class="button-row"><button id="downloadFinal" class="primary-button" type="button">\ucd5c\uc885 PNG \ub2e4\uc6b4\ub85c\ub4dc</button><button id="submitProject" class="ghost-button" type="button">\uacb0\uacfc\ubb3c \uc81c\ucd9c</button></div></section>`;
+    return `<div class="step-title"><div><span class="badge">5\ub2e8\uacc4</span><h2>\ube44\uad50\ud558\uace0 \uc644\uc131</h2></div></div><div class="compare-grid">${resultCard("flux", "GPT 배경 이미지 결과", project.flux.finalImage || project.flux.imageUrl)}${resultCard("gpt", "GPT 통합 이미지 결과", project.gpt.finalImage || project.gpt.imageUrl)}</div><section class="card" style="margin-top:18px">${field("final", "reflection", "\uc65c \uc774 \uacb0\uacfc\ubb3c\uc744 \uc120\ud0dd\ud588\ub098\uc694?", true)}<div class="button-row"><button id="downloadFinal" class="primary-button" type="button">\ucd5c\uc885 PNG \ub2e4\uc6b4\ub85c\ub4dc</button><button id="submitProject" class="ghost-button" type="button">\uacb0\uacfc\ubb3c \uc81c\ucd9c</button></div></section>`;
   }
 
   function resultCard(method, title, image) {
@@ -1329,7 +1329,7 @@
     const desc = document.querySelector(".hero p");
     if (desc) desc.textContent = "\ud558\ub098\uc758 \uba54\uc2dc\uc9c0\ub97c \uae30\ud68d\ud558\uace0, \uae00\uc790 \uc5c6\ub294 \ubc30\uacbd\uc5d0 \ubb38\uad6c\ub97c \uc9c1\uc811 \ubc30\uce58\ud558\ub294 \ubc29\uc2dd\uacfc \uc774\ubbf8\uc9c0+\uae00\uc744 \ud55c \ubc88\uc5d0 \uc0dd\uc131\ud558\ub294 \ubc29\uc2dd\uc744 \ube44\uad50\ud574 \ucd5c\uc885 \ub274\uc2a4\uce74\ub4dc PNG 1\uc7a5\uc744 \uc81c\ucd9c\ud569\ub2c8\ub2e4.";
     const small = document.querySelector(".status-card small");
-    if (small) small.textContent = "Flux 1\ud68c \u00b7 GPT 1\ud68c";
+    if (small) small.textContent = "배경 이미지 1회 · 통합 이미지 1회";
     if (dom.saveStatus) dom.saveStatus.textContent = LABELS.savedLocal;
     if (dom.stepper) dom.stepper.setAttribute("aria-label", "\ub274\uc2a4\uce74\ub4dc \uc81c\uc791 \ub2e8\uacc4");
     if (dom.prev) dom.prev.textContent = "\uc774\uc804";

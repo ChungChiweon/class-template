@@ -12,8 +12,8 @@ const {
   setCors,
 } = require("./_shared");
 
-const NVIDIA_FLUX_MODEL = process.env.CARDNEWS_FLUX_MODEL || "flux.1-dev";
-const NVIDIA_FLUX_ENDPOINT = `https://ai.api.nvidia.com/v1/genai/black-forest-labs/${NVIDIA_FLUX_MODEL}`;
+const OPENAI_IMAGE_ENDPOINT = "https://api.openai.com/v1/images/generations";
+const OPENAI_IMAGE_MODEL = process.env.CARDNEWS_GPT_IMAGE_MODEL || process.env.OPENAI_IMAGE_MODEL || "gpt-image-1";
 const REQUEST_TIMEOUT_MS = 90000;
 
 module.exports = async function handler(req, res) {
@@ -38,10 +38,10 @@ module.exports = async function handler(req, res) {
   let mode = providerMode();
   if (isLiveProviderMode()) {
     try {
-      imageUrl = await callNvidiaFlux(body.prompt || body.copy?.fluxPrompt || buildFluxPrompt(planning), topic, mood);
-      provider = `nvidia-${NVIDIA_FLUX_MODEL}`;
+      imageUrl = await callOpenAiImage(body.prompt || body.copy?.fluxPrompt || buildFluxPrompt(planning), planning, body.copy || {});
+      provider = `${OPENAI_IMAGE_MODEL}-as-flux`;
     } catch (error) {
-      return endJson(res, 502, { success: false, provider: `nvidia-${NVIDIA_FLUX_MODEL}`, mode, message: safeProviderError(error?.message) });
+      return endJson(res, 502, { success: false, provider: `${OPENAI_IMAGE_MODEL}-as-flux`, mode, message: safeProviderError(error?.message) });
     }
   } else {
     imageUrl = svgDataUrl();
@@ -59,62 +59,86 @@ module.exports = async function handler(req, res) {
   });
 };
 
-async function callNvidiaFlux(prompt, topic, mood) {
-  const apiKey = String(process.env.CARDNEWS_FLUX_API_KEY || process.env.NVIDIA_API_KEY || "").trim().replace(/^['"]|['"]$/g, "");
-  if (!apiKey) throw new Error("Flux API key is not configured");
+async function callOpenAiImage(prompt, planning = {}, copy = {}) {
+  const apiKey = String(process.env.OPENAI_API_KEY || "").trim().replace(/^['"]|['"]$/g, "");
+  if (!apiKey) throw new Error("OpenAI API key is not configured");
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
   try {
-    const response = await fetch(NVIDIA_FLUX_ENDPOINT, {
+    const response = await fetch(OPENAI_IMAGE_ENDPOINT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        prompt: cleanText(prompt || buildFluxPrompt({ topic, mood }), 9500),
-        height: Number(process.env.CARDNEWS_FLUX_HEIGHT || process.env.CARDNEWS_FLUX_SIZE || 1344),
-        width: Number(process.env.CARDNEWS_FLUX_WIDTH || 768),
-        cfg_scale: Number(process.env.CARDNEWS_FLUX_CFG_SCALE || 3.5),
-        mode: "base",
-        samples: 1,
-        seed: 0,
-        steps: Number(process.env.CARDNEWS_FLUX_STEPS || 5),
+        model: OPENAI_IMAGE_MODEL,
+        prompt: cleanText(buildOpenAiBackgroundPrompt(prompt, planning, copy), 4000),
+        size: process.env.CARDNEWS_GPT_IMAGE_SIZE || "1024x1536",
+        quality: process.env.CARDNEWS_GPT_IMAGE_QUALITY || "high",
+        output_format: "png",
+        n: 1,
       }),
       signal: controller.signal,
     });
-    const text = await response.text();
-    let payload = {};
-    try {
-      payload = text ? JSON.parse(text) : {};
-    } catch {
-      payload = {};
-    }
+    const payload = await response.json().catch(() => ({}));
     if (!response.ok) {
-      throw new Error(safeProviderError(payload?.detail || payload?.message || payload?.error || `NVIDIA Flux API ${response.status}`));
+      throw new Error(safeProviderError(payload?.error?.message || payload?.message || `OpenAI image API ${response.status}`));
     }
-    return extractImageDataUrl(payload);
+    const b64 = payload?.data?.[0]?.b64_json;
+    const url = payload?.data?.[0]?.url;
+    if (b64) return `data:image/png;base64,${b64}`;
+    if (url) return url;
+    throw new Error("OpenAI image response did not include image data");
   } finally {
     clearTimeout(timer);
   }
 }
 
-function extractImageDataUrl(payload) {
-  const candidates = [
-    payload?.image,
-    payload?.b64_json,
-    payload?.data?.[0]?.b64_json,
-    payload?.data?.[0]?.image,
-    payload?.artifacts?.[0]?.base64,
-    payload?.artifacts?.[0]?.image,
-    payload?.images?.[0],
-  ].filter(Boolean);
-  const image = String(candidates[0] || "").trim();
-  if (!image) throw new Error("Flux image response did not include image data");
-  if (image.startsWith("data:image/")) return image;
-  const mime = image.startsWith("/9j/") ? "image/jpeg" : image.startsWith("iVBOR") ? "image/png" : "image/png";
-  return `data:${mime};base64,${image}`;
+function buildOpenAiBackgroundPrompt(prompt, planning = {}, copy = {}) {
+  return [
+    "Create one high-quality 9:16 vertical card-news background image using OpenAI image generation.",
+    "This image is for the step formerly called Flux, but DO NOT use Flux style. Use rich ChatGPT-style editorial illustration quality.",
+    "Important: this version is a text-free visual background. Do not render Korean text, letters, numbers, logos, watermarks, dates, prices, or fake written information inside the image.",
+    "Do not make an empty background. Show a meaningful scene with concrete people, action, place, props, depth, lighting, and visual storytelling.",
+    "Keep the composition suitable for later human text editing: reserve a clean area near the top or bottom while keeping the scene rich and attractive.",
+    `Topic-specific visual direction: ${topicVisualHints(planning, copy)}`,
+    `Original student-designed visual prompt: ${sanitizeVisualPrompt(prompt || buildFluxPrompt(planning))}`,
+    `Topic: ${cleanText(planning.topic || "news card", 120)}`,
+    `Mood: ${cleanText(planning.mood || "bright and reliable", 120)}`,
+    `Verified facts to respect visually only: ${cleanText(planning.facts || "", 900)}`,
+    "Negative direction: no readable text, no letters, no numbers, no logo, no watermark, no fake brand name, no incorrect information, no distorted faces, no cluttered composition, no sparse blank gradient poster.",
+  ].join("\n");
+}
+
+function sanitizeVisualPrompt(value) {
+  const raw = cleanText(value || "", 5000);
+  const withoutFence = raw.replace(/^```(?:text|markdown)?\s*/i, "").replace(/```$/i, "").trim();
+  const imageMatch = withoutFence.match(/IMAGE PROMPT\s*:?\s*([\s\S]*?)(?:\n\s*NEGATIVE PROMPT\s*:|$)/i);
+  return cleanText(imageMatch ? imageMatch[1] : withoutFence, 1600);
+}
+
+function topicVisualHints(planning = {}, copy = {}) {
+  const haystack = [
+    planning.topic,
+    planning.purpose,
+    planning.message,
+    planning.facts,
+    planning.sourceLabel,
+    copy.title,
+    copy.subtitle,
+  ].filter(Boolean).join(" ").toLowerCase();
+  if (/공연|문화|예술|아트홀|전시|체험|음악|무대|재단|festival|concert|culture|art|exhibition/.test(haystack)) {
+    return "Show a warm cultural event scene: stage curtains, spotlights, music notes, theater/performance icons, art materials, a venue or community arts center, and a smiling family or students enjoying the event. Rich premium Korean public-event illustration style.";
+  }
+  if (/교육|수업|학생|학교|진로|체험|workshop|class|student|career/.test(haystack)) {
+    return "Show students actively participating in a workshop or class, learning tools, tablets, classroom/workshop space, mentor guidance, and clean education-platform visual style.";
+  }
+  if (/관광|여행|지역|명소|tour|travel|landmark/.test(haystack)) {
+    return "Show travelers exploring a local scene, landmark-inspired background, map/travel icons, warm daylight, and polished tourism-card visual style.";
+  }
+  return "Show a concrete scene with people, action, relevant props, and a meaningful place instead of abstract shapes.";
 }
 
 function buildFluxPrompt(planning = {}) {
@@ -129,6 +153,8 @@ function buildFluxPrompt(planning = {}) {
 
 function safeProviderError(value) {
   return String(value || "Flux generation failed")
+    .replace(/sk-[\w-]+/g, "[api key hidden]")
+    .replace(/sk-proj-[\w-]+/g, "[api key hidden]")
     .replace(/nvapi-[\w-]+/g, "[api key hidden]")
     .replace(/eyJ[\w.-]+/g, "[token hidden]")
     .slice(0, 240);
