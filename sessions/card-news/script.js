@@ -153,7 +153,7 @@
     prompt: { generationMode: "flux", role: "\uce74\ub4dc\ub274\uc2a4 \uae30\ud68d\uc790", task: "\uc9c0\uc5ed \ud589\uc0ac \ud64d\ubcf4\uc6a9 \uc20f\ud3fc \uce74\ub4dc\ub274\uc2a4 \uc81c\uc791", audience: "", context: "", format: "9:16 \uc138\ub85c\ud615 \ubaa8\ubc14\uc77c \uce74\ub4dc\ub274\uc2a4", style: "\uce5c\uadfc\ud558\uace0 \ucc3d\uc758\uc801\uc778 \ud64d\ubcf4 \uc2a4\ud0c0\uc77c", rules: fluxRules() },
     copy: { title: "", subtitle: "", cta: "", fluxPrompt: "", gptPrompt: "", negativePrompt: "", metaPrompt: "", generationMode: "flux", promptStatus: "" },
     flux: { used: false, imageUrl: "", finalImage: "", status: "", message: "", layers: [{ id: "title", text: "", x: 80, y: 120, size: 58, color: "#0f172a" }, { id: "subtitle", text: "", x: 80, y: 420, size: 36, color: "#1e293b" }, { id: "cta", text: "", x: 80, y: 820, size: 30, color: "#ffffff" }] },
-    gpt: { used: false, imageUrl: "", status: "", message: "" },
+    gpt: { used: false, imageUrl: "", finalImage: "", status: "", message: "" },
     final: { selected: "", reflection: "", submittedAt: "" },
   };
   const dom = {
@@ -266,13 +266,14 @@
     dom.main.innerHTML = [planView, promptView, fluxView, gptView, finalView][project.currentStep]();
     bind();
     if (project.currentStep === 2) requestAnimationFrame(drawCanvas);
+    if (project.currentStep === 3) requestAnimationFrame(drawGptCanvas);
   }
 
   function complete(index) {
     if (index === 0) return project.planning.topic && project.planning.audience && project.planning.purpose && project.planning.message;
     if (index === 1) return project.copy.title && (project.prompt.generationMode === "gpt_integrated" ? project.copy.gptPrompt : project.copy.fluxPrompt);
     if (index === 2) return project.flux.finalImage || project.flux.imageUrl;
-    if (index === 3) return project.gpt.imageUrl;
+    if (index === 3) return project.gpt.finalImage || project.gpt.imageUrl;
     return project.final.selected && project.final.reflection;
   }
 
@@ -661,7 +662,7 @@
     if (!project.gpt.imageUrl) {
       return `<aside class="preview-card gpt-result-card"><h3>GPT \uc0dd\uc131 \uacb0\uacfc</h3><div class="preview-box">\uc544\uc9c1 \uc0dd\uc131\ub41c \uc774\ubbf8\uc9c0\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.<br>\"\uc774\ubbf8\uc9c0 \uc0dd\uc131\ud558\uae30\"\ub97c \ub204\ub974\uba74 \uc774 \uc601\uc5ed\uc5d0 \uacb0\uacfc\uac00 \ud45c\uc2dc\ub429\ub2c8\ub2e4.</div></aside>`;
     }
-    return `<aside class="preview-card gpt-result-card is-ready"><div class="result-heading"><div><span class="badge">GPT \uacb0\uacfc</span><h3>\uc0dd\uc131\ub41c \uce74\ub4dc\ub274\uc2a4 \uc774\ubbf8\uc9c0</h3></div><button id="downloadGpt" class="ghost-button" type="button">PNG \ub2e4\uc6b4\ub85c\ub4dc</button></div><img class="result-image" src="${esc(project.gpt.imageUrl)}" alt="GPT \uc0dd\uc131 \uacb0\uacfc" /><p class="notice">\uc774 \uc774\ubbf8\uc9c0\ub294 5\ub2e8\uacc4\uc5d0\uc11c Flux \uacb0\uacfc\uc640 \ube44\uad50\ud574 \ucd5c\uc885 \uc120\ud0dd\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.</p></aside>`;
+    return `<aside class="preview-card gpt-result-card is-ready"><div class="result-heading"><div><span class="badge">GPT \uacb0\uacfc</span><h3>\uc0dd\uc131\ub41c \uce74\ub4dc\ub274\uc2a4 \uc774\ubbf8\uc9c0</h3></div><button id="downloadGpt" class="ghost-button" type="button">PNG \ub2e4\uc6b4\ub85c\ub4dc</button></div><div class="gpt-canvas-wrap"><canvas id="gptCanvas" width="1080" height="1920"></canvas></div><p class="notice">GPT\ub294 \ubc30\uacbd \uc774\ubbf8\uc9c0\ub97c \uc0dd\uc131\ud558\uace0, \ud55c\uae00 \ubb38\uad6c\ub294 \uc774 \ud654\uba74\uc5d0\uc11c \uc77d\uae30 \uc27d\uac8c \uc62c\ub824 \ud45c\uc2dc\ud569\ub2c8\ub2e4.</p></aside>`;
   }
 
   function gptStatusView() {
@@ -678,7 +679,7 @@
   }
 
   function finalView() {
-    return `<div class="step-title"><div><span class="badge">5\ub2e8\uacc4</span><h2>\ube44\uad50\ud558\uace0 \uc644\uc131</h2></div></div><div class="compare-grid">${resultCard("flux", "\ubc30\uacbd \uc0dd\uc131+\uae00 \uc9c1\uc811 \ubc30\uce58", project.flux.finalImage || project.flux.imageUrl)}${resultCard("gpt", "\uc774\ubbf8\uc9c0+\uae00 \uc790\ub3d9 \uc81c\uc791", project.gpt.imageUrl)}</div><section class="card" style="margin-top:18px">${field("final", "reflection", "\uc65c \uc774 \uacb0\uacfc\ubb3c\uc744 \uc120\ud0dd\ud588\ub098\uc694?", true)}<div class="button-row"><button id="downloadFinal" class="primary-button" type="button">\ucd5c\uc885 PNG \ub2e4\uc6b4\ub85c\ub4dc</button><button id="submitProject" class="ghost-button" type="button">\uacb0\uacfc\ubb3c \uc81c\ucd9c</button></div></section>`;
+    return `<div class="step-title"><div><span class="badge">5\ub2e8\uacc4</span><h2>\ube44\uad50\ud558\uace0 \uc644\uc131</h2></div></div><div class="compare-grid">${resultCard("flux", "\ubc30\uacbd \uc0dd\uc131+\uae00 \uc9c1\uc811 \ubc30\uce58", project.flux.finalImage || project.flux.imageUrl)}${resultCard("gpt", "GPT \uc774\ubbf8\uc9c0+\uae00 \ubc30\uce58", project.gpt.finalImage || project.gpt.imageUrl)}</div><section class="card" style="margin-top:18px">${field("final", "reflection", "\uc65c \uc774 \uacb0\uacfc\ubb3c\uc744 \uc120\ud0dd\ud588\ub098\uc694?", true)}<div class="button-row"><button id="downloadFinal" class="primary-button" type="button">\ucd5c\uc885 PNG \ub2e4\uc6b4\ub85c\ub4dc</button><button id="submitProject" class="ghost-button" type="button">\uacb0\uacfc\ubb3c \uc81c\ucd9c</button></div></section>`;
   }
 
   function resultCard(method, title, image) {
@@ -706,7 +707,7 @@
     dom.main.querySelector("#loadCopy")?.addEventListener("click", loadCopy);
     dom.main.querySelector("#resetLayout")?.addEventListener("click", resetLayout);
     dom.main.querySelector("#downloadFlux")?.addEventListener("click", () => download(project.flux.finalImage || canvasData(), "flux-card-news.png"));
-    dom.main.querySelector("#downloadGpt")?.addEventListener("click", () => download(project.gpt.imageUrl, "gpt-card-news.png"));
+    dom.main.querySelector("#downloadGpt")?.addEventListener("click", () => download(project.gpt.finalImage || gptCanvasData() || project.gpt.imageUrl, "gpt-card-news.png"));
     dom.main.querySelector("#downloadFinal")?.addEventListener("click", downloadFinal);
     dom.main.querySelector("#submitProject")?.addEventListener("click", submit);
     dom.main.querySelectorAll("[data-select]").forEach((button) => button.addEventListener("click", () => {
@@ -837,6 +838,7 @@
       return;
     }
     project.gpt.imageUrl = data.imageUrl;
+    project.gpt.finalImage = "";
     project.gpt.used = true;
     project.gpt.status = "success";
     project.gpt.message = "";
@@ -961,7 +963,7 @@
   }
 
   function buildGptPrompt() {
-    return project.copy.gptPrompt || `Make one 1080x1080 news card. Title: ${project.copy.title}. Subtitle: ${project.copy.subtitle}. CTA: ${project.copy.cta}. Use only these facts: ${project.planning.facts}.`;
+    return project.copy.gptPrompt || `Create a 9:16 vertical card news visual background with no text. Leave clear areas for title, subtitle, and CTA overlays. Topic: ${project.planning.topic}. Mood: ${project.planning.mood}. Do not render Korean letters, numbers, logos, dates, prices, or fake information inside the image.`;
   }
 
   function summary() {
@@ -1048,8 +1050,82 @@
     return document.querySelector("#cardCanvas")?.toDataURL("image/png") || "";
   }
 
+  function drawGptCanvas() {
+    const canvas = document.querySelector("#gptCanvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const drawOverlay = () => {
+      drawReadableOverlay(ctx);
+      project.gpt.finalImage = canvas.toDataURL("image/png");
+    };
+    if (project.gpt.imageUrl) {
+      const image = new Image();
+      image.onload = () => {
+        ctx.clearRect(0, 0, 1080, 1920);
+        drawCoverImage(ctx, image, 1080, 1920);
+        drawOverlay();
+      };
+      image.onerror = () => {
+        drawGptFallback(ctx);
+        drawOverlay();
+      };
+      image.src = project.gpt.imageUrl;
+      return;
+    }
+    drawGptFallback(ctx);
+    drawOverlay();
+  }
+
+  function drawGptFallback(ctx) {
+    const gradient = ctx.createLinearGradient(0, 0, 1080, 1920);
+    gradient.addColorStop(0, "#eaf3ff");
+    gradient.addColorStop(0.55, "#ffffff");
+    gradient.addColorStop(1, "#dcfce7");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 1080, 1920);
+  }
+
+  function drawReadableOverlay(ctx) {
+    ctx.save();
+    ctx.fillStyle = "rgba(255, 255, 255, 0.92)";
+    roundRect(ctx, 92, 150, 896, 520, 42);
+    ctx.fill();
+    ctx.fillStyle = "#0f172a";
+    ctx.font = "900 76px Arial";
+    wrap(ctx, project.copy.title || project.planning.topic || "\uce74\ub4dc\ub274\uc2a4", 150, 270, 780, 92);
+    ctx.fillStyle = "#334155";
+    ctx.font = "700 42px Arial";
+    wrap(ctx, project.copy.subtitle || project.planning.message || "", 150, 500, 780, 58);
+    ctx.fillStyle = "#2457d6";
+    roundRect(ctx, 120, 1470, 760, 120, 60);
+    ctx.fill();
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "900 44px Arial";
+    wrap(ctx, project.copy.cta || "\uc790\uc138\ud788 \ubcf4\uae30", 175, 1545, 660, 54);
+    ctx.restore();
+  }
+
+  function roundRect(ctx, x, y, width, height, radius) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+  }
+
+  function gptCanvasData() {
+    drawGptCanvas();
+    return document.querySelector("#gptCanvas")?.toDataURL("image/png") || "";
+  }
+
   function downloadFinal() {
-    const image = project.final.selected === "gpt" ? project.gpt.imageUrl : project.flux.finalImage || canvasData();
+    const image = project.final.selected === "gpt" ? project.gpt.finalImage || gptCanvasData() || project.gpt.imageUrl : project.flux.finalImage || canvasData();
     if (!image) return alert("\ucd5c\uc885 \uacb0\uacfc\ubb3c\uc744 \uba3c\uc800 \uc120\ud0dd\ud558\uc138\uc694.");
     download(image, "loreax-card-news-final.png");
   }

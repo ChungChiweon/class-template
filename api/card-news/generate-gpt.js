@@ -40,7 +40,7 @@ module.exports = async function handler(req, res) {
   let mode = providerMode();
   if (isLiveProviderMode()) {
     try {
-      imageUrl = await callOpenAiImage(body.prompt || buildOpenAiImagePrompt(planning, copy));
+      imageUrl = await callOpenAiImage(buildOpenAiImagePrompt(planning, copy, body.prompt));
       provider = OPENAI_IMAGE_MODEL;
     } catch (error) {
       return endJson(res, 502, { success: false, provider: OPENAI_IMAGE_MODEL, mode, message: safeProviderError(error?.message) });
@@ -98,16 +98,21 @@ async function callOpenAiImage(prompt) {
   }
 }
 
-function buildOpenAiImagePrompt(planning = {}, copy = {}) {
+function buildOpenAiImagePrompt(planning = {}, copy = {}, studentPrompt = "") {
   return [
-    "Create one 9:16 vertical Korean educational news card.",
-    `Title: ${cleanText(copy.title || planning.topic || "news card", 120)}`,
-    `Subtitle: ${cleanText(copy.subtitle || planning.message || "", 180)}`,
-    `CTA: ${cleanText(copy.cta || "\uc790\uc138\ud788 \ubcf4\uae30", 80)}`,
+    "Create one 9:16 vertical mobile card news visual background.",
+    "Do not render any text inside the image. No Korean letters, no English letters, no numbers, no logo, no watermark.",
+    "Leave clear safe areas for title, subtitle, and CTA text overlays that will be added later in HTML/canvas.",
+    "The image should support a school-friendly educational promotion card, clean editorial composition, balanced margins, and contained visual elements.",
+    "Keep all important objects fully inside the frame. Do not crop faces, icons, or main objects at the edges.",
+    `Visual brief from prompt design: ${cleanText(studentPrompt || "", 1400)}`,
+    `Topic: ${cleanText(copy.title || planning.topic || "news card", 120)}`,
+    `Core message: ${cleanText(copy.subtitle || planning.message || "", 180)}`,
+    `CTA text to reserve space for, but not draw: ${cleanText(copy.cta || "\uc790\uc138\ud788 \ubcf4\uae30", 80)}`,
     `Audience: ${cleanText(planning.audience || "students", 120)}`,
     `Mood: ${cleanText(planning.mood || "bright and reliable", 120)}`,
     `Required facts: ${cleanText(planning.facts || "", 1200)}`,
-    "Use large readable Korean text, clean school-friendly editorial layout, and no invented facts.",
+    "Use no written information in the image itself. Generate background and visual elements only.",
   ].join("\n");
 }
 
