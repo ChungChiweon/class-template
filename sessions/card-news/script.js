@@ -267,7 +267,7 @@
   }
 
   function planView() {
-    return `<div class="step-title"><div><span class="badge">1\ub2e8\uacc4</span><h2>\uc8fc\uc81c\uc640 \uae30\ud68d</h2></div><span class="mock-badge">${LABELS.mockNotice}</span></div>
+    return `<div class="step-title"><div><span class="badge">1\ub2e8\uacc4</span><h2>\uc8fc\uc81c\uc640 \uae30\ud68d</h2></div><button id="resetProject" class="reset-project-button" type="button">\ucc98\uc74c\ubd80\ud130 \ub2e4\uc2dc</button></div>
     <div class="layout"><section class="card field-grid">
       ${topicExamplesView()}
       ${field("planning", "topic", "\uc8fc\uc81c")}
@@ -434,6 +434,7 @@
     }));
     dom.main.querySelectorAll("[data-example-select]").forEach((button) => button.addEventListener("click", () => selectTopicExample(button.dataset.exampleSelect)));
     dom.main.querySelector("#generateCopy")?.addEventListener("click", generateCopy);
+    dom.main.querySelector("#resetProject")?.addEventListener("click", resetProject);
     dom.main.querySelector("#generateFlux")?.addEventListener("click", generateFlux);
     dom.main.querySelector("#generateGpt")?.addEventListener("click", generateGpt);
     dom.main.querySelector("#loadCopy")?.addEventListener("click", loadCopy);
@@ -509,6 +510,16 @@
     project.flux.layers = structuredClone(DEFAULT_PROJECT.flux.layers);
     loadCopy();
     save(false);
+    render();
+  }
+
+  function resetProject() {
+    localStorage.removeItem(storageKey());
+    localStorage.removeItem(legacyStorageKey());
+    const projectId = crypto.randomUUID ? crypto.randomUUID() : `cardnews_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+    localStorage.setItem(projectIdKey(), projectId);
+    Object.assign(project, merge(structuredClone(DEFAULT_PROJECT), { projectId, currentStep: 0 }));
+    save();
     render();
   }
 

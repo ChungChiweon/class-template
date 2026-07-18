@@ -178,6 +178,24 @@ h1 {
   font-weight: 900;
 }
 
+.reset-project-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  border: 1px solid #fed7aa;
+  border-radius: 999px;
+  padding: 0 14px;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.reset-project-button:hover,
+.reset-project-button:focus-visible {
+  background: #ffedd5;
+}
+
 .step-panel {
   min-height: 620px;
   padding: 28px;
