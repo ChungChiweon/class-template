@@ -2251,9 +2251,7 @@ applyHotelPromptWorkflow();
 })();
 
 const LESSON_STORAGE_KEY = "selectedLessonId";
-let currentLessonId = getStoredLessonId();
-currentLessonId = "localEventShorts";
-saveLessonId(currentLessonId);
+let currentLessonId = "localEventShorts";
 let lessonData = lessons[currentLessonId];
 
 if (window.LoreAXTenant?.guardCourseAccess?.(currentLessonId, { homeUrl: "../../index.html" })?.blocked) {
